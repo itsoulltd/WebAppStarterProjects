@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.infoworks.lab</groupId>
+    <artifactId>vaadin-flow-startup-14</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>vaadin-flow-startup-14</name>
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <vaadin.version>14.0.8</vaadin.version>
+        <jersey2.version>2.27</jersey2.version>
+        <jaxrs.version>2.1</jaxrs.version>
+    </properties>
+
+    <repositories>
+        <!-- The order of definitions matters. Explicitly defining central here to make sure it has the highest priority. -->
+
+        <!-- Main Maven repository -->
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- Repository used by many Vaadin add-ons: https://vaadin.com/directory -->
+        <repository>
+            <id>Vaadin Directory</id>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- JitPack -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-bom</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${vaadin.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <!-- Replace artifactId with vaadin-core to use only free components -->
+            <artifactId>vaadin-core</artifactId>
+            <exclusions>
+                <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
+                <exclusion>
+                    <groupId>com.vaadin.webjar</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.insites</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.polymer</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.polymerelements</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.vaadin</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.webcomponents</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Added to provide logging output as Flow uses -->
+        <!-- the unbound SLF4J no-operation (NOP) logger implementation -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.itsoulltd</groupId>
+            <artifactId>JSQLEditor</artifactId>
+            <version>v1.1.3-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.itsoulltd.WebComponentKit</groupId>
+            <artifactId>jsql-editor-components</artifactId>
+            <version>1.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.itsoulltd.WebComponentKit</groupId>
+            <artifactId>vaadin-component</artifactId>
+            <version>1.0-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.4</version>
+        </dependency>
+        <!-- JAX-RS -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${jaxrs.version}</version>
+        </dependency>
+        <!-- Jersey-2 client: for consuming web-services -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+        <!-- Jersey-2 bundle ends -->
+        <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.0.17.Final</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>ROOT</finalName>
+        <defaultGoal>jetty:run</defaultGoal>
+        <plugins>
+            <!-- We use jetty plugin, replace it with your favourite developing servlet container -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.15.v20190215</version>
+                <configuration>
+                    <scanIntervalSeconds>1</scanIntervalSeconds>
+                </configuration>
+            </plugin>
+
+            <!--
+                Take care of synchronizing java dependencies and imports in
+                package.json and main.js files.
+                It also creates webpack.config.js if not exists yet.
+            -->
+            <plugin>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-maven-plugin</artifactId>
+                <version>14.0.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-frontend</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <!-- Production mode is activated using -Pproduction -->
+            <id>production</id>
+            <properties>
+                <vaadin.productionMode>true</vaadin.productionMode>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>flow-server-production-mode</artifactId>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.vaadin</groupId>
+                        <artifactId>vaadin-maven-plugin</artifactId>
+                        <version>${vaadin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>build-frontend</goal>
+                                </goals>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
