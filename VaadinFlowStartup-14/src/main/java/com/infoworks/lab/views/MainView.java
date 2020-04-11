@@ -7,9 +7,12 @@ import com.infoworks.lab.components.crud.components.datasource.GridDataSource;
 import com.infoworks.lab.components.crud.components.utils.EditorDisplayType;
 import com.infoworks.lab.components.db.source.JsqlDataSource;
 import com.infoworks.lab.components.db.source.SqlDataSource;
+import com.infoworks.lab.components.rest.RestExecutor;
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.jsql.DataSourceKey;
 import com.infoworks.lab.jsql.ExecutorType;
+import com.infoworks.lab.jsql.JsqlConfig;
 import com.infoworks.lab.presenters.PassengerEditor;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -57,6 +60,9 @@ public class MainView extends VerticalLayout {
             //Fetching Data From Database:
             DatabaseBootstrap.createTables();
             GridDataSource source = JsqlDataSource.createDataSource(SqlDataSource.class, ExecutorType.SQL);
+            //Testing RestExecutor:
+            //DataSourceKey sourceKey = JsqlConfig.createDataSourceKey("app.db");
+            //((SqlDataSource) source).setExecutor(new RestExecutor(Passenger.class, sourceKey));
             return source;
         }
     }
