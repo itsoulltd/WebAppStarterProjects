@@ -13,14 +13,14 @@ services:
           context: .
           dockerfile: Dockerfile-embedded
        environment:
-          com.itsoul.lab.api.public.dns: itracker-external-o35sj8s1xz98-1208457667.ap-southeast-1.elb.amazonaws.com
+          com.itsoul.lab.api.public.dns: localhost
           app.db.name: /api/shareable
-          app.db.host: itracker-external-o35sj8s1xz98-1208457667.ap-southeast-1.elb.amazonaws.com
+          app.db.host: localhost
           app.db.port: 8083
-          app.tenant.username: mail.dailygoods@gmail.com
-          app.tenant.password: Itsoul@1
+          app.tenant.username: demo@gmail.com
+          app.tenant.password: mypass@123
           app.db.auth.name: /auth-service/auth
-          app.db.auth.host: itracker-external-o35sj8s1xz98-1208457667.ap-southeast-1.elb.amazonaws.com
+          app.db.auth.host: localhost
           app.db.auth.port: 8080
        ports:
           - 8080:8080
