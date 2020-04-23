@@ -22,3 +22,4 @@
 ##### Run Vaadin-12 or VaadinFlowSpring-14 (Vaadin-Spring-Boot-2)
      ~>$ mvn clean package -DskipTests
      ~>$ mvn spring-boot:run
+[Vaadin14+Spring](https://vaadin.com/docs/flow/spring/tutorial-spring-basic.html)
