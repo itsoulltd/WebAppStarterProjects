@@ -1,15 +1,24 @@
 ###Clone & run using docker-compose inside the projects:
 
 ####To run the Docker (If not running)
-~>$ open -a Docker
+    ~>$ open -a Docker
 
 ####Then goto specific project folder and run following cmd:
-~>$ mvn clean package -DskipTests
+    ~>$ mvn clean package -DskipTests
 
-~>$ docker-compose up -d --build
+    ~>$ docker-compose up -d --build
 
 ####To Check all container running properly
-~>$ docker container ls -la
+    ~>$ docker container ls -la
 
 ####To Stop Docker
-~>$ killall Docker
+    ~>$ killall Docker
+
+#### To Run Vaadin Projects:
+##### Run Vaadin-14 (Vaadin-only)
+     ~>$ mvn clean package -DskipTests
+     ~>$ mvn jetty:run
+      
+##### Run Vaadin-12 (Vaadin-Spring-Boot-2)
+     ~>$ mvn clean package -DskipTests
+     ~>$ mvn spring-boot:run
