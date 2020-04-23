@@ -141,7 +141,7 @@
 		<dependency>
 			<groupId>com.github.itsoulltd.WebComponentKit</groupId>
 			<artifactId>vaadin-component</artifactId>
-			<version>1.0-RELEASE</version>
+			<version>v1.2.10-VAADIN</version>
 		</dependency>
 		<!-- -->
         <!-- JAX-RS -->
