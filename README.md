@@ -19,6 +19,6 @@
      ~>$ mvn clean package -DskipTests
      ~>$ mvn jetty:run
       
-##### Run Vaadin-12 (Vaadin-Spring-Boot-2)
+##### Run Vaadin-12 or VaadinFlowSpring-14 (Vaadin-Spring-Boot-2)
      ~>$ mvn clean package -DskipTests
      ~>$ mvn spring-boot:run
