@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
- * The entry point of the Spring Boot application.
+ * Base spring boot init class
+ * SHOULD always BE in the TOP LEVEL, not in any package,
+ * because vaadin don't recognize any route which is not in the child / same dir of the Application class
  */
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
