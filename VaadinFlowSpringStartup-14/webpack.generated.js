@@ -45,9 +45,7 @@ const net = require('net');
 
 function setupWatchDog(){
     var client = new net.Socket();
-    client.connect(watchDogPort, 'localhost', function() {
-        console.debug('Watchdog connected.');
-    });
+    client.connect(watchDogPort, 'localhost');
 
     client.on('error', function(){
         console.log("Watchdog connection error. Terminating webpack process...");
@@ -57,7 +55,6 @@ function setupWatchDog(){
 
     client.on('close', function() {
         client.destroy();
-        console.debug('Watchdog connection closed. Trying to re-run watchdog.');
         setupWatchDog();
     });  
 }
@@ -82,7 +79,8 @@ module.exports = {
 
   output: {
     filename: `${build}/vaadin-[name]-[contenthash].cache.js`,
-    path: mavenOutputFolderForFlowBundledFiles
+    path: mavenOutputFolderForFlowBundledFiles,
+    publicPath: 'VAADIN/',
   },
 
   resolve: {
@@ -100,6 +98,9 @@ module.exports = {
       });
       app.get(`/stats.hash`, function(req, res) {
         res.json(stats.toJson().hash.toString());
+      });
+      app.get(`/assetsByChunkName`, function(req, res) {
+        res.json(stats.toJson().assetsByChunkName);
       });
       app.get(`/stop`, function(req, res) {
         // eslint-disable-next-line no-console
@@ -132,6 +133,14 @@ module.exports = {
     // Transpile with babel, and produce different bundles per browser
     new BabelMultiTargetPlugin({
       babel: {
+        plugins: [
+          // workaround for Safari 10 scope issue (https://bugs.webkit.org/show_bug.cgi?id=159270)
+          "@babel/plugin-transform-block-scoping",
+
+          // Edge does not support spread '...' syntax in object literals (#7321)
+          "@babel/plugin-proposal-object-rest-spread"
+        ],
+
         presetOptions: {
           useBuiltIns: false // polyfills are provided from webcomponents-loader.js
         }
