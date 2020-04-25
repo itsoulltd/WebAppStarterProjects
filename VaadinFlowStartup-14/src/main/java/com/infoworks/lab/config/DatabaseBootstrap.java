@@ -1,4 +1,4 @@
-package com.infoworks.lab.views;
+package com.infoworks.lab.config;
 
 import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.jsql.JsqlConfig;

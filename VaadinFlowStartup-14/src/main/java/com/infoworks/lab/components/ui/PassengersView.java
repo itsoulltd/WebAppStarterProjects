@@ -1,4 +1,4 @@
-package com.infoworks.lab.views;
+package com.infoworks.lab.components.ui;
 
 import com.infoworks.lab.components.crud.Configurator;
 import com.infoworks.lab.components.crud.Crud;
@@ -7,33 +7,22 @@ import com.infoworks.lab.components.crud.components.datasource.GridDataSource;
 import com.infoworks.lab.components.crud.components.utils.EditorDisplayType;
 import com.infoworks.lab.components.db.source.JsqlDataSource;
 import com.infoworks.lab.components.db.source.SqlDataSource;
-import com.infoworks.lab.components.rest.RestExecutor;
+import com.infoworks.lab.components.presenters.PassengerEditor;
+import com.infoworks.lab.config.DatabaseBootstrap;
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
-import com.infoworks.lab.jsql.DataSourceKey;
 import com.infoworks.lab.jsql.ExecutorType;
-import com.infoworks.lab.jsql.JsqlConfig;
-import com.infoworks.lab.presenters.PassengerEditor;
-import com.vaadin.flow.component.dependency.CssImport;
+import com.infoworks.lab.layouts.DashboardLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The main view contains a button and a click listener.
- */
-@Route
-@CssImport(value = "./styles/view-styles.css", id = "view-styles")
-@CssImport(value = "./styles/shared-styles.css", include = "view-styles")
-@PWA(name = "Time Tracking", shortName = "Ticker")
-@Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
-public class MainView extends VerticalLayout {
+@Route(value = "passengers", layout = DashboardLayout.class)
+public class PassengersView extends VerticalLayout {
 
-    public MainView() {
+    public PassengersView() {
 
         //Create DataSource:
         GridDataSource source = createDataSource(true);

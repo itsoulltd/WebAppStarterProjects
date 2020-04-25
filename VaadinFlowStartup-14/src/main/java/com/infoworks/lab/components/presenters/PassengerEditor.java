@@ -1,4 +1,4 @@
-package com.infoworks.lab.presenters;
+package com.infoworks.lab.components.presenters;
 
 import com.infoworks.lab.components.crud.components.editor.EmbeddedBeanEditor;
 import com.infoworks.lab.domain.entities.Gender;
