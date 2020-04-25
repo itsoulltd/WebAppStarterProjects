@@ -32,9 +32,9 @@ public class DashboardLayout extends AppLayout {
     private Map<Tab, Component> tab2Workspace = new HashMap<>();
 
     public DashboardLayout() {
-        Image img = new Image(LOGO_URL, "Vaadin Logo");
-        img.setHeight("44px");
-        addToNavbar(new DrawerToggle(), img);
+        Image logo = new Image(LOGO_URL, "Vaadin Logo");
+        logo.setHeight("44px");
+        addToNavbar(new DrawerToggle(), logo);
 
         final Tabs tabs = new Tabs(profile(), passengers(), trends(), logout());
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
