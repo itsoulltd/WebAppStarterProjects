@@ -13,14 +13,15 @@ import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.layouts.DashboardLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "passengers", layout = DashboardLayout.class)
-public class PassengersView extends VerticalLayout {
+public class PassengersView extends Composite<Div> {
 
     public PassengersView() {
 
@@ -35,8 +36,7 @@ public class PassengersView extends VerticalLayout {
                 .setGridPageSize(8);
 
         Crud crud = new Crud(configurator);
-        add(crud);
-
+        getContent().add(crud);
     }
 
     private GridDataSource createDataSource(boolean inmemory){
