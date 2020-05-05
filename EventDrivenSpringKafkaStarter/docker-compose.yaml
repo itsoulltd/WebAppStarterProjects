@@ -1,0 +1,85 @@
+version: '3.5'
+
+networks:
+   web-app-net:
+       name: my-web-app-net
+       #driver: overlay
+       driver: bridge
+
+volumes:
+   mysql-db-storage:
+   activemq-storage:
+   redis-inmemory-storage:
+
+services:
+   mysql-db:
+      image: mysql:8.0.13
+      environment:
+          MYSQL_DATABASE: testDB
+          MYSQL_ROOT_PASSWORD: root
+      ports:
+          - 3306:3306
+      networks:
+          - web-app-net
+      volumes:
+          - mysql-db-storage:/var/lib/mysql
+
+   redis:
+      image: redis:latest
+      ports:
+         - 6379:6379
+      networks:
+         - web-app-net
+      volumes:
+         - redis-inmemory-storage:/data
+
+   zookeeper:
+      image: bitnami/zookeeper:latest
+      ports:
+        - 2181:2181
+      environment:
+        - ALLOW_ANONYMOUS_LOGIN=yes
+      networks:
+        - web-app-net
+
+   kafka:
+      image: bitnami/kafka:latest
+      ports:
+        - 9092:9092
+      environment:
+        - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+        - ALLOW_PLAINTEXT_LISTENER=yes
+      depends_on:
+        - zookeeper
+      networks:
+        - web-app-net
+
+   webapp:
+      image: event-driven-microservice-starter:1.0
+      build:
+         context: .
+         #dockerfile: Dockerfile
+         dockerfile: Dockerfile-embedded
+      environment:
+         app.db.name: testDB
+         app.db.host: mysql-db
+         app.db.port: 3306
+         app.db.password: root
+         app.redis.host: redis
+         app.redis.port: 6379
+         app.zookeeper.host: zookeeper
+         app.zookeeper.port: 2181
+         app.kafka.host: kafka
+         app.kafka.port: 9092
+         management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
+      ports:
+         - 8080:8080
+      depends_on:
+         - mysql-db
+         - redis
+         - kafka
+      restart: on-failure
+      networks:
+         - web-app-net
+
+##End Of Scripts
