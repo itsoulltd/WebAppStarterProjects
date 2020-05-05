@@ -5,6 +5,7 @@ import com.infoworks.lab.beans.tasks.definition.Task;
 import com.infoworks.lab.beans.tasks.definition.TaskManager;
 import com.infoworks.lab.rest.models.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
+@PropertySource("classpath:application.properties")
 public class TaskQueueManager implements TaskManager {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
@@ -24,17 +26,7 @@ public class TaskQueueManager implements TaskManager {
         this.listener = listener;
     }
 
-    /*@Autowired
-    @Qualifier("topic.execute")
-    private String exeQueue;
-
-    @Autowired
-    @Qualifier("topic.abort")
-    private String abortQueue;*/
-
-    @KafkaListener(topics = {"${topic.execute}"}
-            , containerFactory = "kafkaListenerFactory"
-            , concurrency = "1-5")
+    @KafkaListener(topics = {"${topic.execute}"}, concurrency = "5")
     public void startlistener(@Payload String message) {
         // retrieve the message content
         String text = message;
@@ -83,9 +75,7 @@ public class TaskQueueManager implements TaskManager {
         }
     }
 
-    @KafkaListener(topics = {"${topic.execute}"}
-            , containerFactory = "kafkaListenerFactory"
-            , concurrency = "1-3")
+    @KafkaListener(topics = {"${topic.abort}"}, concurrency = "3")
     public void abortListener(@Payload String message) {
         // retrieve the message content
         String text = message;

@@ -1,22 +1,23 @@
 package com.infoworks.lab.controllers.jms;
 
 
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
+@PropertySource("classpath:application.properties")
 public class MessageListener {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     private static int retryCount = 0;
 
-    @KafkaListener(topics = {"${topic.test}"}
-            , containerFactory = "kafkaListenerFactory"
-            , concurrency = "1-5")
+    @KafkaListener(topics = {"${topic.test}"}, concurrency = "1")
     public void listener(@Payload String message) {
         // retrieve the message content
         String text = message;

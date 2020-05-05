@@ -1,23 +1,28 @@
 package com.infoworks.lab.webapp.config.kafka;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 @Configuration
 public class KafkaTopic {
 
+    @Autowired
+    Environment env;
+
     @Bean("topic.execute")
-    private String execute(){
-        return "topic.execute";
+    public String execute(){
+        return env.getProperty("topic.execute");
     }
 
     @Bean("topic.abort")
-    private String abort(){
-        return "topic.abort";
+    public String abort(){
+        return env.getProperty("topic.abort");
     }
 
     @Bean("topic.test")
-    private String test(){
-        return "topic.test";
+    public String test(){
+        return env.getProperty("topic.test");
     }
 }
