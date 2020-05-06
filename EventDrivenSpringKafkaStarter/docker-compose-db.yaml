@@ -8,7 +8,6 @@ networks:
 
 volumes:
    mysql-db-storage:
-   activemq-storage:
    redis-inmemory-storage:
 
 services:
@@ -49,6 +48,9 @@ services:
       environment:
         - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
         - ALLOW_PLAINTEXT_LISTENER=yes
+        #For Debug Only: Place Device-Current IP:
+        - KAFKA_ADVERTISED_LISTENERS= PLAINTEXT://192.168.0.18:9092
+        #
       depends_on:
         - zookeeper
       networks:
