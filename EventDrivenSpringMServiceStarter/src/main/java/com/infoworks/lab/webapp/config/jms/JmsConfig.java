@@ -92,4 +92,11 @@ public class JmsConfig {
         return factory;
     }
 
+    @Bean("simpleJmsTemplate")
+    public SimpleJmsTemplate simpleJmsTemplate(){
+        SimpleJmsTemplate template = new SimpleJmsTemplate(BROKER_URL);
+        template.createSession(BROKER_USERNAME, BROKER_PASSWORD);
+        return template;
+    }
+
 }
