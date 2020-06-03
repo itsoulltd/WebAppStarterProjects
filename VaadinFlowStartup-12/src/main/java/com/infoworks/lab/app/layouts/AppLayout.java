@@ -4,6 +4,7 @@ import com.infoworks.lab.app.components.ui.LiveLocation;
 import com.infoworks.lab.app.components.ui.PassengerList;
 import com.infoworks.lab.app.components.ui.Payment;
 import com.infoworks.lab.app.components.component.SideBarButton;
+import com.infoworks.lab.app.components.ui.RoutePath;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
@@ -13,9 +14,10 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.RouterLayout;
 
-
+@Push
 @StyleSheet("styles/dash_style.css")
 public class AppLayout extends Div implements RouterLayout {
 
@@ -126,19 +128,19 @@ public class AppLayout extends Div implements RouterLayout {
         paymentButton.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
             @Override
             public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                UI.getCurrent().navigate(Payment.ROUTE_NAME);
+                UI.getCurrent().navigate(RoutePath.PAYMENT_VIEW);
             }
         });
         passengerListButton.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
             @Override
             public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                UI.getCurrent().navigate(PassengerList.ROUTE_NAME);
+                UI.getCurrent().navigate(RoutePath.PASSENGERS_CRUD_VIEW);
             }
         });
         liveLocation.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
             @Override
             public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                UI.getCurrent().navigate(LiveLocation.ROUTE_NAME);
+                UI.getCurrent().navigate(RoutePath.LIVE_VIEW);
             }
         });
 

@@ -19,10 +19,9 @@ import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(value = "passengerList" , layout = AppLayout.class)
+@Route(value = RoutePath.PASSENGERS_CRUD_VIEW, layout = AppLayout.class)
 public class PassengerList extends MainContent {
 
-    public static final String ROUTE_NAME="passengerList";
     public PassengerList(){
         //Create DataSource:
         GridDataSource source = createDataSource(true);
