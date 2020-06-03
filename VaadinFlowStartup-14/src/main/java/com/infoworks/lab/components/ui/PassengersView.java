@@ -12,7 +12,7 @@ import com.infoworks.lab.config.DatabaseBootstrap;
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.ExecutorType;
-import com.infoworks.lab.layouts.DashboardLayout;
+import com.infoworks.lab.layouts.RootAppLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
@@ -20,7 +20,7 @@ import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.List;
 
-@Route(value = "passengers", layout = DashboardLayout.class)
+@Route(value = RoutePath.PASSENGERS_CRUD_VIEW, layout = RootAppLayout.class)
 public class PassengersView extends Composite<Div> {
 
     public PassengersView() {

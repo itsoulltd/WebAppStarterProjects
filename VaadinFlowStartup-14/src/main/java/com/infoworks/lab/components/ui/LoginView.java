@@ -40,7 +40,7 @@ public class LoginView extends VerticalLayout {
             public void onComponentEvent(AbstractLogin.LoginEvent loginEvent) {
                 new AuthRepository().login(loginEvent.getUsername() , loginEvent.getPassword(), (isSuccess, error) -> {
                     if(isSuccess){
-                        UI.getCurrent().navigate(ProfileView.class);
+                        UI.getCurrent().navigate(RoutePath.PROFILE_VIEW);
                     }else {
                         loginEvent.getSource().setError(true);
                     }
