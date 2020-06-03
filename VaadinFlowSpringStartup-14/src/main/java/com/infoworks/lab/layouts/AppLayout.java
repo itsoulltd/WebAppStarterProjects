@@ -4,6 +4,7 @@ import com.infoworks.lab.components.component.SideBarButton;
 import com.infoworks.lab.components.ui.LiveLocation;
 import com.infoworks.lab.components.ui.PassengerList;
 import com.infoworks.lab.components.ui.Payment;
+import com.infoworks.lab.components.ui.RoutePath;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
@@ -16,9 +17,11 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.RouterLayout;
 
+@Push
 @CssImport(value = "./styles/style.css", id = "style")
 @CssImport(value = "./styles/dash-style.css", id = "dash-style", include = "style")
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes, viewport-fit=cover")
@@ -131,19 +134,19 @@ public class AppLayout extends Div implements RouterLayout {
         paymentButton.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
             @Override
             public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                UI.getCurrent().navigate(Payment.ROUTE_NAME);
+                UI.getCurrent().navigate(RoutePath.PAYMENT_VIEW);
             }
         });
         passengerListButton.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
             @Override
             public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                UI.getCurrent().navigate(PassengerList.ROUTE_NAME);
+                UI.getCurrent().navigate(RoutePath.PASSENGERS_CRUD_VIEW);
             }
         });
         liveLocation.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
             @Override
             public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
-                UI.getCurrent().navigate(LiveLocation.ROUTE_NAME);
+                UI.getCurrent().navigate(RoutePath.LIVE_VIEW);
             }
         });
 
