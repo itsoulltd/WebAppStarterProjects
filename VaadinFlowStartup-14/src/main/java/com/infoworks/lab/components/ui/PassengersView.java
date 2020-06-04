@@ -13,6 +13,7 @@ import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.layouts.RootAppLayout;
+import com.infoworks.lab.layouts.RoutePath;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;

@@ -1,10 +1,6 @@
 package com.infoworks.lab.app.layouts;
 
-import com.infoworks.lab.app.components.ui.LiveLocation;
-import com.infoworks.lab.app.components.ui.PassengerList;
-import com.infoworks.lab.app.components.ui.Payment;
 import com.infoworks.lab.app.components.component.SideBarButton;
-import com.infoworks.lab.app.components.ui.RoutePath;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;

@@ -1,6 +1,7 @@
 package com.infoworks.lab.components.ui;
 
 import com.infoworks.lab.layouts.AppLayout;
+import com.infoworks.lab.layouts.RoutePath;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.Route;
 

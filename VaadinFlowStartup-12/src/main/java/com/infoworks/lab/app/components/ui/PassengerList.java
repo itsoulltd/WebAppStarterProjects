@@ -6,6 +6,7 @@ import com.infoworks.lab.app.config.DatabaseBootstrap;
 import com.infoworks.lab.app.entities.Gender;
 import com.infoworks.lab.app.entities.Passenger;
 import com.infoworks.lab.app.layouts.AppLayout;
+import com.infoworks.lab.app.layouts.RoutePath;
 import com.infoworks.lab.components.crud.Configurator;
 import com.infoworks.lab.components.crud.Crud;
 import com.infoworks.lab.components.crud.components.datasource.DefaultDataSource;

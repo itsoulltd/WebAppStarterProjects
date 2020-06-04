@@ -4,6 +4,8 @@ import java.util.function.BiConsumer;
 
 public class AuthRepository {
 
+    public static final String TOKEN = "TOKEN-KEY";
+
     public void login(String username , String password, BiConsumer<Boolean, String> consumer) {
         //TODO:
         if (username.equalsIgnoreCase("admin") && password.equalsIgnoreCase("admin")) {

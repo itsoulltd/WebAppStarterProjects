@@ -14,6 +14,7 @@ import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.layouts.AppLayout;
+import com.infoworks.lab.layouts.RoutePath;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.router.Route;
 

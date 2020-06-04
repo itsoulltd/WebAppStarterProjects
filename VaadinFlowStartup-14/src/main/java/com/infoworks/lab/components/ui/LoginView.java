@@ -1,6 +1,7 @@
 package com.infoworks.lab.components.ui;
 
 import com.infoworks.lab.domain.repository.AuthRepository;
+import com.infoworks.lab.layouts.RoutePath;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.AbstractLogin;

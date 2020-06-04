@@ -1,4 +1,4 @@
-package com.infoworks.lab.components.ui;
+package com.infoworks.lab.layouts;
 
 public class RoutePath {
     public static final String PASSENGERS_CRUD_VIEW = "passengers";
