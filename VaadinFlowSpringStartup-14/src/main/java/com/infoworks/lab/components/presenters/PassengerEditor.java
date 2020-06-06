@@ -42,6 +42,8 @@ public class PassengerEditor extends EmbeddedBeanEditor {
     protected Converter getValueConverter(Property prop) {
         if (prop.getKey().equals("sex")){
             return new GenderConverter();
+        }else if(prop.getKey().equals("active")) {
+            return null;
         }else{
             return super.getValueConverter(prop);
         }
