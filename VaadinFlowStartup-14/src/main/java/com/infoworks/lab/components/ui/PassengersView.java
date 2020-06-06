@@ -8,10 +8,14 @@ import com.infoworks.lab.components.crud.components.utils.EditorDisplayType;
 import com.infoworks.lab.components.db.source.JsqlDataSource;
 import com.infoworks.lab.components.db.source.SqlDataSource;
 import com.infoworks.lab.components.presenters.PassengerEditor;
+import com.infoworks.lab.components.rest.RestExecutor;
+import com.infoworks.lab.components.rest.source.RestDataSource;
 import com.infoworks.lab.config.DatabaseBootstrap;
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.jsql.DataSourceKey;
 import com.infoworks.lab.jsql.ExecutorType;
+import com.infoworks.lab.jsql.JsqlConfig;
 import com.infoworks.lab.layouts.RootAppLayout;
 import com.infoworks.lab.layouts.RoutePath;
 import com.vaadin.flow.component.Composite;
@@ -27,7 +31,7 @@ public class PassengersView extends Composite<Div> {
     public PassengersView() {
 
         //Create DataSource:
-        GridDataSource source = createDataSource(true);
+        GridDataSource source = createDataSource(ExecutorType.JPQL);
 
         Configurator configurator = new Configurator(Passenger.class)
                 .setDisplayType(EditorDisplayType.COMBINED)
@@ -40,19 +44,23 @@ public class PassengersView extends Composite<Div> {
         getContent().add(crud);
     }
 
-    private GridDataSource createDataSource(boolean inmemory){
-        if (inmemory){
+    private GridDataSource createDataSource(ExecutorType executorType){
+        if (executorType == ExecutorType.SQL){
+            //Fetching Data From Database:
+            //DatabaseBootstrap.createTables();
+            GridDataSource source = JsqlDataSource.createDataSource(SqlDataSource.class, executorType);
+            return source;
+        }else if(executorType == ExecutorType.REST) {
+            //Fetching Data From WebService:
+            GridDataSource source = JsqlDataSource.createDataSource(RestDataSource.class, executorType);
+            //Testing RestExecutor:
+            DataSourceKey sourceKey = JsqlConfig.createDataSourceKey("app.db");
+            ((RestDataSource) source).setExecutor(new RestExecutor(Passenger.class, sourceKey));
+            return source;
+        }else{
             //In-Memory DataSource:
             GridDataSource source = new DefaultDataSource();
             getPassengers().stream().forEach(passenger -> source.save(passenger));
-            return source;
-        }else{
-            //Fetching Data From Database:
-            DatabaseBootstrap.createTables();
-            GridDataSource source = JsqlDataSource.createDataSource(SqlDataSource.class, ExecutorType.SQL);
-            //Testing RestExecutor:
-            //DataSourceKey sourceKey = JsqlConfig.createDataSourceKey("app.db");
-            //((SqlDataSource) source).setExecutor(new RestExecutor(Passenger.class, sourceKey));
             return source;
         }
     }
@@ -62,23 +70,6 @@ public class PassengersView extends Composite<Div> {
         personList.add(new Passenger("Lucas", Gender.MALE, 68));
         personList.add(new Passenger("Peter", Gender.MALE, 38));
         personList.add(new Passenger("Jack", Gender.MALE, 28));
-        personList.add(new Passenger("Peter", Gender.MALE, 38));
-        personList.add(new Passenger("Samuel", Gender.MALE, 53));
-        personList.add(new Passenger("Jack", Gender.MALE, 28));
-        personList.add(new Passenger("Peter", Gender.MALE, 38));
-        personList.add(new Passenger("Samuel", Gender.MALE, 53));
-        personList.add(new Passenger("Anton", Gender.MALE, 37));
-        personList.add(new Passenger("Samuel", Gender.MALE, 53));
-        personList.add(new Passenger("Aaron", Gender.FEMALE, 18));
-        personList.add(new Passenger("Jack", Gender.MALE, 28));
-        personList.add(new Passenger("Peter", Gender.MALE, 38));
-        personList.add(new Passenger("Samuel", Gender.MALE, 53));
-        personList.add(new Passenger("Anton", Gender.MALE, 37));
-        personList.add(new Passenger("Samuel", Gender.MALE, 53));
-        personList.add(new Passenger("Jack", Gender.MALE, 28));
-        personList.add(new Passenger("Aaron", Gender.FEMALE, 18));
-        personList.add(new Passenger("Jack", Gender.MALE, 28));
-        personList.add(new Passenger("Peter", Gender.MALE, 38));
         personList.add(new Passenger("Samuel", Gender.MALE, 53));
         return personList;
     }

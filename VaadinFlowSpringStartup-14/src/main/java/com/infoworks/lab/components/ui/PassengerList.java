@@ -9,10 +9,14 @@ import com.infoworks.lab.components.crud.components.utils.EditorDisplayType;
 import com.infoworks.lab.components.db.source.JsqlDataSource;
 import com.infoworks.lab.components.db.source.SqlDataSource;
 import com.infoworks.lab.components.presenters.PassengerEditor;
+import com.infoworks.lab.components.rest.RestExecutor;
+import com.infoworks.lab.components.rest.source.RestDataSource;
 import com.infoworks.lab.config.DatabaseBootstrap;
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.jsql.DataSourceKey;
 import com.infoworks.lab.jsql.ExecutorType;
+import com.infoworks.lab.jsql.JsqlConfig;
 import com.infoworks.lab.layouts.AppLayout;
 import com.infoworks.lab.layouts.RoutePath;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -28,7 +32,7 @@ public class PassengerList extends MainContent {
 
     public PassengerList(){
         //Create DataSource:
-        GridDataSource source = createDataSource(true);
+        GridDataSource source = createDataSource(ExecutorType.JPQL);
 
         Configurator configurator = new Configurator(Passenger.class)
                 .setDisplayType(EditorDisplayType.EMBEDDED)
@@ -41,19 +45,23 @@ public class PassengerList extends MainContent {
         add(crud);
     }
 
-    private GridDataSource createDataSource(boolean inmemory){
-        if (inmemory){
+    private GridDataSource createDataSource(ExecutorType executorType){
+        if (executorType == ExecutorType.SQL){
+            //Fetching Data From Database:
+            //DatabaseBootstrap.createTables();
+            GridDataSource source = JsqlDataSource.createDataSource(SqlDataSource.class, executorType);
+            return source;
+        }else if(executorType == ExecutorType.REST) {
+            //Fetching Data From WebService:
+            GridDataSource source = JsqlDataSource.createDataSource(RestDataSource.class, executorType);
+            //Testing RestExecutor:
+            DataSourceKey sourceKey = JsqlConfig.createDataSourceKey("app.db");
+            ((RestDataSource) source).setExecutor(new RestExecutor(Passenger.class, sourceKey));
+            return source;
+        }else{
             //In-Memory DataSource:
             GridDataSource source = new DefaultDataSource();
             getPassengers().stream().forEach(passenger -> source.save(passenger));
-            return source;
-        }else{
-            //Fetching Data From Database:
-            DatabaseBootstrap.createTables();
-            GridDataSource source = JsqlDataSource.createDataSource(SqlDataSource.class, ExecutorType.SQL);
-            //Testing RestExecutor:
-            //DataSourceKey sourceKey = JsqlConfig.createDataSourceKey("app.db");
-            //((SqlDataSource) source).setExecutor(new RestExecutor(Passenger.class, sourceKey));
             return source;
         }
     }
