@@ -84,14 +84,14 @@ public class SimpleJmsTemplate implements AutoCloseable{
         }
     }
 
-    public Message receiveTextMessage(String destination, int timeout) throws JMSException{
+    public Message receive(String destination, int timeout) throws JMSException{
         // read a message from the queue destination
         createQueue(destination);
         MessageConsumer messageConsumer = messageConsumers.get(destination);
         return messageConsumer.receive(timeout);
     }
 
-    public void receiveTextMessage(String destination, Consumer<Message> consumer) throws JMSException{
+    public void subscribe(String destination, Consumer<Message> consumer) throws JMSException{
         // read a message from the queue destination
         createQueue(destination);
         MessageConsumer messageConsumer = messageConsumers.get(destination);
@@ -99,6 +99,13 @@ public class SimpleJmsTemplate implements AutoCloseable{
             if (consumer != null)
                 consumer.accept(message);
         });
+    }
+
+    public void unsubscribe(String destination) throws JMSException{
+        MessageConsumer messageConsumer = messageConsumers.remove(destination);
+        if (messageConsumer != null) {
+            messageConsumer.close();
+        }
     }
 
     public void convertAndSend(String destination, String text) throws JMSException{
