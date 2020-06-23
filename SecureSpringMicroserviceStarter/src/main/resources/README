@@ -1,0 +1,200 @@
+Tutorial that followed: https://www.thomasvitale.com/https-spring-boot-ssl-certificate/
+
+///////////////////////////////Some Quick Note////////////////////////////////////////
+
+Setting up HTTPS for Spring Boot requires two steps: getting an SSL certificate and configuring SSL in Spring Boot.
+Whether you're going to generate a self-signed certificate or you have already got one by a CA,
+I'll show you how to enable HTTPS in a Spring Boot application.
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+Setting up HTTPS for Spring Boot requires two steps:
+
+    Getting an SSL certificate;
+    Configuring SSL in Spring Boot.
+
+We can generate an SSL certificate ourselves (self-signed certificate). Its use is intended just for development and testing purposes.
+In production, we should use a certificate issued by a trusted Certificate Authority (CA).
+
+In either case, we're going to see how to enable HTTPS in a Spring Boot application. Examples will be shown both for Spring Boot 1 and Spring Boot 2.
+
+In this tutorial, we're going to:
+
+    1. Get an SSL certificate
+        1a. Generate a self-signed SSL certificate
+        1b. Use an existing SSL certificate
+    2. Enable HTTPS in Spring Boot
+    3. Redirect HTTP requests to HTTPS
+    4. Distribute the SSL certificate to clients.
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+1. Get an SSL certificate
+If you don't already have a certificate, follow the step 1a. If you have already got an SSL certificate, you can follow the step 1b.
+
+Throughout this tutorial, I'll use the following technologies and tools:
+
+    Java JDK 8
+    Spring Boot 2.2.2 and Spring Boot 1.5.22
+    keytool
+
+Keytool is a certificate management utility provided together with the JDK, so if you have the JDK installed,
+you should already have keytool available. To check it, try running the command keytool --help from your Terminal prompt.
+Note that if you are on Windows, you might need to launch it from the \bin folder.
+For more information about this utility, you can read the official documentation.
+
+1a.Generate a self-signed SSL certificate
+
+The two most common formats used for keystores are JKS, a proprietary format specific for Java, and PKCS12, an industry-standard format.
+JKS used to be the default choice, but now Oracle recommends to adopt the PKCS12 format.
+We're going to see how to use both.
+
+Let's open our Terminal prompt and write the following command to create a JKS keystore:
+~>$ keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -keystore cert.jks -validity 3650 -storepass password
+
+To create a PKCS12 keystore, and we should, the command is the following:
+~>$ keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore cert.p12 -validity 3650 -storepass password
+
+        Let's have a closer look at the command we just run:
+
+        genkeypair: generates a key pair;
+        alias: the alias name for the item we are generating;
+        keyalg: the cryptographic algorithm to generate the key pair;
+        keysize: the size of the key. We have used 2048 bits, but 4096 would be a better choice for production;
+        storetype: the type of keystore;
+        keystore: the name of the keystore;
+        validity: validity number of days;
+        storepass: a password for the keystore.
+
+Verify the keystore content
+
+To check the content of the keystore following the JKS format, we can use keytool again:
+~>$ keytool -list -v -keystore keystore.jks
+
+To test the content of a keystore following the PKCS12 format:
+~>$ keytool -list -v -storetype pkcs12 -keystore keystore.p12
+
+1b. Use an existing SSL certificate
+
+In case we have already got an SSL certificate,
+for example, one issued by Let's Encrypt,
+we can import it into a keystore and use it to enable HTTPS in a Spring Boot application.
+
+We can use keytool to import our certificate in a new keystore.
+~>$ keytool -import -alias tomcat -file myCertificate.crt -keystore keystore.p12 -storepass password
+
+To get more information about the keystore and its format, please refer to the previous section.
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+2. Enable HTTPS in Spring Boot
+Whether our keystore contains a self-signed certificate or one issued by a trusted Certificate Authority,
+we can now set up Spring Boot to accept requests over HTTPS instead of HTTP by using that certificate.
+
+Enable HTTPS in Spring Boot 2
+To enable HTTPS for our Spring Boot 2 application,
+let's open our application.properties file (or application.properties) and define the following properties:
+
+        server.port=8443
+        server.ssl.key-store-type=PKCS12
+        server.ssl.key-store=classpath:keystore.p12
+        server.ssl.key-store-password=password
+        ##Deprecated in Spring-Boot-2
+        #security.require-ssl=true
+
+Configure Spring Security to require HTTPS requests
+When using Spring Security, we can configure it to require automatically block any request coming from a non-secure HTTP channel.
+To achieve the same result in a Spring Boot 2 application,
+we need to extend the WebSecurityConfigurerAdapter class,
+since the security.require-ssl property has been deprecated.
+
+        @EnableWebSecurity
+        public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+            @Override
+            protected void configure(HttpSecurity http) throws Exception {
+                http
+                    .requiresChannel()
+                    .anyRequest()
+                    .requiresSecure();
+            }
+        }
+
+Congratulations! You have successfully enabled HTTPS in your Spring Boot application!
+Give it a try: run the application, open your browser and check if everything works as it should.
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+3. Redirect HTTP requests to HTTPS
+Now that we have enabled HTTPS in our Spring Boot application and blocked any HTTP request,
+we want to redirect all traffic to HTTPS.
+
+Spring allows defining just one network connector in application.properties (or application.yml).
+Since we have used it for HTTPS, we have to set the HTTP connector programmatically for our Tomcat web server.
+
+        @Configuration
+        public class ServerConfig {
+
+            @Bean
+            public ServletWebServerFactory servletContainer() {
+                TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
+                    @Override
+                    protected void postProcessContext(Context context) {
+                        SecurityConstraint securityConstraint = new SecurityConstraint();
+                        securityConstraint.setUserConstraint("CONFIDENTIAL");
+                        SecurityCollection collection = new SecurityCollection();
+                        collection.addPattern("/*");
+                        securityConstraint.addCollection(collection);
+                        context.addConstraint(securityConstraint);
+                    }
+                };
+                tomcat.addAdditionalTomcatConnectors(getHttpConnector());
+                return tomcat;
+            }
+
+            private Connector getHttpConnector() {
+                Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+                connector.setScheme("http");
+                connector.setPort(8080);
+                connector.setSecure(false);
+                connector.setRedirectPort(8443);
+                return connector;
+            }
+        }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+4. Distribute the SSL certificate to clients
+
+When using a self-signed SSL certificate, our browser won't trust our application and will warn the user that it's not secure.
+And that'll be the same with any other client.
+
+It's possible to make a client trust our application by providing it with our certificate.
+
+Extract an SSL certificate from a keystore
+We have stored our certificate inside a keystore, so we need to extract it.
+Again, keytool supports us very well:
+~>$ keytool -export -keystore keystore.jks -alias tomcat -file myCertificate.crt
+
+The keystore can be in JKS or PKCS12 format.
+During the execution of this command, keytool will ask us for the keystore password that we set at the beginning of this tutorial (the extremely secure password).
+Now we can import our certificate into our client. Later, we'll see how to import the certificate into the JRE in case we need it to trust our application.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Make a browser trust an SSL certificate
+
+When using a keystore in the industry-standard PKCS12 format,
+we should be able to use it directly without extracting the certificate.
+
+I suggest you check the official guide on how to import a PKCS12 file into your specific client.
+On macOS, for example, we can directly import a certificate into the Keychain Access
+(which browsers like Safari, Chrome and Opera rely on to manage certificates).
+
+If deploying the application on localhost,
+we may need to do a further step from our browser: enabling insecure connections with localhost.
+
+In Firefox, we are shown an alert message.
+To access the application, we need to explicitly define an exception for it and make Firefox trust the certificate.
+
+In Chrome, we can write the following URL in the search bar: chrome://flags/#allow-insecure-localhost and activate the relative option.

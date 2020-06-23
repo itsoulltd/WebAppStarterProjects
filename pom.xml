@@ -11,6 +11,7 @@
 
     <modules>
         <module>SpringMicroserviceStarter</module>
+        <module>SecureSpringMicroserviceStarter</module>
         <module>EventDrivenSpringMServiceStarter</module>
         <module>EventDrivenSpringKafkaStarter</module>
         <module>VaadinFlowSpringStartup-12</module>
