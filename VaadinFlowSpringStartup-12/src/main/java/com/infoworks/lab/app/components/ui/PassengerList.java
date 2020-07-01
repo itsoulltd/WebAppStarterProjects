@@ -32,7 +32,7 @@ public class PassengerList extends MainContent {
         GridDataSource source = createDataSource(ExecutorType.JPQL);
 
         Configurator configurator = new Configurator(Passenger.class)
-                .setDisplayType(EditorDisplayType.EMBEDDED)
+                .setDisplayType(EditorDisplayType.COMBINED)
                 .setDataSource(source)
                 .setEditor(PassengerEditor.class)
                 .setDialog(PassengerEditor.class)

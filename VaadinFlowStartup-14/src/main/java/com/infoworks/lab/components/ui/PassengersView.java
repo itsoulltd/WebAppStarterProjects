@@ -34,7 +34,7 @@ public class PassengersView extends Composite<Div> {
         GridDataSource source = createDataSource(ExecutorType.JPQL);
 
         Configurator configurator = new Configurator(Passenger.class)
-                .setDisplayType(EditorDisplayType.COMBINED)
+                .setDisplayType(EditorDisplayType.DIALOG)
                 .setDataSource(source)
                 .setEditor(PassengerEditor.class)
                 .setDialog(PassengerEditor.class)
