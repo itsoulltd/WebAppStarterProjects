@@ -10,7 +10,6 @@ import com.infoworks.lab.components.db.source.SqlDataSource;
 import com.infoworks.lab.components.presenters.PassengerEditor;
 import com.infoworks.lab.components.rest.RestExecutor;
 import com.infoworks.lab.components.rest.source.RestDataSource;
-import com.infoworks.lab.config.DatabaseBootstrap;
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.DataSourceKey;
@@ -18,6 +17,7 @@ import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.jsql.JsqlConfig;
 import com.infoworks.lab.layouts.RootAppLayout;
 import com.infoworks.lab.layouts.RoutePath;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
@@ -29,7 +29,17 @@ import java.util.List;
 public class PassengersView extends Composite<Div> {
 
     public PassengersView() {
+        super();
+    }
 
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        System.out.println("onAttach");
+        //
+        if (getContent().getChildren().count() > 0){
+            getContent().removeAll();
+        }
         //Create DataSource:
         GridDataSource source = createDataSource(ExecutorType.JPQL);
 

@@ -2,7 +2,6 @@ package com.infoworks.lab.app.components.ui;
 
 
 import com.infoworks.lab.app.components.presenters.PassengerEditor;
-import com.infoworks.lab.app.config.DatabaseBootstrap;
 import com.infoworks.lab.app.entities.Gender;
 import com.infoworks.lab.app.entities.Passenger;
 import com.infoworks.lab.app.layouts.AppLayout;
@@ -19,6 +18,7 @@ import com.infoworks.lab.components.rest.source.RestDataSource;
 import com.infoworks.lab.jsql.DataSourceKey;
 import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.jsql.JsqlConfig;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
@@ -28,6 +28,17 @@ import java.util.List;
 public class PassengerList extends MainContent {
 
     public PassengerList(){
+        super();
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        System.out.println("onAttach");
+        //
+        if (getChildren().count() > 0){
+            removeAll();
+        }
         //Create DataSource:
         GridDataSource source = createDataSource(ExecutorType.JPQL);
 
