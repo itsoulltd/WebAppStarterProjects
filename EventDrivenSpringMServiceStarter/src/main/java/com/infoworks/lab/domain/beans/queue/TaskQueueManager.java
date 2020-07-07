@@ -2,7 +2,7 @@ package com.infoworks.lab.domain.beans.queue;
 
 import com.infoworks.lab.beans.tasks.definition.QueuedTaskLifecycleListener;
 import com.infoworks.lab.beans.tasks.definition.Task;
-import com.infoworks.lab.beans.tasks.definition.TaskManager;
+import com.infoworks.lab.beans.tasks.impl.AbstractQueueManager;
 import com.infoworks.lab.rest.models.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-public class TaskQueueManager implements TaskManager {
+public class TaskQueueManager extends AbstractQueueManager {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private QueuedTaskLifecycleListener listener;
@@ -50,33 +50,6 @@ public class TaskQueueManager implements TaskManager {
         }
     }
 
-    @Override @SuppressWarnings("Duplicates")
-    public void start(Task task, Message message) {
-        if (task != null){
-            if (getListener() != null)
-                getListener().before(task, State.Forward);
-            //Call Execute:
-            boolean mustAbort = false;
-            Message msg = null;
-            try {
-                msg = task.execute(message);
-            } catch (RuntimeException e) {
-                mustAbort = true;
-                msg = new Message();
-                msg.setPayload(String.format("{\"error\":\"%s\", \"status\":500}", e.getMessage()));
-            }
-            //End Execute:
-            if (getListener() != null) {
-                if (mustAbort) {
-                    getListener().abort(task, msg);
-                } else {
-                    getListener().after(task, State.Forward);
-                    getListener().finished(msg);
-                }
-            }
-        }
-    }
-
     @JmsListener(destination = "abortQueue", concurrency = "1-3")
     public void abortListener(javax.jms.Message message) throws JMSException {
         // retrieve the message content
@@ -106,21 +79,6 @@ public class TaskQueueManager implements TaskManager {
     }
 
     @Override
-    public void stop(Task task, Message message) {
-        if (task != null){
-            if (getListener() != null)
-                getListener().before(task, State.Backward);
-            //Call Execute:
-            Message msg = task.abort(message);
-            //End Execute:
-            if (getListener() != null) {
-                getListener().after(task, State.Backward);
-                getListener().failed(msg);
-            }
-        }
-    }
-
-    @Override
     public void terminateRunningTasks(long l, TimeUnit timeUnit) {
         //TODO:
         //send termination to jms-template for stopping current processing or abandon all active task from
@@ -135,6 +93,11 @@ public class TaskQueueManager implements TaskManager {
 
     public QueuedTaskLifecycleListener getListener() {
         return listener;
+    }
+
+    @Override
+    public void setListener(QueuedTaskLifecycleListener queuedTaskLifecycleListener) {
+        this.listener = queuedTaskLifecycleListener;
     }
 
 }

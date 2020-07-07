@@ -100,17 +100,17 @@
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>http-rest-client</artifactId>
-            <version>v1.3-RELEASE</version>
+            <version>v1.10-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>jsql-editor-components</artifactId>
-            <version>v1.3-RELEASE</version>
+            <version>v1.10-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>jjwt-web-token</artifactId>
-            <version>v1.3-RELEASE</version>
+            <version>v1.10-RELEASE</version>
         </dependency>
         <!-- -->
         <dependency>
