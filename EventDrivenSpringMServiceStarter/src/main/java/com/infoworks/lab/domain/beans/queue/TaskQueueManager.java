@@ -20,7 +20,7 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
     }
 
     @JmsListener(destination = "exeQueue", concurrency = "1-5")
-    public void startlistener(javax.jms.Message message) throws JMSException {
+    public void startListener(javax.jms.Message message) throws JMSException {
         // retrieve the message content
         TextMessage textMessage = (TextMessage) message;
         String text = textMessage.getText();

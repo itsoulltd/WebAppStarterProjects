@@ -24,7 +24,7 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
     }
 
     @KafkaListener(topics = {"${topic.execute}"}, concurrency = "5")
-    public void startlistener(@Payload String message) {
+    public void startListener(@Payload String message) {
         // retrieve the message content
         String text = message;
         if (handleTextOnStart(text)){
