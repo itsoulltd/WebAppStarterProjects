@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = RoutePath.PASSENGERS_CRUD_VIEW , layout = AppLayout.class)
-@CssImport(value = "./styles/view-styles.css", id = "view-styles")
-@CssImport(value = "./styles/shared-styles.css", include = "view-styles")
+
 public class PassengerList extends MainContent {
 
     public PassengerList(){

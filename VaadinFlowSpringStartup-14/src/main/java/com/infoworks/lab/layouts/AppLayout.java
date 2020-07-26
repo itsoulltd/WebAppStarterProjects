@@ -19,7 +19,7 @@ import com.vaadin.flow.router.RouterLayout;
 
 @Push
 @CssImport(value = "./styles/style.css", id = "style")
-@CssImport(value = "./styles/dash-style.css", id = "dash-style", include = "style")
+@CssImport(value = "./styles/dash-style.css")
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes, viewport-fit=cover")
 public class AppLayout extends Div implements RouterLayout {
 
