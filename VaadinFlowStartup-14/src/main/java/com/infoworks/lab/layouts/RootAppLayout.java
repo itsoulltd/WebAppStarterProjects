@@ -1,6 +1,9 @@
 package com.infoworks.lab.layouts;
 
-import com.infoworks.lab.components.ui.*;
+import com.infoworks.lab.components.component.VImage;
+import com.infoworks.lab.components.ui.PassengersView;
+import com.infoworks.lab.components.ui.ProfileView;
+import com.infoworks.lab.components.ui.TrendsView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -9,13 +12,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
@@ -30,11 +31,11 @@ import java.util.Map;
 @Viewport("width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, viewport-fit=cover")
 public class RootAppLayout extends AppLayout {
 
-    private static final String LOGO_URL = "https://i.imgur.com/GPpnszs.png";
+    private static final String LOGO_URL = "logo.png";
     private Map<Tab, Component> tab2Workspace = new HashMap<>();
 
     public RootAppLayout() {
-        Image logo = new Image(LOGO_URL, "Vaadin Logo");
+        Image logo = VImage.loadFromImages(LOGO_URL, "Vaadin Logo");
         logo.setHeight("44px");
         addToNavbar(new DrawerToggle(), logo);
 
