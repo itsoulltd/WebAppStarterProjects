@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("/passenger")
 public class PassengerController {
 
-    @Autowired
     private SimpleDataSource<String, Passenger> dataSource;
+
+    @Autowired
+    public PassengerController(SimpleDataSource<String, Passenger> dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @GetMapping("/rowCount")
     public ItemCount getRowCount(){
