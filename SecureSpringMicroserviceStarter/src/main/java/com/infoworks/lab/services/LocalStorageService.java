@@ -3,7 +3,6 @@ package com.infoworks.lab.services;
 import com.it.soul.lab.data.base.DataStorage;
 import com.it.soul.lab.data.simple.SimpleDataSource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
