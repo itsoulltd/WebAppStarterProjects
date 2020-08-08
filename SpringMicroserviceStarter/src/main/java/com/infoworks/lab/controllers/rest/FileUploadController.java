@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,17 +35,16 @@ public class FileUploadController {
     @GetMapping
     public ResponseEntity<List<String>> query(@RequestParam("limit") Integer limit
             , @RequestParam("offset") Integer offset){
-        List<MultipartFile> files = Arrays.asList(storageService.readSynch(offset, limit));
-        List<String> names = files.stream().map(file -> file.getOriginalFilename()).collect(Collectors.toList());
+        List<String> names = Arrays.asList(storageService.readKeys());
         return ResponseEntity.ok(names);
     }
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadContent(
             @RequestParam("content") MultipartFile content,
-            RedirectAttributes redirectAttributes){
+            RedirectAttributes redirectAttributes) throws IOException {
         //Store-InMemory First:
-        storageService.put(content.getOriginalFilename(), content);
+        storageService.put(content.getOriginalFilename(), content.getInputStream());
         //storageService.save(false);
         return ResponseEntity.ok("Content Received: " + content.getOriginalFilename());
     }

@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Service("local")
-public class LocalStorageService extends SimpleDataSource<String, MultipartFile> implements DataStorage, AutoCloseable {
+public class LocalStorageService extends SimpleDataSource<String, InputStream> implements DataStorage, AutoCloseable {
 
     private String uuid;
     @Override
@@ -36,8 +36,12 @@ public class LocalStorageService extends SimpleDataSource<String, MultipartFile>
         service.shutdown();
     }
 
+    public String[] readKeys(){
+        return getInMemoryStorage().keySet().toArray(new String[0]);
+    }
+
     @Override
-    public void put(String s, MultipartFile multipartFile) {
+    public void put(String s, InputStream multipartFile) {
         super.put(s, multipartFile);
         fileSavedStatusMap.put(s, false);
     }
@@ -56,19 +60,19 @@ public class LocalStorageService extends SimpleDataSource<String, MultipartFile>
         List<String> notSavedYet = getUnsavedFiles();
         notSavedYet.forEach(fileName -> {
             try {
-                MultipartFile file = read(fileName);
-                fileSavedStatusMap.put(fileName, saveFile(file));
+                InputStream file = read(fileName);
+                fileSavedStatusMap.put(fileName, saveFile(file, fileName));
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
         });
     }
 
-    protected boolean saveFile(MultipartFile file) throws IOException {
-        InputStream in = file.getInputStream();
+    protected boolean saveFile(InputStream file, String name) throws IOException {
+        InputStream in = file;
         File currDir = new File(".");
         String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + file.getOriginalFilename();
+        String fileLocation = path.substring(0, path.length() - 1) + name;
         FileOutputStream f = new FileOutputStream(fileLocation);
         int ch = 0;
         while ((ch = in.read()) != -1) {
