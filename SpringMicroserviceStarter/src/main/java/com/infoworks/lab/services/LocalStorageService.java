@@ -45,6 +45,12 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
         fileSavedStatusMap.put(s, false);
     }
 
+    @Override
+    public InputStream remove(String s) {
+        fileSavedStatusMap.remove(s);
+        return super.remove(s);
+    }
+
     protected synchronized List<String> getUnsavedFiles(){
         final List<String> notSavedYet = fileSavedStatusMap.entrySet()
                 .stream()
