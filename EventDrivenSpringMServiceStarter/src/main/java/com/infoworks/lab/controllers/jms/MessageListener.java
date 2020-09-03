@@ -1,5 +1,6 @@
 package com.infoworks.lab.controllers.jms;
 
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -10,13 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
+@PropertySource("classpath:jms.properties")
 public class MessageListener {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     private static int retryCount = 0;
 
-    @JmsListener(destination = "testQueue")
+    @JmsListener(destination = "${jms.queue.test}")
     public void listener(Message message) throws JMSException {
         // retrieve the message content
         TextMessage textMessage = (TextMessage) message;

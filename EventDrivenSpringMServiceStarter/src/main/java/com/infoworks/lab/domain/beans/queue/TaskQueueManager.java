@@ -19,7 +19,7 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
         super(listener);
     }
 
-    @JmsListener(destination = "exeQueue", concurrency = "1-5")
+    @JmsListener(destination = "${jms.queue.exe}", concurrency = "1-5")
     public void startListener(javax.jms.Message message) throws JMSException {
         // retrieve the message content
         TextMessage textMessage = (TextMessage) message;
@@ -30,7 +30,7 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
         }
     }
 
-    @JmsListener(destination = "abortQueue", concurrency = "1-3")
+    @JmsListener(destination = "${jms.queue.abort}", concurrency = "1-3")
     public void abortListener(javax.jms.Message message) throws JMSException {
         // retrieve the message content
         TextMessage textMessage = (TextMessage) message;

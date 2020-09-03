@@ -9,32 +9,28 @@
 			"name": "EventDrivenSpringMServiceStarter",
 			"item": [
 				{
-					"name": "http://localhost:8080/passenger?key=rokomari",
+					"name": "http://localhost:8080/api/message/{message}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/passenger?key=Rokomari",
+							"raw": "http://localhost:8080/api/message/jms hi there!",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"passenger"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "Rokomari"
-								}
+								"api",
+								"message",
+								"jms hi there!"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8091/api/preference/optMode",
+					"name": "http://localhost:8080/api/queue/task/{message}",
 					"request": {
 						"method": "GET",
 						"header": [],
