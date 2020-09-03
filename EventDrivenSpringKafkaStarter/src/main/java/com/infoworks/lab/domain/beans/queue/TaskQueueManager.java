@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 @Component
 @PropertySource("classpath:application.properties")
+@PropertySource("classpath:kafka.properties")
 public class TaskQueueManager extends AbstractTaskQueueManager {
 
     private static final Logger logger = Logger.getLogger("TaskQueueManager");
