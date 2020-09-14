@@ -10,6 +10,7 @@ import com.infoworks.lab.components.db.source.SqlDataSource;
 import com.infoworks.lab.components.presenters.PassengerEditor;
 import com.infoworks.lab.components.rest.RestExecutor;
 import com.infoworks.lab.components.rest.source.RestDataSource;
+import com.infoworks.lab.config.DatabaseBootstrap;
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.DataSourceKey;
@@ -44,7 +45,7 @@ public class PassengersView extends Composite<Div> {
         GridDataSource source = createDataSource(ExecutorType.JPQL);
 
         Configurator configurator = new Configurator(Passenger.class)
-                .setDisplayType(EditorDisplayType.DIALOG)
+                .setDisplayType(EditorDisplayType.EMBEDDED)
                 .setDataSource(source)
                 .setEditor(PassengerEditor.class)
                 .setDialog(PassengerEditor.class)
