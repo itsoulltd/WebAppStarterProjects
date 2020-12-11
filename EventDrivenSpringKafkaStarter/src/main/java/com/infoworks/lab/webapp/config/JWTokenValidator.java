@@ -1,5 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.lab.jjwt.JWTHeader;
 import com.infoworks.lab.jjwt.JWTValidator;
 import com.infoworks.lab.jjwt.TokenValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +19,43 @@ public class JWTokenValidator extends JWTValidator {
     @Autowired
     private HttpServletRequest request;
 
-    @Override
-    public Boolean isValid(String token, String... args) {
-        if (token == null || token.isEmpty())
-            token = TokenValidation.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
-        return super.isValid(token, args);
-    }
-
-    @Override
-    public String getIssuer(String token, String... args) {
-        if (token == null || token.isEmpty())
-            token = TokenValidation.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
-        return super.getIssuer(token, args);
-    }
-
     protected String getHeaderValue(String key){
+        if (request == null) return "";
         String value = request.getHeader(key);
         if (value == null){
             value = request.getParameter(key);
         }
         return value;
+    }
+
+    @Override
+    protected String getSecret(JWTHeader header, String... args) throws Exception {
+        //TODO:
+        return "";
+    }
+
+    @Override
+    public String getUserID(String token, String... args) {
+        if (token == null || token.isEmpty()){
+            token = TokenValidation.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
+        }
+        return super.getUserID(token, args);
+    }
+
+    @Override
+    public String getIssuer(String token, String... args) {
+        if (token == null || token.isEmpty()){
+            token = TokenValidation.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
+        }
+        return super.getIssuer(token, args);
+    }
+
+    @Override
+    public String getTenantID(String token, String... args) {
+        if (token == null || token.isEmpty()){
+            token = TokenValidation.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
+        }
+        return super.getTenantID(token, args);
     }
 
 }
