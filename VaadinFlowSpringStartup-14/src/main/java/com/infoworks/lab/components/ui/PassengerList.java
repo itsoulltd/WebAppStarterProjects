@@ -65,7 +65,7 @@ public class PassengerList extends MainContent {
             //Fetching Data From WebService:
             GridDataSource source = JsqlDataSource.createDataSource(RestDataSource.class, executorType);
             //Testing RestExecutor:
-            DataSourceKey sourceKey = JsqlConfig.createDataSourceKey("app.db");
+            DataSourceKey sourceKey = DataSourceKey.createDataSourceKey("app.db");
             ((RestDataSource) source).setExecutor(new RestExecutor(Passenger.class, sourceKey));
             return source;
         }else{
