@@ -15,7 +15,7 @@ services:
       image: mysql:8.0.13
       environment:
           MYSQL_DATABASE: testDB
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: root@123
       ports:
           - 3306:3306
       networks:

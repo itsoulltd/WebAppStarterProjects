@@ -19,30 +19,10 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class BeanConfig {
 
-    @Bean("HelloBean")
-    public String getHello(){
-        return "Hi Spring Hello";
-    }
-
-    @Bean
-    JsqlConfig getJsqlConfig(){
-        return new JsqlConfig();
-    }
-
-    @Autowired
     private Environment env;
 
-    @Bean("JDBConnectionPool")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
-    SQLExecutor executor() {
-        SQLExecutor exe = (SQLExecutor) getJsqlConfig().create(ExecutorType.SQL, appDBNameKey());
-        System.out.println("Created DB Connections.");
-        return exe;
-    }
-
-    @Bean("AppDBNameKey")
-    String appDBNameKey(){
-        return env.getProperty("app.db.name");
+    public BeanConfig(@Autowired Environment env) {
+        this.env = env;
     }
 
     @Bean
