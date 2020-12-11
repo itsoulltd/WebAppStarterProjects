@@ -1,6 +1,5 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.jjwt.JWTValidator;
 import com.infoworks.lab.jjwt.TokenValidation;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +16,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 @Configuration
-@RequestFilter(openAccess = {"/*"}, secret = "****")
+@RequestFilter(openAccess = {"/*","/actuator/health","/actuator/prometheus"})
 public class FireWall extends GenericFilterBean {
 
     private static final String TOKEN_PREFIX = "Bearer ";
@@ -25,7 +24,7 @@ public class FireWall extends GenericFilterBean {
     private Class validatorType;
 
     public FireWall(){
-        this(JWTValidator.class);
+        this(JWTokenValidator.class);
     }
 
     public <T extends TokenValidation> FireWall(Class<T> type){
@@ -56,24 +55,16 @@ public class FireWall extends GenericFilterBean {
         }
     }
 
-    protected String appSecret(){
-        RequestFilter annotation = getClass().getAnnotation(RequestFilter.class);
-        return (annotation != null) ? annotation.secret() : null;
-    }
-
     protected boolean isTokenValid(String token) {
         if (token == null) return false;
         token = TokenValidation.parseToken(token, TOKEN_PREFIX);
-        if (appSecret() != null){
-            String secret = appSecret();
-            try {
-                TokenValidation validator = TokenValidation.createValidator(validatorType);
-                return validator.isValid(token, secret);
-            } catch (IllegalAccessException e) {
-                log.info(e.getMessage());
-            } catch (InstantiationException e) {
-                log.info(e.getMessage());
-            }
+        try {
+            TokenValidation validator = TokenValidation.createValidator(validatorType);
+            return validator.isValid(token);
+        } catch (IllegalAccessException e) {
+            log.info(e.getMessage());
+        } catch (InstantiationException e) {
+            log.info(e.getMessage());
         }
         return false;
     }
