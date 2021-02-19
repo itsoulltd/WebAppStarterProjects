@@ -16,7 +16,9 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 @Configuration
-@RequestFilter(openAccess = {"/*","/actuator/health","/actuator/prometheus"})
+@RequestFilter(openAccess = {"/*","/actuator/health","/actuator/prometheus"
+        ,"/v2/*","/swagger-ui.html","/swagger-ui.html/*","/webjars/springfox-swagger-ui/*"
+        , "/swagger-resources/*"})
 public class FireWall extends GenericFilterBean {
 
     private static final String TOKEN_PREFIX = "Bearer ";
