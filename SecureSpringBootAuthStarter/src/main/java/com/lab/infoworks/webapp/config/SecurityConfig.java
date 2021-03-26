@@ -19,6 +19,12 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private UserRepository userRepository;
+
+    public SecurityConfig(@Autowired UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
@@ -69,32 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers(URL_WHITELIST);
     }
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService(userRepository)).passwordEncoder(encoder());
     }
-
-    /*@Bean
-    AuthenticationManager customAuthenticationManager(UserDetailsService userDetailsService, PasswordEncoder encoder) {
-        return authentication -> {
-            String username = authentication.getPrincipal() + "";
-            String password = authentication.getCredentials() + "";
-
-            UserDetails user = userDetailsService.loadUserByUsername(username);
-
-            if (!encoder.matches(password, user.getPassword())) {
-                throw new BadCredentialsException("Bad credentials");
-            }
-
-            if (!user.isEnabled()) {
-                throw new DisabledException("User account is not active");
-            }
-
-            return new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
-        };
-    }*/
 
 }
