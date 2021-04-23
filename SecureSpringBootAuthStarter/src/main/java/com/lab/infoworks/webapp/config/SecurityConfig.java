@@ -42,10 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             , "/swagger-ui.html/**"
             , "/webjars/springfox-swagger-ui/**"
             , "/swagger-resources/**"
+            , "/swagger-resources/configuration/**"
             , "/actuator/health"
             , "/actuator/prometheus"
-            , "/configuration/ui"
-            , "/configuration/security"
     };
 
     @Override
