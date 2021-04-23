@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,6 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/new/account")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ADMIN')")
     public ResponseEntity<String> newAccount(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token
             , @ApiIgnore @AuthenticationPrincipal UserDetails principal
             , @Valid @RequestBody NewAccountRequest account){
@@ -79,7 +81,7 @@ public class AuthController {
         String kid = JWTokenValidator.getRandomSecretKey();
         String secret = JWTokenValidator.getSecretKeyMap().get(kid);
         //TODO:
-        String userRole = request.getUsername().startsWith("ADMIN") ? "ROLE_ADMIN" : "ROLE_USER";
+        String userRole = request.getUsername().startsWith("ADMIN") ? "ROLE_ADMIN, ADMIN" : "ROLE_USER";
         //
         JWTPayload payload = new JWTPayload().setSub(request.getUsername())
                 .setIss(request.getUsername())
