@@ -70,7 +70,7 @@ public class AuthorizationFilter extends GenericFilterBean {
                             : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
                     //Here We Go!
                     User principal = new User(payload.getSub(), "", authorities);
-                    return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+                    return new UsernamePasswordAuthenticationToken(principal, token, authorities); //Passing authorities here is important for @EnableGlobalMethodSecurity(...)
                 }
             } catch (RuntimeException e) {
                 LOG.error(e.getMessage(), e);
