@@ -1,6 +1,5 @@
 package com.lab.infoworks.webapp.config;
 
-import com.infoworks.lab.jjwt.JWTHeader;
 import com.infoworks.lab.jjwt.JWTPayload;
 import com.infoworks.lab.jjwt.JWTValidator;
 import com.infoworks.lab.jjwt.TokenValidator;
@@ -56,10 +55,8 @@ public class AuthorizationFilter extends GenericFilterBean {
         if(token != null){
             token = token.replace(TOKEN_PREFIX.trim(),"").trim();
             try {
-                JWTHeader header = TokenValidator.parseHeader(token, JWTHeader.class);
-                String secret = JWTokenValidator.getSecretKeyMap().get(header.getKid());
                 JWTValidator validator = new JWTokenValidator(request);
-                boolean isTrue = validator.isValid(token, secret);
+                boolean isTrue = validator.isValid(token);
                 if(isTrue) {
                     JWTPayload payload = TokenValidator.parsePayload(token, JWTPayload.class);
                     Object authoritiesClaim = (payload.getData() == null)
