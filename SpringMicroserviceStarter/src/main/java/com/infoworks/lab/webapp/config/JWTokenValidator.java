@@ -16,8 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode=ScopedProxyMode.TARGET_CLASS)
 public class JWTokenValidator extends JWTValidator {
 
-    @Autowired
     private HttpServletRequest request;
+
+    public JWTokenValidator(@Autowired HttpServletRequest request) {
+        this.request = request;
+    }
 
     protected String getHeaderValue(String key){
         if (request == null) return "";

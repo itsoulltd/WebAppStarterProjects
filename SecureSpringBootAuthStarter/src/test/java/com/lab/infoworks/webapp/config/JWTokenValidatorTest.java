@@ -27,7 +27,7 @@ public class JWTokenValidatorTest {
         //
         String tokenKey = token.generateToken(TokenProvider.defaultTokenTimeToLive());
         //
-        JWTValidator validator = new JWTokenValidator();
+        JWTValidator validator = new JWTokenValidator(null);
         boolean isTrue = validator.isValid(tokenKey, "SecretKeyToGenJWTs");
         Assert.assertTrue(isTrue);
     }
@@ -36,7 +36,7 @@ public class JWTokenValidatorTest {
     public void testStatic(){
         String tokenKey = "eyJraWQiOiJGUjRjT29IRURCIiwidHlwIjoicm91bmQiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MTQyMjY4MDYwNjUsIm5iZiI6MCwiZXhwIjoxNjE0MjMwNDA2MDY2LCJpc3MiOiJ0b3doaWQiLCJzdWIiOiJ0b3doaWQiLCJkYXRhIjp7Ii9pc1ZhbGlkVG9rZW4iOiJ0cnVlIiwiL25ldy9hY2NvdW50IjoiZmFsc2UifX0.xBhg59ndI1WB_xJ9llhyFDWJsq73ddBdyP_oHlD8rR3jyblaA35TR7IsYkIwb163M_tui_SEwX52JSIPgYtbnA";
         //
-        JWTValidator validator = new JWTokenValidator();
+        JWTValidator validator = new JWTokenValidator(null);
         boolean isTrue = validator.isValid(tokenKey, "SecretKeyToGenJWTs");
         Assert.assertTrue(isTrue);
     }

@@ -58,7 +58,7 @@ public class AuthorizationFilter extends GenericFilterBean {
             try {
                 JWTHeader header = TokenValidator.parseHeader(token, JWTHeader.class);
                 String secret = JWTokenValidator.getSecretKeyMap().get(header.getKid());
-                JWTValidator validator = new JWTokenValidator();
+                JWTValidator validator = new JWTokenValidator(request);
                 boolean isTrue = validator.isValid(token, secret);
                 if(isTrue) {
                     JWTPayload payload = TokenValidator.parsePayload(token, JWTPayload.class);

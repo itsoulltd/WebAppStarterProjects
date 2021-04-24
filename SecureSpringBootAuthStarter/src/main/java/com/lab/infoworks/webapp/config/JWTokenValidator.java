@@ -22,9 +22,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JWTokenValidator extends JWTValidator {
 
     private static Logger LOG = LoggerFactory.getLogger(JWTokenValidator.class.getSimpleName());
-
-    @Autowired
     private HttpServletRequest request;
+
+    public JWTokenValidator(@Autowired HttpServletRequest request) {
+        this.request = request;
+    }
+
+    protected String getHeaderValue(String key){
+        if (request == null) return "";
+        String value = request.getHeader(key);
+        if (value == null){
+            value = request.getParameter(key);
+        }
+        return value;
+    }
 
     public static String getRandomSecretKey(){
         int randIndex = new Random().nextInt(JWTokenValidator.getSecretKeyMap().size());
@@ -60,15 +71,6 @@ public class JWTokenValidator extends JWTValidator {
             token = TokenValidator.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
         }
         return super.getIssuer(token, args);
-    }
-
-    protected String getHeaderValue(String key){
-        if (request == null) return "";
-        String value = request.getHeader(key);
-        if (value == null){
-            value = request.getParameter(key);
-        }
-        return value;
     }
 
 }
