@@ -1,13 +1,8 @@
 package com.lab.infoworks.webapp.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infoworks.lab.jjwt.JWTHeader;
 import com.infoworks.lab.jjwt.JWTValidator;
 import com.infoworks.lab.jjwt.TokenValidator;
-import com.infoworks.lab.jwtoken.definition.TokenProvider;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Key;
-import java.util.Base64;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,28 +71,4 @@ public class JWTokenValidator extends JWTValidator {
         return value;
     }
 
-    @Override
-    public Boolean isValid(String token, String... args) {
-        token = TokenValidator.parseToken(token, "Bearer ");
-        //LOG.info(token);
-        String[] parts = token.split("\\.");
-        //LOG.info("HEADER: " + new String(Base64.getDecoder().decode(parts[0])));
-        //LOG.info("PAYLOAD: " + new String(Base64.getDecoder().decode(parts[1])));
-        try {
-            ObjectMapper mapper = TokenProvider.getJsonSerializer();
-            String headerPart = new String(Base64.getDecoder()
-                    .decode(parts[0]));
-            JWTHeader header = mapper.readValue(headerPart, JWTHeader.class);
-            String secret = getSecret(header, args);
-            byte[] bytes = this.validateSecret(secret);
-            Key key = new SecretKeySpec(bytes, 0, bytes.length, header.getAlg());
-            Jws<Claims> cl = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-            Claims claims =  cl.getBody();
-            LOG.info("JWT Claims: " + claims.toString());
-            return true;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return false;
-    }
 }
