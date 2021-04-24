@@ -32,7 +32,7 @@ public class PassengerController {
     public List<Passenger> query(@RequestParam("limit") Integer limit
             , @RequestParam("offset") Integer offset){
         //TODO: Test with RestExecutor
-        List<Passenger> passengers = Arrays.asList(dataSource.readSynch(offset, limit));
+        List<Passenger> passengers = Arrays.asList(dataSource.readSync(offset, limit));
         return passengers;
     }
 
