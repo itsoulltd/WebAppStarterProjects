@@ -15,7 +15,7 @@ public class ByPassAuthorizationInterceptor extends WSocketAuthorizationIntercep
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler webSocketHandler, Map<String, Object> attributes) throws Exception {
-        super.beforeHandshake(request, response, webSocketHandler, attributes);
+        //super.beforeHandshake(request, response, webSocketHandler, attributes);
         //Testing HttpSession:
         HttpSession session = ((ServletServerHttpRequest) request).getServletRequest().getSession();
         if (session != null) {
