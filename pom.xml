@@ -18,6 +18,7 @@
         <module>VaadinFlowStartup-14</module>
         <module>VaadinFlowSpringStartup-14</module>
         <module>SecureSpringBootAuthStarter</module>
+        <module>SpringWebSocketStarter</module>
     </modules>
 
     <properties>

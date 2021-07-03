@@ -1,0 +1,62 @@
+version: '3.5'
+
+networks:
+   web-app-net:
+       name: my-web-app-net
+       #driver: overlay
+       driver: bridge
+
+volumes:
+   mysql-db-storage:
+   redis-inmemory-storage:
+   activemq-storage:
+
+services:
+   mysql-db:
+      image: mysql:8.0.13
+      environment:
+          MYSQL_DATABASE: testDB
+          MYSQL_ROOT_PASSWORD: root@123
+      ports:
+          - 3306:3306
+      networks:
+          - web-app-net
+      volumes:
+          - mysql-db-storage:/var/lib/mysql
+
+   adminer:
+     image: adminer:4.8.0
+     ports:
+       - 8081:8080
+     depends_on:
+       - mysql-db
+     restart: on-failure
+     networks:
+       - web-app-net
+
+   redis:
+     image: redis:latest
+     ports:
+       - 6379:6379
+     networks:
+       - web-app-net
+     volumes:
+       - redis-inmemory-storage:/data
+
+   activemq:
+     image: webcenter/activemq
+     ports:
+       - 8161:8161
+       - 61616:61616
+       - 61613:61613
+     environment:
+       - ACTIVEMQ_MIN_MEMORY=512
+       - ACTIVEMQ_MAX_MEMORY=2048
+       - ACTIVEMQ_ADMIN_LOGIN=admin
+       - ACTIVEMQ_ADMIN_PASSWORD=admin
+     networks:
+       - web-app-net
+     volumes:
+       - activemq-storage:/var/log/activemq
+
+##End of Scripts
