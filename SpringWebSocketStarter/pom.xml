@@ -158,7 +158,7 @@
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>http-rest-client</artifactId>
-            <version>v1.11.1-RELEASE</version>
+            <version>v1.11.2-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
@@ -169,6 +169,12 @@
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>jjwt-web-token</artifactId>
             <version>v1.11.1-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.itsoulltd.WebComponentKit</groupId>
+            <artifactId>simulator</artifactId>
+            <version>v1.11.2-RELEASE</version>
+            <scope>test</scope>
         </dependency>
         <!-- -->
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
