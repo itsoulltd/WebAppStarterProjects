@@ -173,7 +173,7 @@
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>simulator</artifactId>
-            <version>v1.11.2-RELEASE</version>
+            <version>v1.11.3-RELEASE</version>
             <scope>test</scope>
         </dependency>
         <!-- -->
