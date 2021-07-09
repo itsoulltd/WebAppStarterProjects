@@ -4,11 +4,9 @@ import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.jsql.JsqlConfig;
 import com.it.soul.lab.sql.SQLExecutor;
-import com.it.soul.lab.sql.entity.Entity;
 import com.it.soul.lab.sql.query.QueryType;
 import com.it.soul.lab.sql.query.SQLQuery;
 import com.it.soul.lab.sql.query.SQLSelectQuery;
-import com.it.soul.lab.sql.query.models.Predicate;
 import com.it.soul.lab.sql.query.models.Table;
 import com.it.soul.lab.sql.query.models.Where;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +30,12 @@ public class StartupConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //How to use executor:
-        Predicate where = new Where("name").isLike("Jac");
         SQLSelectQuery query = new SQLQuery.Builder(QueryType.SELECT)
-                .columns().from(Entity.tableName(Passenger.class)).where(where).build();
+                .columns()
+                .from(Passenger.class)
+                .where(new Where("name")
+                        .isLike("Jac"))
+                .build();
         //
         try (SQLExecutor executor = (SQLExecutor) jsqlConfig.create(ExecutorType.SQL, dbKey)){
             ResultSet rs = executor.executeSelect(query);
