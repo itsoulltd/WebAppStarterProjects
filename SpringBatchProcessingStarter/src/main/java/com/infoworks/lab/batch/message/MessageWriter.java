@@ -8,7 +8,7 @@ import java.util.List;
 public class MessageWriter implements ItemWriter<Message> {
     @Override
     public void write(List<? extends Message> list) throws Exception {
-        System.out.println("SimpleWriter");
+        System.out.println("SimpleWriter " + Thread.currentThread().getName());
         list.forEach(msg -> System.out.println(msg.getPayload()));
     }
 }
