@@ -1,5 +1,6 @@
 package com.infoworks.lab.webapp;
 
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -9,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableBatchProcessing
 @ComponentScan(basePackages = {"com.infoworks.lab.batch"
         , "com.infoworks.lab.webapp.config"
         , "com.infoworks.lab.domain"})
