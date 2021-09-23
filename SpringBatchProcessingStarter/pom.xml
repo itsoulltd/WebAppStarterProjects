@@ -21,6 +21,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jersey2.version>2.27</jersey2.version>
+        <poi-version>4.1.2</poi-version>
     </properties>
 
     <repositories>
@@ -121,6 +122,24 @@
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>jjwt-web-token</artifactId>
             <version>v1.11.1-RELEASE</version>
+        </dependency>
+        <!-- -->
+        <!--Apache POI-excel-parser -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi-version}</version>
+        </dependency>
+        <!-- Apache POI Streaming api -->
+        <dependency>
+            <groupId>com.monitorjbl</groupId>
+            <artifactId>xlsx-streamer</artifactId>
+            <version>2.1.0</version>
         </dependency>
         <!-- -->
     </dependencies>
