@@ -30,16 +30,19 @@ public interface ExcelItemWriter<T> extends ItemWriter<T>, JobExecutionListener 
     default boolean createAsyncWriter(){return false;}
     String[] getColumnHeaders();
     String getSheetName();
+    Map<Integer, List<String>> convert(List<? extends T> list);
 
     @Override
     default void write(List<? extends T> list) throws Exception{
         if (getWriter() == null) return;
         if (list.size() > 0){
-            write(list, getWriter());
+            Map results = convert(list);
+            if (results.size() > 0 && getWriter() != null){
+                //WRITE To Excel:
+                getWriter().write(getSheetName(), results, true);
+            }
         }
     }
-
-    void write(List<? extends T> list, ExcelParsingService.AsyncWriter writer);
 
     @Override
     default void beforeJob(JobExecution jobExecution) {
@@ -49,7 +52,6 @@ public interface ExcelItemWriter<T> extends ItemWriter<T>, JobExecutionListener 
             if (getColumnHeaders().length > 0){
                 Map<Integer, List<String>> results = new HashMap<>();
                 results.put(0, Arrays.asList(getColumnHeaders()));
-                //Print: headers
                 getWriter().write(getSheetName(), results, false);
             }
         }
