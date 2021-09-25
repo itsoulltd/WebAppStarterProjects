@@ -5,7 +5,7 @@ import com.infoworks.lab.services.impl.ExcelParsingService;
 
 public interface ExcelItemWriter<T> extends ReportItemWriter<T>{
 
-    default ContentWriter createWriter(ExcelParsingService service) throws NullPointerException{
+    default ContentWriter createWriter(ExcelParsingService service) throws NullPointerException {
         if (service == null) throw new NullPointerException("ExcelParsingService must not be null!");
         //Create WRITER:
         ContentWriter writer = createAsyncWriter()

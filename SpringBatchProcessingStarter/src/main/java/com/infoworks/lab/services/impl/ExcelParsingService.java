@@ -239,7 +239,7 @@ public class ExcelParsingService implements ReadingService, WritingService {
         writer.close();
     }
 
-    public void writeAsStream(OutputStream outputStream, String sheetName, Map<Integer, List<String>> data) throws Exception {
+    public void write(OutputStream outputStream, String sheetName, Map<Integer, List<String>> data) throws Exception {
         AsyncWriter writer = new AsyncStreamWriter(100, outputStream);
         writer.write(sheetName, data, false);
         writer.close();
