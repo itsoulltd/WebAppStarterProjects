@@ -1,5 +1,8 @@
-package com.infoworks.lab.services;
+package com.infoworks.lab.services.impl;
 
+import com.infoworks.lab.services.definition.ContentWriter;
+import com.infoworks.lab.services.definition.ReadingService;
+import com.infoworks.lab.services.definition.WritingService;
 import com.monitorjbl.xlsx.StreamingReader;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -18,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-public class ExcelParsingService {
+public class ExcelParsingService implements ReadingService, WritingService {
 
     private static Logger LOG = Logger.getLogger(ExcelParsingService.class.getSimpleName());
 
@@ -271,7 +274,7 @@ public class ExcelParsingService {
     }
 
     //AsyncWriter Start:
-    public static class AsyncWriter implements AutoCloseable{
+    public static class AsyncWriter implements ContentWriter {
 
         protected Workbook workbook;
         protected OutputStream outfile;
