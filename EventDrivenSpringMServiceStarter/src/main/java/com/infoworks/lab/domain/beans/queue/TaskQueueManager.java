@@ -4,7 +4,7 @@ import com.infoworks.lab.beans.tasks.definition.QueuedTaskLifecycleListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-
+import com.infoworks.lab.beans.queue.*;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.util.logging.Level;
