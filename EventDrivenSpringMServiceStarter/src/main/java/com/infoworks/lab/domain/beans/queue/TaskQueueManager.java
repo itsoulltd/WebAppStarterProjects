@@ -25,8 +25,12 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
         TextMessage textMessage = (TextMessage) message;
         String text = textMessage.getText();
         logger.log(Level.INFO, "EXE-QUEUE: Message received {0} ", text);
-        if (handleTextOnStart(text)){
-            message.acknowledge();
+        try {
+            if (handleTextOnStart(text)){
+                message.acknowledge();
+            }
+        } catch (RuntimeException e) {
+            throw new JMSException(e.getMessage());
         }
     }
 
@@ -36,8 +40,12 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
         TextMessage textMessage = (TextMessage) message;
         String text = textMessage.getText();
         logger.log(Level.INFO, "ABORT-QUEUE: Message received {0} ", text);
-        if (handleTextOnStop(text)) {
-            message.acknowledge();
+        try {
+            if (handleTextOnStop(text)) {
+                message.acknowledge();
+            }
+        } catch (RuntimeException e) {
+            throw new JMSException(e.getMessage());
         }
     }
 

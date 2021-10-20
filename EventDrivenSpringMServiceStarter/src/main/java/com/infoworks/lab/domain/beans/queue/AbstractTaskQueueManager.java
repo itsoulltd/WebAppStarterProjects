@@ -5,7 +5,6 @@ import com.infoworks.lab.beans.tasks.definition.Task;
 import com.infoworks.lab.beans.tasks.impl.AbstractQueueManager;
 import com.infoworks.lab.rest.models.Message;
 
-import javax.jms.JMSException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +33,7 @@ public abstract class AbstractTaskQueueManager extends AbstractQueueManager {
         return task;
     }
 
-    protected boolean handleTextOnStart(String text) throws JMSException {
+    protected boolean handleTextOnStart(String text) throws RuntimeException {
         try {
             Task task = createTask(text);
             start(task, null);
@@ -42,7 +41,7 @@ public abstract class AbstractTaskQueueManager extends AbstractQueueManager {
         }catch (RuntimeException | IOException
                 | ClassNotFoundException
                 | IllegalAccessException | InstantiationException e){
-            throw new JMSException(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -54,7 +53,7 @@ public abstract class AbstractTaskQueueManager extends AbstractQueueManager {
         return errorMessage;
     }
 
-    protected boolean handleTextOnStop(String text) throws JMSException {
+    protected boolean handleTextOnStop(String text) throws RuntimeException {
         try {
             Task task = createTask(text);
             Message errorMessage = getErrorMessage(text);
@@ -63,7 +62,7 @@ public abstract class AbstractTaskQueueManager extends AbstractQueueManager {
         }catch (RuntimeException | IOException
                 | ClassNotFoundException
                 | IllegalAccessException | InstantiationException e){
-            throw new JMSException(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
