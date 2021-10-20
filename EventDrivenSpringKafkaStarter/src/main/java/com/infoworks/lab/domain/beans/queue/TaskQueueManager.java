@@ -1,15 +1,13 @@
 package com.infoworks.lab.domain.beans.queue;
 
 import com.infoworks.lab.beans.tasks.definition.QueuedTaskLifecycleListener;
-import com.infoworks.lab.beans.tasks.definition.Task;
-import com.infoworks.lab.rest.models.Message;
+import com.infoworks.lab.beans.queue.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

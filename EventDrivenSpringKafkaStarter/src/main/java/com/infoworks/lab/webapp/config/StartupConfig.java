@@ -33,8 +33,7 @@ public class StartupConfig implements CommandLineRunner {
         SQLSelectQuery query = new SQLQuery.Builder(QueryType.SELECT)
                 .columns()
                 .from(Passenger.class)
-                .where(new Where("name")
-                        .isLike("Jac"))
+                .where(() -> new Where("name").isLike("Jac"))
                 .build();
         //
         try (SQLExecutor executor = (SQLExecutor) jsqlConfig.create(ExecutorType.SQL, dbKey)){
