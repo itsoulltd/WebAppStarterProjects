@@ -59,7 +59,7 @@ public class ExcelWritingService implements WritingService {
     }
 
     //AsyncWriter Start:
-    public static class AsyncWriter implements ContentWriter {
+    public static class AsyncWriter implements ContentWriter<List<String>> {
 
         protected Workbook workbook;
         protected OutputStream outfile;

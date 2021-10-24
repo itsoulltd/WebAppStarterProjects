@@ -43,7 +43,7 @@ public class PdfWritingService implements WritingService {
     }
 
     //AsyncWriter Start:
-    public static class AsyncWriter implements ContentWriter {
+    public static class AsyncWriter implements ContentWriter<List<String>> {
 
         protected OutputStream outfile;
 

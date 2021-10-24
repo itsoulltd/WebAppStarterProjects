@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public interface ReportItemWriter<T> extends ItemWriter<T>, JobExecutionListener {
+public interface ReportItemWriter<T, S> extends ItemWriter<T>, JobExecutionListener {
     Logger getLog();
     String getOutputName();
     String[] getColumnHeaders();
     ContentWriter getWriter();
     default String getSheetName() {return "";}
-    Map<Integer, List<String>> convert(List<? extends T> list);
+    Map<Integer, S> convert(List<? extends T> list);
 
     @Override
     default void write(List<? extends T> list) throws Exception{

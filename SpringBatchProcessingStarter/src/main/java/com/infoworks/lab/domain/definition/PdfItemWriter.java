@@ -3,7 +3,9 @@ package com.infoworks.lab.domain.definition;
 import com.infoworks.lab.services.definition.ContentWriter;
 import com.infoworks.lab.services.impl.PdfWritingService;
 
-public interface PdfItemWriter<T> extends ReportItemWriter<T> {
+import java.util.List;
+
+public interface PdfItemWriter<T> extends ReportItemWriter<T, List<String>> {
 
     PdfWritingService getService();
     default ContentWriter createWriter(PdfWritingService service) throws NullPointerException {

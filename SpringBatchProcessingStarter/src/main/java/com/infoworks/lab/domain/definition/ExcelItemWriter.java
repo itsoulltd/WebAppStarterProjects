@@ -3,7 +3,9 @@ package com.infoworks.lab.domain.definition;
 import com.infoworks.lab.services.definition.ContentWriter;
 import com.infoworks.lab.services.impl.ExcelWritingService;
 
-public interface ExcelItemWriter<T> extends ReportItemWriter<T>{
+import java.util.List;
+
+public interface ExcelItemWriter<T> extends ReportItemWriter<T, List<String>>{
 
     default ContentWriter createWriter(ExcelWritingService service) throws NullPointerException {
         if (service == null) throw new NullPointerException("ExcelWritingService must not be null!");
