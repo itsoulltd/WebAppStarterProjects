@@ -51,8 +51,7 @@ public class JDBCBatchWriter<E extends Entity> implements ContentWriter<E> {
                 .into(Entity.tableName(eClass))
                 .values(rowDef.getProperties().toArray(new Property[0]))
                 .build();
-        LOG.info(insertQuery.toString());
-        //
+        //LOG.info(insertQuery.toString());
         List<Row> needToInsert = rows.stream()
                 .map(row -> row.getRow())
                 .collect(Collectors.toList());
