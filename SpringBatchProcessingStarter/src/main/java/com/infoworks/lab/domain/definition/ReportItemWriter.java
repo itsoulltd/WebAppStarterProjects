@@ -37,7 +37,7 @@ public interface ReportItemWriter<T> extends ItemWriter<T>, JobExecutionListener
         getLog().info("JobExecutionListener Started!");
         //WRITE Column Headers:
         if (getWriter() != null){
-            if (getColumnHeaders().length > 0){
+            if (getColumnHeaders() != null && getColumnHeaders().length > 0){
                 Map<Integer, List<String>> results = new HashMap<>();
                 results.put(0, Arrays.asList(getColumnHeaders()));
                 getWriter().write(getSheetName(), results, false);
