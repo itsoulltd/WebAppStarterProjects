@@ -22,13 +22,13 @@ public interface ReportItemWriter<T, S> extends ItemWriter<T>, JobExecutionListe
 
     @Override
     default void write(List<? extends T> list) throws Exception{
+        if (list.size() <= 0) return;;
         if (getWriter() == null) return;
-        if (list.size() > 0){
-            Map results = convert(list);
-            if (results.size() > 0 && getWriter() != null){
-                //WRITE To Excel:
-                getWriter().write(getSheetName(), results, true);
-            }
+        //
+        Map results = convert(list);
+        if (results != null && results.size() > 0){
+            //WRITE To Source:
+            getWriter().write(getSheetName(), results, true);
         }
     }
 
