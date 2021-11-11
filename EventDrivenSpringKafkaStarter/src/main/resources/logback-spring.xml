@@ -12,7 +12,7 @@
         </encoder>
     </appender>
     <!-- -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/home/${USER}/logs/${USER}-${HOSTNAME}-${INSTANCE_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/home/${USER}/logs/archive/${USER}-${HOSTNAME}-${INSTANCE_NAME}-%d{yyyy-MM-dd-HH}-%i.log.tar.gz</fileNamePattern>
@@ -25,13 +25,13 @@
         </filter>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] - [%-5level] - %logger{25} - CID[%X{correlationId}] - UID[%X{userId}] - %msg%n</pattern>-->
+            &lt;!&ndash;<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] - [%-5level] - %logger{25} - CID[%X{correlationId}] - UID[%X{userId}] - %msg%n</pattern>&ndash;&gt;
         </encoder>
-    </appender>
+    </appender>-->
     <!-- -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
+        <!--<appender-ref ref="FILE"/>-->
     </root>
     <!-- -->
 </configuration>
