@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 
 @Entity
 @Table(name="Users")
-public class User implements UserDetails {
+public class User extends com.it.soul.lab.sql.entity.Entity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
@@ -38,9 +38,17 @@ public class User implements UserDetails {
         return this.password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
