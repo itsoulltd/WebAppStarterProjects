@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service("passengerService")
 public class PassengerService extends SimpleDataSource<String, Passenger> {
 
     private PassengerRepository repository;

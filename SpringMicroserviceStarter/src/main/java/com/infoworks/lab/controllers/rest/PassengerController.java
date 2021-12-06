@@ -18,7 +18,7 @@ public class PassengerController {
     private SimpleDataSource<String, Passenger> dataSource;
 
     @Autowired
-    public PassengerController(@Qualifier("passengerDatasource") SimpleDataSource<String, Passenger> dataSource) {
+    public PassengerController(@Qualifier("passengerService") SimpleDataSource<String, Passenger> dataSource) {
         this.dataSource = dataSource;
     }
 
