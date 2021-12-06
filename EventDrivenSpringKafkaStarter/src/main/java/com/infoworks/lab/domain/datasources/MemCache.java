@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -114,7 +115,7 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
 
     private ItemCounter counter;
 
-    public ItemCounter getCounter() {
+    private ItemCounter getCounter() {
         if (counter == null){
             synchronized (this){
                 if (getEntityClassFullName() != null && !getEntityClassFullName().isEmpty()) {
@@ -161,6 +162,45 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
             RMap<String, Integer> countMap = client.getMap("item_count_map");
             if(countMap != null)
                 countMap.put(getEntityClassFullName(), value);
+        }
+    }
+
+    ///////////////////////////////////////////Private Inner Classes////////////////////////////////////////////////////
+
+    private static class ItemCounter {
+
+        private AtomicInteger itemCount;
+        public int getCount(){
+            return itemCount.get();
+        }
+
+        private String uuid;
+        public String getUuid() {
+            if (uuid == null || uuid.isEmpty()){
+                synchronized (this){
+                    uuid = UUID.randomUUID().toString();
+                }
+            }
+            return uuid;
+        }
+
+        public ItemCounter(int initialValue) {
+            this.itemCount = new AtomicInteger(initialValue);
+        }
+
+        public ItemCounter(String uuid, int initialValue) {
+            this(initialValue);
+            this.uuid = uuid;
+        }
+
+        public int increment(){
+            return itemCount.incrementAndGet();
+        }
+
+        public int decrement(){
+            if(itemCount.get() > 0)
+                return itemCount.decrementAndGet();
+            return itemCount.get();
         }
     }
 
