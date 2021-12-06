@@ -1,0 +1,40 @@
+version: '3.5'
+
+networks:
+   web-app-net:
+       name: my-web-app-net
+       #driver: overlay
+       driver: bridge
+
+volumes:
+   mongo-db-storage:
+
+services:
+   mongo-db:
+     image: mongo:latest
+     ports:
+       - 27017:27017
+     environment:
+       MONGO_INITDB_ROOT_USERNAME: root
+       MONGO_INITDB_ROOT_PASSWORD: example
+     restart: on-failure
+     networks:
+       - web-app-net
+     volumes:
+       - mongo-db-storage:/data/db
+
+   mongo-express:
+     image: mongo-express:latest
+     ports:
+       - 8081:8081
+     environment:
+       ME_CONFIG_MONGODB_ADMINUSERNAME: root
+       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+       ME_CONFIG_MONGODB_URL: mongodb://mongo-db:27017
+     restart: on-failure
+     depends_on:
+       - mongo-db
+     networks:
+       - web-app-net
+
+##End of Scripts
