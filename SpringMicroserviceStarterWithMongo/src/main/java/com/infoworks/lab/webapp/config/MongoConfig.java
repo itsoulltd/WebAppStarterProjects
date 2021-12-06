@@ -2,6 +2,7 @@ package com.infoworks.lab.webapp.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,17 +25,18 @@ public class MongoConfig {
     @Value("${mongo.db.name}") String persistenceUnitName;
 
     @Bean
-    public MongoClient mongo() {
+    public MongoClient mongoClient() {
         ConnectionString connectionString = new ConnectionString(url);
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
+                .credential(MongoCredential.createCredential(username, persistenceUnitName, password.toCharArray()))
                 .build();
         return MongoClients.create(mongoClientSettings);
     }
 
     @Bean
-    public MongoTemplate mongoTemplate() throws Exception {
-        return new MongoTemplate(mongo(), persistenceUnitName);
+    public MongoTemplate mongoTemplate(MongoClient client) throws Exception {
+        return new MongoTemplate(client, persistenceUnitName);
     }
 
 }
