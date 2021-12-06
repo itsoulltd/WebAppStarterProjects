@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @PropertySource("classpath:mongo-db.properties")
 public class MongoConfig {
 
-    @Value("${mongo.db.url}") String url;
+    @Value("${spring.data.mongodb.uri}") String url;
     @Value("${mongo.db.username}") String username;
     @Value("${mongo.db.password}") String password;
     @Value("${mongo.db.name}") String persistenceUnitName;
@@ -29,7 +29,6 @@ public class MongoConfig {
         ConnectionString connectionString = new ConnectionString(url);
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
-                .credential(MongoCredential.createCredential(username, persistenceUnitName, password.toCharArray()))
                 .build();
         return MongoClients.create(mongoClientSettings);
     }
