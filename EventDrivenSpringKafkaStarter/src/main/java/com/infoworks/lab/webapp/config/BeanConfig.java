@@ -4,6 +4,7 @@ import com.infoworks.lab.domain.datasources.MemCache;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.jsql.JsqlConfig;
+import com.infoworks.lab.util.services.iResourceService;
 import com.it.soul.lab.sql.SQLExecutor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -43,6 +44,11 @@ public class BeanConfig {
     @Bean("passengerCache")
     MemCache<Passenger> getPassengerCache(){
         return new MemCache<>(getRedisClient(), Passenger.class);
+    }
+
+    @Bean
+    public iResourceService getResourceService(){
+        return iResourceService.create();
     }
 
 }

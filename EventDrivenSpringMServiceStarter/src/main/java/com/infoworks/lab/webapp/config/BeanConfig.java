@@ -2,6 +2,7 @@ package com.infoworks.lab.webapp.config;
 
 import com.infoworks.lab.domain.datasources.MemCache;
 import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.util.services.iResourceService;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -42,6 +43,11 @@ public class BeanConfig {
     @Bean("passengerCache")
     MemCache<Passenger> getPassengerCache(){
         return new MemCache<>(getRedisClient(), Passenger.class);
+    }
+
+    @Bean
+    public iResourceService getResourceService(){
+        return iResourceService.create();
     }
 
 }

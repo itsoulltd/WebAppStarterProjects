@@ -1,6 +1,7 @@
 package com.infoworks.lab.webapp.config;
 
 import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.util.services.iResourceService;
 import com.it.soul.lab.data.simple.SimpleDataSource;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -47,6 +48,11 @@ public class BeanConfig {
     @Bean
     public StatefulRedisConnection<String, String> getRedisStatefulConnection(){
         return getRedisClient().connect();
+    }
+
+    @Bean
+    public iResourceService getResourceService(){
+        return iResourceService.create();
     }
 
 }
