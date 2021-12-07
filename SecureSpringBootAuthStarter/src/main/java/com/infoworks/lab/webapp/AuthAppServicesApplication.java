@@ -14,15 +14,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
         , "com.infoworks.lab.services"
         , "com.infoworks.lab.domain"
         , "com.infoworks.lab.webapp.config"})
-public class AuthApi extends SpringBootServletInitializer {
+public class AuthAppServicesApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthApi.class, args);
+        SpringApplication.run(AuthAppServicesApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(AuthApi.class);
+        return application.sources(AuthAppServicesApplication.class);
     }
 
 }

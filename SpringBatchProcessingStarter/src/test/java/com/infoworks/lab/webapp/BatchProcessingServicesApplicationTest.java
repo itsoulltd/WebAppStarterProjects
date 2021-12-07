@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(basePackages = {"com.infoworks.lab.controllers"
         , "com.infoworks.lab.services"})
-public class BatchProcessingAppTest {
+public class BatchProcessingServicesApplicationTest {
     @Test
     public void contextLoads() {
         System.out.println("ApplicationContext Loaded Successfully");

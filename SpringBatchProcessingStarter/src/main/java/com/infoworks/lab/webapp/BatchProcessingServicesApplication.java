@@ -14,14 +14,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(basePackages = {"com.infoworks.lab.batch"
         , "com.infoworks.lab.webapp.config"
         , "com.infoworks.lab.domain"})
-public class BatchProcessingApp extends SpringBootServletInitializer {
+public class BatchProcessingServicesApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(BatchProcessingApp.class, args);
+        SpringApplication.run(BatchProcessingServicesApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(BatchProcessingApp.class);
+        return builder.sources(BatchProcessingServicesApplication.class);
     }
 }
