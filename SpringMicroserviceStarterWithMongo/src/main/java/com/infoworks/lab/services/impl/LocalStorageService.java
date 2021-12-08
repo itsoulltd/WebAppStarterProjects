@@ -1,4 +1,4 @@
-package com.infoworks.lab.services;
+package com.infoworks.lab.services.impl;
 
 import com.it.soul.lab.data.base.DataStorage;
 import com.it.soul.lab.data.simple.SimpleDataSource;

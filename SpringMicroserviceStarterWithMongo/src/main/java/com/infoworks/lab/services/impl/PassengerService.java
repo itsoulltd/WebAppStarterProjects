@@ -1,4 +1,4 @@
-package com.infoworks.lab.services;
+package com.infoworks.lab.services.impl;
 
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.domain.repositories.PassengerRepository;

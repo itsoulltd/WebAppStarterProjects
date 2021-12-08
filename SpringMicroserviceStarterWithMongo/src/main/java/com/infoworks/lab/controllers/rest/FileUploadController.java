@@ -1,7 +1,7 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.services.LocalStorageService;
+import com.infoworks.lab.services.impl.LocalStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
