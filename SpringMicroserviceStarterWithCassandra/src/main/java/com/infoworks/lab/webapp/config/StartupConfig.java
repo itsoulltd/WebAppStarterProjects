@@ -30,7 +30,7 @@ public class StartupConfig implements CommandLineRunner {
         Arrays.stream(classes).forEach(aClass -> {
             try {
                 boolean created = cqlExecutor.createTable(aClass);
-                LOG.info("{} is {}", aClass.getSimpleName(), (created ? "YES" : "NO"));
+                LOG.info("{} is created {}", aClass.getSimpleName(), (created ? "YES" : "NO"));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -41,7 +41,7 @@ public class StartupConfig implements CommandLineRunner {
         Arrays.stream(classes).forEach(aClass -> {
             try {
                 boolean dropped = cqlExecutor.dropTable(aClass);
-                LOG.info("{} is {}", aClass.getSimpleName(), (dropped ? "YES" : "NO"));
+                LOG.info("{} is dropped {}", aClass.getSimpleName(), (dropped ? "YES" : "NO"));
             } catch (SQLException e) {
                 e.printStackTrace();
             }

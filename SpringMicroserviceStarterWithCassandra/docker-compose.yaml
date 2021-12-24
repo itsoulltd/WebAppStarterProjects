@@ -26,11 +26,9 @@ services:
       #dockerfile: Dockerfile
       dockerfile: Dockerfile-embedded
     environment:
-      cassandra.db.keyspace: cassandraDB
+      cassandra.db.keyspace: cassandradb
       cassandra.db.host: cassandra-db
       cassandra.db.port: 9042
-      #cassandra.db.username: root
-      #cassandra.db.password: example
       management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
     ports:
       - 8080:8080
