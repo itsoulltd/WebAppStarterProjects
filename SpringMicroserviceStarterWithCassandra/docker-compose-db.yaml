@@ -1,0 +1,22 @@
+version: '3.5'
+
+networks:
+  web-app-net:
+    name: my-web-app-net
+    #driver: overlay
+    driver: bridge
+
+volumes:
+  cassandra-db-storage:
+
+services:
+  cassandra-db:
+    image: cassandra:latest
+    ports:
+      - 9042:9042
+    networks:
+      - web-app-net
+    volumes:
+      - cassandra-db-storage:/var/lib/cassandra
+
+##End of Scripts

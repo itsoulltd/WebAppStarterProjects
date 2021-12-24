@@ -12,6 +12,7 @@
     <modules>
         <module>SpringMicroserviceStarter</module>
         <module>SpringMicroserviceStarterWithMongo</module>
+        <module>SpringMicroserviceStarterWithCassandra</module>
         <module>SecureSpringMicroserviceStarter</module>
         <module>EventDrivenSpringMServiceStarter</module>
         <module>EventDrivenSpringKafkaStarter</module>
