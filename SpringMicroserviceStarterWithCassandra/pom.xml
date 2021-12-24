@@ -41,30 +41,31 @@
             <version>8.5.35</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Cassandra Here! -->
         <dependency>
             <groupId>com.github.itsoulltd</groupId>
             <artifactId>JSQLEditor</artifactId>
             <version>1.1.4.0-RELEASE</version>
         </dependency>
+        <!-- Cassandra Manual -->
         <!-- https://mvnrepository.com/artifact/com.datastax.cassandra/cassandra-driver-core -->
         <dependency>
             <groupId>com.datastax.cassandra</groupId>
             <artifactId>cassandra-driver-core</artifactId>
-            <version>3.6.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>3.11.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.codahale.metrics/metrics-core -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-core</artifactId>
             <version>3.0.2</version>
-        </dependency>
+        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <!--<dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>-->
+        <!-- -->
         <!-- Spring Framework Dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
