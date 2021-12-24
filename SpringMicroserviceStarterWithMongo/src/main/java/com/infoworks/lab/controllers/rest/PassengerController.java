@@ -4,6 +4,7 @@ import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.it.soul.lab.data.simple.SimpleDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,7 +18,7 @@ public class PassengerController {
     private SimpleDataSource<String, Passenger> dataSource;
 
     @Autowired
-    public PassengerController(SimpleDataSource<String, Passenger> dataSource) {
+    public PassengerController(@Qualifier("passengerService") SimpleDataSource<String, Passenger> dataSource) {
         this.dataSource = dataSource;
     }
 
