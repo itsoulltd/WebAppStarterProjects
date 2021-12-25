@@ -3,6 +3,7 @@ package com.infoworks.lab.services;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.it.soul.lab.cql.CQLExecutor;
 import com.it.soul.lab.cql.query.CQLQuery;
+import com.it.soul.lab.cql.query.CQLSelectQuery;
 import com.it.soul.lab.data.simple.SimpleDataSource;
 import com.it.soul.lab.sql.query.QueryType;
 import com.it.soul.lab.sql.query.SQLScalarQuery;
@@ -42,6 +43,22 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public Passenger[] readSync(int offset, int pageSize) {
         /*Page<Passenger> finds = repository.findAll(PageRequest.of(offset, pageSize));
         return finds.getContent().toArray(new Passenger[0]);*/
+        //TODO:
+        try {
+            CQLSelectQuery query = new CQLQuery.Builder(QueryType.SELECT)
+                    .columns()
+                    .from(Passenger.class)
+                    //.addLimit(pageSize, offset) //Limit not working in Cassandra
+                    .build();
+            List<Passenger> items = repository.executeSelect(query, Passenger.class);
+            items.toArray(new Passenger[0]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
         return new Passenger[0];
     }
 

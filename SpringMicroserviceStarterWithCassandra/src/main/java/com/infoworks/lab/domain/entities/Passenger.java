@@ -20,7 +20,7 @@ import java.util.Objects;
 @EnableTimeToLive
 public class Passenger extends CQLEntity {
 
-	@PrimaryKey(name="id")
+	@PrimaryKey(name="uuid")
 	private Integer id = 0;
 
 	@ClusteringKey(name = "event_timestamp")
@@ -35,18 +35,15 @@ public class Passenger extends CQLEntity {
     @Min(value = 18, message = "age min Value is 18.")
 	private int age = 18;
 
-
-	//@NotNull(message = "dob Must Not Null")
-	//@Past(message = "Date Of Birth Must Be Greater Then Now")
-    private Date dob = new java.sql.Date(new Date().getTime());
+    private Long dob = new Date().getTime();
 
 	private boolean active;
 
-	@Ignore
-	private static int _autoIncrement = -1;
+	/*@Ignore
+	private static int _autoIncrement = -1;*/
 
 	public Passenger() {
-	    this.id = ++_autoIncrement;
+	    /*this.id = ++_autoIncrement;*/
     }
 
     public Passenger(@NotNull(message = "Name must not be null") String name
@@ -61,10 +58,10 @@ public class Passenger extends CQLEntity {
 
     private void updateDOB(@Min(value = 18, message = "Min Value is 18.") int age, boolean isPositive) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Objects.nonNull(getDob()) ? getDob() : new Date());
+        calendar.setTime(Objects.nonNull(getDob()) ? new Date(getDob()) : new Date());
         int year = calendar.get(Calendar.YEAR) - ((isPositive) ? -age : age);
         calendar.set(Calendar.YEAR, year);
-        setDob(calendar.getTime());
+        setDob(calendar.getTime().getTime());
     }
 
     public Integer getId() {
@@ -94,15 +91,15 @@ public class Passenger extends CQLEntity {
         this.active = active;
     }
 
-    public Date getDob() {
-        return dob;
-    }
+	public Long getDob() {
+		return dob;
+	}
 
-    public void setDob(Date dob) {
-        this.dob = new java.sql.Date(dob.getTime());
-    }
+	public void setDob(Long dob) {
+		this.dob = dob;
+	}
 
-    public String getSex() {
+	public String getSex() {
         return sex;
     }
 
