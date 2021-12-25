@@ -27,6 +27,7 @@ public class Passenger extends CQLEntity {
 	private Long eventTimestamp = (new Date()).getTime();
 
     @NotNull(message = "name must not be null.")
+	@ClusteringKey(name = "name")
     private String name;
 
     @IsValidGender

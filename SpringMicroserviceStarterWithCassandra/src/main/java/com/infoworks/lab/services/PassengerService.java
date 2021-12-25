@@ -28,7 +28,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public Passenger read(String key) {
         List<Passenger> res = null;
         try {
-            res = Passenger.read(Passenger.class, repository, new Where("id").isEqualTo(key));
+            res = Passenger.read(Passenger.class, repository, new Where("name").isEqualTo(key));
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -43,8 +43,6 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
 
     @Override
     public Passenger[] readSync(int offset, int pageSize) {
-        /*Page<Passenger> finds = repository.findAll(PageRequest.of(offset, pageSize));
-        return finds.getContent().toArray(new Passenger[0]);*/
         try {
             CQLSelectQuery query = new CQLQuery.Builder(QueryType.SELECT)
                     .columns()
@@ -93,7 +91,6 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public int size() {
         SQLScalarQuery query = new CQLQuery.Builder(QueryType.COUNT).columns().on(Passenger.class).build();
         try {
-            //return Long.valueOf(repository.count()).intValue();
             int count = repository.getScalarValue(query);
             return count;
         } catch (SQLException e) {
@@ -105,7 +102,6 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     @Override
     public void put(String key, Passenger passenger) {
         if (passenger == null) return;
-        //repository.save(passenger);
         try {
             passenger.insert(repository);
         } catch (SQLException e) {
@@ -119,7 +115,6 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
         if (existing != null && passenger != null) {
             passenger.setId(existing.getId());
             existing.unmarshallingFromMap(passenger.marshallingToMap(true), true);
-            //repository.save(existing);
             try {
                 existing.update(repository);
             } catch (SQLException e) {
@@ -133,7 +128,6 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public Passenger remove(String key) {
         Passenger existing = read(key);
         if (existing != null) {
-            //repository.deleteById(existing.getId());
             try {
                 existing.delete(repository);
             } catch (SQLException e) {
