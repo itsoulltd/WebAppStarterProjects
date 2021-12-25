@@ -39,11 +39,11 @@ public class Passenger extends CQLEntity {
 
 	private boolean active;
 
-	/*@Ignore
-	private static int _autoIncrement = -1;*/
+	@Ignore
+	private static int _autoIncrement = -1;
 
 	public Passenger() {
-	    /*this.id = ++_autoIncrement;*/
+	    this.id = ++_autoIncrement;
     }
 
     public Passenger(@NotNull(message = "Name must not be null") String name

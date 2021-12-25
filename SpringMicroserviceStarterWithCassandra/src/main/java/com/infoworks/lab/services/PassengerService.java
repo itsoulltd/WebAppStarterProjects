@@ -1,6 +1,7 @@
 package com.infoworks.lab.services;
 
 import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.rest.models.SearchQuery;
 import com.it.soul.lab.cql.CQLExecutor;
 import com.it.soul.lab.cql.query.CQLQuery;
 import com.it.soul.lab.cql.query.CQLSelectQuery;
@@ -11,6 +12,7 @@ import com.it.soul.lab.sql.query.models.Where;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("passengerService")
@@ -43,15 +45,16 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public Passenger[] readSync(int offset, int pageSize) {
         /*Page<Passenger> finds = repository.findAll(PageRequest.of(offset, pageSize));
         return finds.getContent().toArray(new Passenger[0]);*/
-        //TODO:
         try {
             CQLSelectQuery query = new CQLQuery.Builder(QueryType.SELECT)
                     .columns()
                     .from(Passenger.class)
-                    //.addLimit(pageSize, offset) //Limit not working in Cassandra
                     .build();
             List<Passenger> items = repository.executeSelect(query, Passenger.class);
-            items.toArray(new Passenger[0]);
+            int fromIdx = offset;
+            int toIdx = fromIdx + pageSize;
+            List<Passenger> res = items.subList(fromIdx, toIdx);
+            return res.toArray(new Passenger[0]);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -60,6 +63,30 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             e.printStackTrace();
         }
         return new Passenger[0];
+    }
+
+    public List<Passenger> search(SearchQuery searchQuery) {
+        try {
+            CQLSelectQuery query;
+            CQLQuery.Builder queryBuilder = new CQLQuery.Builder(QueryType.SELECT);
+            if (searchQuery.getPredicate() == null){
+                query = queryBuilder.columns().from(Passenger.class).build();
+            }else {
+                query = queryBuilder.columns().from(Passenger.class).where(searchQuery.getPredicate()).build();
+            }
+            List<Passenger> items = repository.executeSelect(query, Passenger.class);
+            int fromIdx = searchQuery.getPage() * searchQuery.getSize();
+            int toIdx = fromIdx + searchQuery.getSize();
+            List<Passenger> res = items.subList(fromIdx, toIdx);
+            return res;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     @Override

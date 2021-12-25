@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.github.itsoulltd</groupId>
             <artifactId>JSQLEditor</artifactId>
-            <version>1.1.4.0-RELEASE</version>
+            <version>1.1.4.2-RELEASE</version>
         </dependency>
         <!-- Cassandra Manual -->
         <!-- https://mvnrepository.com/artifact/com.datastax.cassandra/cassandra-driver-core -->

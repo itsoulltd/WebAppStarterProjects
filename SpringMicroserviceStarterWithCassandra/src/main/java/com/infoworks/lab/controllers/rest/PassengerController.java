@@ -2,9 +2,9 @@ package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.rest.models.ItemCount;
-import com.it.soul.lab.data.simple.SimpleDataSource;
+import com.infoworks.lab.rest.models.SearchQuery;
+import com.infoworks.lab.services.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,17 +15,17 @@ import java.util.List;
 @RequestMapping("/passenger")
 public class PassengerController {
 
-    private SimpleDataSource<String, Passenger> dataSource;
+    private PassengerService service;
 
     @Autowired
-    public PassengerController(@Qualifier("passengerService") SimpleDataSource<String, Passenger> dataSource) {
-        this.dataSource = dataSource;
+    public PassengerController(PassengerService service) {
+        this.service = service;
     }
 
     @GetMapping("/rowCount")
     public ItemCount getRowCount(){
         ItemCount count = new ItemCount();
-        count.setCount(Integer.valueOf(dataSource.size()).longValue());
+        count.setCount(Integer.valueOf(service.size()).longValue());
         return count;
     }
 
@@ -33,33 +33,40 @@ public class PassengerController {
     public List<Passenger> query(@RequestParam("limit") Integer limit
             , @RequestParam("offset") Integer offset){
         //TODO: Test with RestExecutor
-        List<Passenger> passengers = Arrays.asList(dataSource.readSync(offset, limit));
+        List<Passenger> passengers = Arrays.asList(service.readSync(offset, limit));
+        return passengers;
+    }
+
+    @PostMapping("/search")
+    public List<Passenger> query(@RequestBody SearchQuery query){
+        //TODO: Test with RestExecutor
+        List<Passenger> passengers = service.search(query);
         return passengers;
     }
 
     @PostMapping @SuppressWarnings("Duplicates")
     public ItemCount insert(@Valid @RequestBody Passenger passenger){
         //TODO: Test with RestExecutor
-        dataSource.put(passenger.getName(), passenger);
+        service.put(passenger.getName(), passenger);
         ItemCount count = new ItemCount();
-        count.setCount(Integer.valueOf(dataSource.size()).longValue());
+        count.setCount(Integer.valueOf(service.size()).longValue());
         return count;
     }
 
     @PutMapping @SuppressWarnings("Duplicates")
     public ItemCount update(@Valid @RequestBody Passenger passenger){
         //TODO: Test with RestExecutor
-        Passenger old = dataSource.replace(passenger.getName(), passenger);
+        Passenger old = service.replace(passenger.getName(), passenger);
         ItemCount count = new ItemCount();
         if (old != null)
-            count.setCount(Integer.valueOf(dataSource.size()).longValue());
+            count.setCount(Integer.valueOf(service.size()).longValue());
         return count;
     }
 
     @DeleteMapping
     public Boolean delete(@RequestParam("name") String name){
         //TODO: Test with RestExecutor
-        Passenger deleted = dataSource.remove(name);
+        Passenger deleted = service.remove(name);
         return deleted != null;
     }
 
