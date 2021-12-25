@@ -23,6 +23,7 @@ public class StartupConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //Initialize Cassandra Tables from their entities:
+        //dropsTables(executor, Passenger.class);
         createTables(executor, Passenger.class);
     }
 
