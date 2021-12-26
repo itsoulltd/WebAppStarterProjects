@@ -45,14 +45,14 @@ public interface CqlRepository<E extends Entity, ID> extends RestRepository<E, I
     }
 
     @Override
-    default List<E> fetch(Integer page, Integer limit) throws RuntimeException {
+    default List<E> fetch(Integer offset, Integer limit) throws RuntimeException {
         try {
             CQLSelectQuery query = new CQLQuery.Builder(QueryType.SELECT)
                     .columns()
                     .from(getEntityType())
                     .build();
             List<E> items = getExecutor().executeSelect(query, getEntityType());
-            int fromIdx = (page - 1) * limit;
+            int fromIdx = offset;
             if (fromIdx < 0) fromIdx = 0;
             int toIdx = fromIdx + limit;
             if (items.size() < toIdx) toIdx = items.size();
