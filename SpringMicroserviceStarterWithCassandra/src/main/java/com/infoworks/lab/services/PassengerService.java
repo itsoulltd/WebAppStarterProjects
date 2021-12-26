@@ -51,6 +51,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             List<Passenger> items = repository.executeSelect(query, Passenger.class);
             int fromIdx = offset;
             int toIdx = fromIdx + pageSize;
+            if (items.size() < toIdx) toIdx = items.size();
             List<Passenger> res = items.subList(fromIdx, toIdx);
             return res.toArray(new Passenger[0]);
         } catch (SQLException e) {
@@ -67,7 +68,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
         try {
             CQLSelectQuery query;
             CQLQuery.Builder queryBuilder = new CQLQuery.Builder(QueryType.SELECT);
-            if (searchQuery.getPredicate() == null){
+            if (searchQuery.getProperties().isEmpty()){
                 query = queryBuilder.columns().from(Passenger.class).build();
             }else {
                 query = queryBuilder.columns().from(Passenger.class).where(searchQuery.getPredicate()).build();
@@ -75,6 +76,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             List<Passenger> items = repository.executeSelect(query, Passenger.class);
             int fromIdx = searchQuery.getPage() * searchQuery.getSize();
             int toIdx = fromIdx + searchQuery.getSize();
+            if (items.size() < toIdx) toIdx = items.size();
             List<Passenger> res = items.subList(fromIdx, toIdx);
             return res;
         } catch (SQLException e) {
