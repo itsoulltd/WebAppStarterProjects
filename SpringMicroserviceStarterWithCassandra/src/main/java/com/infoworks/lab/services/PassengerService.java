@@ -73,7 +73,8 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
                 query = queryBuilder.columns().from(Passenger.class).where(searchQuery.getPredicate()).build();
             }
             List<Passenger> items = repository.executeSelect(query, Passenger.class);
-            int fromIdx = searchQuery.getPage() * searchQuery.getSize();
+            int fromIdx = (searchQuery.getPage() - 1) * searchQuery.getSize();
+            if (fromIdx < 0) fromIdx = 0;
             int toIdx = fromIdx + searchQuery.getSize();
             if (items.size() < toIdx) toIdx = items.size();
             List<Passenger> res = items.subList(fromIdx, toIdx);
