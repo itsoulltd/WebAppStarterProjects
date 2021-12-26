@@ -15,19 +15,19 @@ import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 @TableName(value = "Passenger")
-@EnableTimeToLive
+@EnableTimeToLive(300L) //TimeToLive 5*60 sec = 5 min
 public class Passenger extends CQLEntity {
 
 	@PrimaryKey(name="uuid")
-	private Integer id = 0;
+	private String uuid;
 
 	@ClusteringKey(name = "event_timestamp")
 	private Long eventTimestamp = (new Date()).getTime();
 
     @NotNull(message = "name must not be null.")
-	@ClusteringKey(name = "name")
     private String name;
 
     @IsValidGender
@@ -37,14 +37,13 @@ public class Passenger extends CQLEntity {
 	private int age = 18;
 
     private Long dob = new Date().getTime();
-
 	private boolean active;
 
 	@Ignore
-	private static int _autoIncrement = -1;
+	private long version = Long.MAX_VALUE;
 
 	public Passenger() {
-	    this.id = ++_autoIncrement;
+	    this.uuid = UUID.randomUUID().toString();
     }
 
     public Passenger(@NotNull(message = "Name must not be null") String name
@@ -65,11 +64,11 @@ public class Passenger extends CQLEntity {
         setDob(calendar.getTime().getTime());
     }
 
-    public Integer getId() {
-		return id;
+    public String getUuid() {
+		return uuid;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	public int getAge() {
 		return age;
@@ -121,12 +120,12 @@ public class Passenger extends CQLEntity {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Passenger passenger = (Passenger) o;
-		return Objects.equals(id, passenger.id);
+		return Objects.equals(uuid, passenger.uuid);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(uuid);
 	}
 
 	public Property getPropertyTest(String key, SQLExecutor exe, boolean skipPrimary) {

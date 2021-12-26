@@ -28,7 +28,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public Passenger read(String key) {
         List<Passenger> res = null;
         try {
-            res = Passenger.read(Passenger.class, repository, new Where("name").isEqualTo(key));
+            res = Passenger.read(Passenger.class, repository, new Where("uuid").isEqualTo(key));
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -101,7 +101,8 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
 
     @Override
     public void put(String key, Passenger passenger) {
-        if (passenger == null) return;
+        if (passenger == null || key == null || key.isEmpty()) return;
+        if (read(key) != null) return;
         try {
             passenger.insert(repository);
         } catch (SQLException e) {
@@ -113,7 +114,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public Passenger replace(String key, Passenger passenger) {
         Passenger existing = read(key);
         if (existing != null && passenger != null) {
-            passenger.setId(existing.getId());
+            passenger.setUuid(existing.getUuid());
             existing.unmarshallingFromMap(passenger.marshallingToMap(true), true);
             try {
                 existing.update(repository);

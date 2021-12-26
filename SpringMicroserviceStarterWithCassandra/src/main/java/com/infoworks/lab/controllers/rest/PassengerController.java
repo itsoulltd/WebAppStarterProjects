@@ -47,7 +47,7 @@ public class PassengerController {
     @PostMapping @SuppressWarnings("Duplicates")
     public ItemCount insert(@Valid @RequestBody Passenger passenger){
         //TODO: Test with RestExecutor
-        service.put(passenger.getName(), passenger);
+        service.put(passenger.getUuid(), passenger);
         ItemCount count = new ItemCount();
         count.setCount(Integer.valueOf(service.size()).longValue());
         return count;
@@ -56,7 +56,7 @@ public class PassengerController {
     @PutMapping @SuppressWarnings("Duplicates")
     public ItemCount update(@Valid @RequestBody Passenger passenger){
         //TODO: Test with RestExecutor
-        Passenger old = service.replace(passenger.getName(), passenger);
+        Passenger old = service.replace(passenger.getUuid(), passenger);
         ItemCount count = new ItemCount();
         if (old != null)
             count.setCount(Integer.valueOf(service.size()).longValue());
@@ -64,9 +64,9 @@ public class PassengerController {
     }
 
     @DeleteMapping
-    public Boolean delete(@RequestParam("name") String name){
+    public Boolean delete(@RequestParam("uuid") String uuid){
         //TODO: Test with RestExecutor
-        Passenger deleted = service.remove(name);
+        Passenger deleted = service.remove(uuid);
         return deleted != null;
     }
 
