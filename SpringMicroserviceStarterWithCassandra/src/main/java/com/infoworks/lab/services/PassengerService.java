@@ -6,13 +6,13 @@ import com.it.soul.lab.cql.CQLExecutor;
 import com.it.soul.lab.cql.query.CQLQuery;
 import com.it.soul.lab.cql.query.CQLSelectQuery;
 import com.it.soul.lab.data.simple.SimpleDataSource;
+import com.it.soul.lab.sql.entity.Entity;
 import com.it.soul.lab.sql.query.QueryType;
 import com.it.soul.lab.sql.query.SQLScalarQuery;
 import com.it.soul.lab.sql.query.models.Where;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("passengerService")
@@ -28,15 +28,15 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
     public Passenger read(String key) {
         List<Passenger> res = null;
         try {
-            res = Passenger.read(Passenger.class, repository, new Where("uuid").isEqualTo(key));
+            res = Entity.read(Passenger.class, repository, new Where("uuid").isEqualTo(key));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
         return res != null && res.size() > 0 ? res.get(0) : null;
     }
@@ -55,13 +55,12 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             List<Passenger> res = items.subList(fromIdx, toIdx);
             return res.toArray(new Passenger[0]);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return new Passenger[0];
     }
 
     public List<Passenger> search(SearchQuery searchQuery) {
@@ -80,13 +79,12 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             List<Passenger> res = items.subList(fromIdx, toIdx);
             return res;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return new ArrayList<>();
     }
 
     @Override
@@ -96,9 +94,8 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             int count = repository.getScalarValue(query);
             return count;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return 0;
     }
 
     @Override
@@ -108,7 +105,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
         try {
             passenger.insert(repository);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -121,7 +118,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             try {
                 existing.update(repository);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         }
         return existing;
@@ -134,7 +131,7 @@ public class PassengerService extends SimpleDataSource<String, Passenger> {
             try {
                 existing.delete(repository);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         }
         return existing;
