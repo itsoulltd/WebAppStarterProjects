@@ -1,11 +1,12 @@
 package com.infoworks.lab.domain.repositories;
 
 import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.rest.repository.CqlRepository;
 import com.it.soul.lab.cql.CQLExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PassengerRepository implements CqlRepository<Passenger, String>{
+public class PassengerRepository implements CqlRepository<Passenger, String> {
 
     private CQLExecutor executor;
 

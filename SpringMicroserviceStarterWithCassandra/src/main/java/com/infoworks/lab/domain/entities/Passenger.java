@@ -24,7 +24,7 @@ public class Passenger extends CQLEntity {
 	@PrimaryKey(name="uuid")
 	private String uuid;
 
-	@ClusteringKey(name = "event_timestamp")
+	//@ClusteringKey(name = "event_timestamp")
 	private Long eventTimestamp = (new Date()).getTime();
 
     @NotNull(message = "name must not be null.")
