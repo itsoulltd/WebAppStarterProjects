@@ -8,6 +8,8 @@ import com.it.soul.lab.sql.SQLExecutor;
 import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
+import com.it.soul.lab.sql.query.models.DataType;
+import com.it.soul.lab.sql.query.models.Operator;
 import com.it.soul.lab.sql.query.models.Property;
 
 import javax.validation.constraints.Min;
@@ -24,7 +26,7 @@ public class Passenger extends CQLEntity {
 	@PrimaryKey(name="uuid")
 	private String uuid;
 
-	//@ClusteringKey(name = "event_timestamp")
+	//@ClusteringKey(name = "event_timestamp", order = Operator.ASC, type = DataType.LONG)
 	private Long eventTimestamp = (new Date()).getTime();
 
     @NotNull(message = "name must not be null.")
