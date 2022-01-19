@@ -26,15 +26,14 @@ public class MessageProducer extends com.infoworks.lab.simulator.Runtime {
             socket.setQueryParam("secret", "app_secret");
             socket.connect("ws://localhost:8080/process");
             //
-            CountDownLatch latch = new CountDownLatch(1);
-            while (boolScanner("Wanna Send an Order")){
-                emitLocations(300, socket, (status) ->{
+            String question = "Wanna Start? -> ";
+            while (boolScanner(question)) {
+                emitLocations(300, socket, (status) -> {
                     System.out.println(status);
-                    latch.countDown();
                 });
-                latch.await();
+                question = "Wanna Start Again? -> ";
             }
-            //
+            System.exit(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
