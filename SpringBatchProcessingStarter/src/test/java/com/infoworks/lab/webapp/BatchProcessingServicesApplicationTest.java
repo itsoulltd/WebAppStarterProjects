@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = {"com.infoworks.lab.controllers"
+@ComponentScan(basePackages = {"com.infoworks.lab.batch"
         , "com.infoworks.lab.services"})
 public class BatchProcessingServicesApplicationTest {
     @Test
