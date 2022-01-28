@@ -83,6 +83,7 @@ public class AuthController {
         //TODO:
         String userRole = request.getUsername().startsWith("ADMIN") ? "ROLE_ADMIN, ADMIN" : "ROLE_USER";
         //
+        JWTHeader header = new JWTHeader().setTyp("round").setKid(kid);
         JWTPayload payload = new JWTPayload().setSub(request.getUsername())
                 .setIss(request.getUsername())
                 .setIat(new Date().getTime())
@@ -92,8 +93,8 @@ public class AuthController {
                 .addData("/isValidToken","true");
         //
         TokenProvider token = new JWTokenProvider(secret)
-                .setPayload(payload)
-                .setHeader(new JWTHeader().setTyp("round").setKid(kid));
+                .setHeader(header)
+                .setPayload(payload);
         //
         String tokenKey = token.generateToken(TokenProvider.defaultTokenTimeToLive());
         LOG.info(tokenKey);
