@@ -26,7 +26,7 @@ import javax.validation.Valid;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/v1")
 public class AuthController {
 
     private static Logger LOG = LoggerFactory.getLogger("AuthController");

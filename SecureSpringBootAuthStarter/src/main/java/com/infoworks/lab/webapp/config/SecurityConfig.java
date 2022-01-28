@@ -64,8 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .requiresChannel().anyRequest().requiresSecure()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/login", "/api/v1/auth/forget","/api/v1/auth/reset").permitAll()
-                //.antMatchers("/api/v1/auth/new/account").hasAnyRole("ROLE_ADMIN", "ADMIN") //Alternative to @EnableGlobalMethodSecurity(...)
+                .antMatchers("/api/auth/v1/login", "/api/auth/v1/forget","/api/auth/v1/reset").permitAll()
+                //.antMatchers("/api/auth/v1/new/account").hasAnyRole("ROLE_ADMIN", "ADMIN") //Alternative to @EnableGlobalMethodSecurity(...)
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new AuthorizationFilter(), BasicAuthenticationFilter.class);
