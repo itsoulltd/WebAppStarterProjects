@@ -41,10 +41,16 @@ public class AuthController {
     }
 
     @GetMapping("/isAccountExist")
-    public ResponseEntity<String> isExist(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token
-            , @ApiIgnore @AuthenticationPrincipal UserDetails principal){
-        Response response = new Response().setStatus(HttpStatus.OK.value())
-                .setMessage("Hello isExist");
+    public ResponseEntity<String> isExist(@RequestParam("username") String username){
+        //
+        Response response = new Response()
+                .setStatus(HttpStatus.NOT_FOUND.value())
+                .setMessage("User Not Found");
+        //
+        if (service.read(username) != null){
+            response.setStatus(HttpStatus.OK.value())
+                    .setMessage("User exist: " + username);
+        }
         return ResponseEntity.ok(response.toString());
     }
 
