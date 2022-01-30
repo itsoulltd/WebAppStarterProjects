@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 
 @Entity
 @Table(name="Users")
-public class User extends com.it.soul.lab.sql.entity.Entity implements UserDetails {
+public class User extends Auditable implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
@@ -51,6 +51,22 @@ public class User extends com.it.soul.lab.sql.entity.Entity implements UserDetai
         this.username = username;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -71,8 +87,7 @@ public class User extends com.it.soul.lab.sql.entity.Entity implements UserDetai
         return true;
     }
 
-    public User(Long id, @NotEmpty String username, @NotEmpty String password, List<String> roles) {
-        this.id = id;
+    public User(@NotEmpty String username, @NotEmpty String password, @NotEmpty List<String> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
