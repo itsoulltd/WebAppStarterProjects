@@ -13,13 +13,15 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Entity
-@Table(name="Users")
+@Table(name="Users"
+        , indexes = {@Index(name = "idx_username",columnList = "username")})
 public class User extends Auditable implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
     @NotEmpty
+    @Column(length = 200, unique = true, nullable = false)
     private String username;
 
     @NotEmpty
