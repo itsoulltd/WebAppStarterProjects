@@ -25,7 +25,7 @@ import java.util.Properties;
 @PropertySource("classpath:h2-db.properties")
 public class TestJPAConfig {
 
-    @Value("${app.db.driverClassName}")
+    @Value("${app.db.driver-class-name}")
     String driverClassName;
     @Value("${app.db.url}")
     String url;
