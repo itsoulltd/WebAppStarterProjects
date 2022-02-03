@@ -35,6 +35,7 @@ import java.util.Optional;
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
 @PropertySource("classpath:mysql-db.properties")
+@PropertySource("classpath:h2-db.properties")
 public class PrimaryJPAConfig {
 
     private Environment env;
