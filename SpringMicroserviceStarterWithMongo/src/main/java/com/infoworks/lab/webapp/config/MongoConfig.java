@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
@@ -17,7 +20,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
 @PropertySource("classpath:mongo-db.properties")
-public class MongoConfig {
+public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.uri}") String url;
     @Value("${mongo.db.username}") String username;
@@ -36,6 +39,16 @@ public class MongoConfig {
     @Bean
     public MongoTemplate mongoTemplate(MongoClient client) throws Exception {
         return new MongoTemplate(client, persistenceUnitName);
+    }
+
+    @Bean
+    public GridFsTemplate gridFsTemplate(MappingMongoConverter converter) {
+        return new GridFsTemplate(mongoDbFactory(), converter);
+    }
+
+    @Override
+    protected String getDatabaseName() {
+        return persistenceUnitName;
     }
 
 }

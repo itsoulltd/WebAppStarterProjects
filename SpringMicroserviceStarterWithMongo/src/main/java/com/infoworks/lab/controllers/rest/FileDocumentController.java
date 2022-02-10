@@ -4,6 +4,7 @@ import com.infoworks.lab.domain.entities.FileDocument;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.services.iDocumentService;
 import com.infoworks.lab.util.services.iResourceService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +31,7 @@ public class FileDocumentController {
     private iDocumentService<FileDocument> docService;
     private iResourceService resService;
 
-    public FileDocumentController(iDocumentService docService, iResourceService resService) {
+    public FileDocumentController(@Qualifier("fileDocumentService") iDocumentService docService, iResourceService resService) {
         this.docService = docService;
         this.resService = resService;
     }
@@ -61,6 +62,12 @@ public class FileDocumentController {
     public ResponseEntity<Map> findByName(@PathVariable("name") String name) {
         FileDocument document = docService.findByName(name);
         return ResponseEntity.ok(document.getFileMeta());
+    }
+
+    @DeleteMapping
+    public Boolean delete(@RequestParam("uuid") String uuid) {
+        FileDocument document = docService.remove(uuid);
+        return document != null;
     }
 
     @PostMapping("/upload/image")
