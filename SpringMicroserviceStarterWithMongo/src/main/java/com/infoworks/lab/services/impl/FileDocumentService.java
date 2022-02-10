@@ -39,9 +39,7 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
 
     @Override
     public void put(String uuid, FileDocument fileDocument) {
-        if (fileDocument == null) return;
-        if (fileDocument.getUuid() == null || fileDocument.getUuid().isEmpty()) return;
-        repository.save(fileDocument);
+        add(fileDocument);
     }
 
     @Override
