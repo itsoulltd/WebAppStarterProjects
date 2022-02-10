@@ -8,6 +8,8 @@ import com.it.soul.lab.data.simple.SimpleDataSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,8 +74,9 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
 
     @Override
     public FileDocument findByName(String name) {
-        //TODO:Using Template
-        return null;
+        //Using Template
+        FileDocument document = template.findOne(Query.query(Criteria.where("fileMeta.name").is(name)), FileDocument.class);
+        return document;
     }
 
     @Override

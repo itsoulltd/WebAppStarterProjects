@@ -57,6 +57,12 @@ public class FileDocumentController {
         return ResponseEntity.ok(metas);
     }
 
+    @GetMapping("/findByName/{name}")
+    public ResponseEntity<Map> findByName(@PathVariable("name") String name) {
+        FileDocument document = docService.findByName(name);
+        return ResponseEntity.ok(document.getFileMeta());
+    }
+
     @PostMapping("/upload/image")
     public ResponseEntity<Map> uploadContent(
             @RequestParam("content") MultipartFile content,
