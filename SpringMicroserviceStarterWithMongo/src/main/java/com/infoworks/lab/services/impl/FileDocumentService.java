@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("fileDocumentService")
-public class FileDocumentService extends SimpleDataSource<String, FileDocument> implements iDocumentService {
+public class FileDocumentService extends SimpleDataSource<String, FileDocument> implements iDocumentService<FileDocument> {
 
     private FileDocumentRepository repository;
     private MongoTemplate template;
@@ -69,7 +69,7 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
         if (existing != null){
             repository.delete(existing);
         }
-        return super.remove(uuid);
+        return existing;
     }
 
     @Override

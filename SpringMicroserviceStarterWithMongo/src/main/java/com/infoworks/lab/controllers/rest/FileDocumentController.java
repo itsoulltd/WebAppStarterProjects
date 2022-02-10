@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/documents")
 public class FileDocumentController {
 
-    private iDocumentService docService;
+    private iDocumentService<FileDocument> docService;
     private iResourceService resService;
 
     public FileDocumentController(iDocumentService docService, iResourceService resService) {

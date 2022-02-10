@@ -28,22 +28,6 @@ public class FileDocument extends Entity {
         this.uuid = uuid;
     }
 
-    public String getName() {
-        return fileMeta.get("name").toString();
-    }
-
-    public void setName(String name) {
-        fileMeta.put("name", name);
-    }
-
-    public String getDescription() {
-        return fileMeta.get("description").toString();
-    }
-
-    public void setDescription(String description) {
-        fileMeta.put("description", description);
-    }
-
     public Map getFileMeta() {
         return fileMeta;
     }
@@ -58,6 +42,22 @@ public class FileDocument extends Entity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getName() {
+        return fileMeta.get("name").toString();
+    }
+
+    public void setName(String name) {
+        fileMeta.put("name", name);
+    }
+
+    public String getDescription() {
+        return fileMeta.get("description").toString();
+    }
+
+    public void setDescription(String description) {
+        fileMeta.put("description", description);
     }
 
     public String getContentType(){
