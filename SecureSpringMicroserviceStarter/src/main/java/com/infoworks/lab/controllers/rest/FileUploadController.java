@@ -1,9 +1,8 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.services.LocalStorageService;
+import com.infoworks.lab.services.iFileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -22,10 +21,10 @@ import java.util.List;
 @RequestMapping("/files")
 public class FileUploadController {
 
-    private LocalStorageService storageService;
+    private iFileStorageService<InputStream> storageService;
 
     @Autowired
-    public FileUploadController(@Qualifier("local") LocalStorageService storageService) {
+    public FileUploadController(iFileStorageService storageService) {
         this.storageService = storageService;
     }
 
@@ -39,7 +38,7 @@ public class FileUploadController {
     @GetMapping
     public ResponseEntity<List<String>> query(@RequestParam("limit") Integer limit
             , @RequestParam("offset") Integer offset){
-        List<String> names = Arrays.asList(storageService.readKeys());
+        List<String> names = Arrays.asList(storageService.fileNames());
         return ResponseEntity.ok(names);
     }
 
@@ -49,7 +48,6 @@ public class FileUploadController {
             RedirectAttributes redirectAttributes) throws IOException {
         //Store-InMemory First:
         storageService.put(content.getOriginalFilename(), content.getInputStream());
-        //storageService.save(false);
         return ResponseEntity.ok("Content Received: " + content.getOriginalFilename());
     }
 
@@ -57,6 +55,8 @@ public class FileUploadController {
     public ResponseEntity<Resource> downloadContent(@RequestParam("fileName") String fileName) throws IOException {
         //
         InputStream ios = storageService.read(fileName);
+        if (ios == null) return ResponseEntity.notFound().build();
+        //
         int contentLength = ios.available();
         byte[] bytes = new byte[contentLength];
         ios.read(bytes);
@@ -74,6 +74,12 @@ public class FileUploadController {
                 .contentLength(contentLength)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    }
+
+    @DeleteMapping
+    public Boolean delete(@RequestParam("filename") String name){
+        InputStream stream = storageService.remove(name);
+        return stream != null;
     }
 
 }
