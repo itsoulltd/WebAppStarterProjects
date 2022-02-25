@@ -26,7 +26,7 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     private String uploadPath;
 
     public String[] fileNames(){
-        return getInMemoryStorage().keySet().toArray(new String[0]);
+        return fileSavedStatusMap.keySet().toArray(new String[0]);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
                     return new FileInputStream("");
                 }
             } catch (Exception e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error(e.getMessage());
             }
         }
         return null;
