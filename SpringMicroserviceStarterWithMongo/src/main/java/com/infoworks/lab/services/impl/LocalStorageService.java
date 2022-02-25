@@ -47,21 +47,26 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
 
     @Override
     public InputStream remove(String filename) {
-        try {
-            String fullPath = getTargetLocation(filename);
-            deleteFile(fullPath);
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+        if (containsKey(filename)){
+            try {
+                String fullPath = getTargetLocation(filename);
+                deleteFile(fullPath);
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+            }
+            fileSavedStatusMap.remove(filename);
+            return super.remove(filename);
         }
-        fileSavedStatusMap.remove(filename);
-        return super.remove(filename);
+        return null;
     }
 
-    private void deleteFile(String fullPath) throws SecurityException {
+    private boolean deleteFile(String fullPath) throws SecurityException {
         File file = new File(fullPath);
-        if (file.delete()){
+        boolean deleted = file.delete();
+        if (deleted){
             LOG.info("Deleted: " + fullPath);
         }
+        return deleted;
     }
 
     protected synchronized List<String> getUnsavedFiles(){

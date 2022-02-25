@@ -2,7 +2,6 @@ package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.services.iFileStorageService;
-import com.infoworks.lab.services.impl.LocalStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
@@ -74,6 +73,12 @@ public class FileUploadController {
                 .contentLength(contentLength)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    }
+
+    @DeleteMapping
+    public Boolean delete(@RequestParam("filename") String name){
+        InputStream stream = storageService.remove(name);
+        return stream != null;
     }
 
 }
