@@ -1,54 +1,86 @@
 package com.infoworks.lab.services;
 
-import com.it.soul.lab.data.base.DataStorage;
+import com.infoworks.lab.rest.models.SearchQuery;
 import com.it.soul.lab.data.simple.SimpleDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-@Service("local")
-public class LocalStorageService extends SimpleDataSource<String, InputStream> implements DataStorage, AutoCloseable {
+@Service("localStorageService")
+public class LocalStorageService extends SimpleDataSource<String, InputStream> implements iFileStorageService<InputStream> {
 
-    private String uuid;
-    @Override
-    public String getUuid() {
-        if (uuid == null) uuid = UUID.randomUUID().toString();
-        return uuid;
-    }
-
+    private static Logger LOG = LoggerFactory.getLogger(LocalStorageService.class);
     private Map<String, Boolean> fileSavedStatusMap = new ConcurrentHashMap<>();
-    private ExecutorService service = Executors.newSingleThreadExecutor();
+    private Executor executor = Executors.newSingleThreadExecutor();
 
-    @Override
-    public void close() throws Exception {
-        fileSavedStatusMap.clear();
-        service.shutdown();
-    }
+    @Value("${app.upload.dir}")
+    private String uploadPath;
 
-    public String[] readKeys(){
+    public String[] fileNames(){
         return getInMemoryStorage().keySet().toArray(new String[0]);
     }
 
     @Override
-    public void put(String s, InputStream multipartFile) {
-        super.put(s, multipartFile);
-        fileSavedStatusMap.put(s, false);
+    public InputStream read(String filename) {
+        try {
+            String fileLocation = getTargetLocation(filename);
+            File file = new File(fileLocation);
+            FileInputStream ios = new FileInputStream(file);
+            return ios;
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     @Override
-    public InputStream remove(String s) {
-        fileSavedStatusMap.remove(s);
-        return super.remove(s);
+    public void put(String filename, InputStream multipartFile) {
+        try {
+            String fileLocation = getTargetLocation(filename);
+            fileSavedStatusMap.put(filename, save(fileLocation, multipartFile));
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+            fileSavedStatusMap.put(filename, false);
+        }
+    }
+
+    @Override
+    public boolean containsKey(String filename) {
+        return fileSavedStatusMap.containsKey(filename);
+    }
+
+    @Override
+    public InputStream remove(String filename) {
+        if (containsKey(filename)){
+            try {
+                String fullPath = getTargetLocation(filename);
+                if (deleteFile(fullPath)) {
+                    fileSavedStatusMap.remove(filename);
+                    return new FileInputStream("");
+                }
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+        return null;
+    }
+
+    private boolean deleteFile(String fullPath) throws SecurityException {
+        File file = new File(fullPath);
+        boolean deleted = file.delete();
+        if (deleted){
+            LOG.info("Deleted: " + fullPath);
+        }
+        return deleted;
     }
 
     protected synchronized List<String> getUnsavedFiles(){
@@ -60,41 +92,59 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
         return notSavedYet;
     }
 
+    private String getTargetLocation(String fileName) {
+        File currDir = new File(uploadPath);
+        String path = currDir.getAbsolutePath();
+        String fileLocation = path + "/" + fileName;
+        return fileLocation;
+    }
+
     @Override
-    public void save(boolean async) {
+    public boolean save(String fileLocation, InputStream in) throws IOException {
+        try(FileOutputStream f = new FileOutputStream(fileLocation)){
+            int data;
+            while ((data = in.read()) != -1) {
+                f.write(data);
+            }
+        }
+        return true;
+    }
+
+    private void retrySave(String fileName, Map fileSavedStatusMap) throws IOException {
+        InputStream file = read(fileName);
+        String fileLocation = getTargetLocation(fileName);
+        fileSavedStatusMap.put(fileName, save(fileLocation, file));
+    }
+
+    public void retry(boolean async) {
         List<String> notSavedYet = getUnsavedFiles();
         notSavedYet.forEach(fileName -> {
-            try {
-                InputStream file = read(fileName);
-                fileSavedStatusMap.put(fileName, saveFile(file, fileName));
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
+            if (async){
+                executor.execute(() -> {
+                    try {
+                        retrySave(fileName, fileSavedStatusMap);
+                    } catch (IOException e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                });
+            }else {
+                try {
+                    retrySave(fileName, fileSavedStatusMap);
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                }
             }
         });
     }
 
-    protected boolean saveFile(InputStream file, String name) throws IOException {
-        InputStream in = file;
-        File currDir = new File(".");
-        String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + name;
-        FileOutputStream f = new FileOutputStream(fileLocation);
-        int ch = 0;
-        while ((ch = in.read()) != -1) {
-            f.write(ch);
-        }
-        f.flush();
-        f.close();
-        return true;
+    @Override
+    public InputStream findByName(String name) {
+        return read(name);
     }
 
     @Override
-    public boolean retrieve() {
-        return false;
-    }
-
-    @Override
-    public boolean delete() {
-        return false;
+    public List<InputStream> search(SearchQuery query) {
+        //TODO:
+        return null;
     }
 }
