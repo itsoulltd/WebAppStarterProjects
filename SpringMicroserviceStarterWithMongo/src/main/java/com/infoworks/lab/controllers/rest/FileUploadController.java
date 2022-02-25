@@ -56,6 +56,8 @@ public class FileUploadController {
     public ResponseEntity<Resource> downloadContent(@RequestParam("fileName") String fileName) throws IOException {
         //
         InputStream ios = storageService.read(fileName);
+        if (ios == null) return ResponseEntity.notFound().build();
+        //
         int contentLength = ios.available();
         byte[] bytes = new byte[contentLength];
         ios.read(bytes);

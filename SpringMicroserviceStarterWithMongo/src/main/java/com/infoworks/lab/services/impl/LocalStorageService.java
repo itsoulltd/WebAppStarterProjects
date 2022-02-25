@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,8 +31,25 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     }
 
     @Override
+    public int size() {
+        return fileSavedStatusMap.size();
+    }
+
+    @Override
+    public InputStream read(String filename) {
+        try {
+            String fileLocation = getTargetLocation(filename);
+            File file = new File(fileLocation);
+            FileInputStream ios = new FileInputStream(file);
+            return ios;
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
     public void put(String filename, InputStream multipartFile) {
-        super.put(filename, multipartFile);
         try {
             String fileLocation = getTargetLocation(filename);
             fileSavedStatusMap.put(filename, save(fileLocation, multipartFile));
@@ -46,16 +60,22 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     }
 
     @Override
+    public boolean containsKey(String filename) {
+        return fileSavedStatusMap.containsKey(filename);
+    }
+
+    @Override
     public InputStream remove(String filename) {
         if (containsKey(filename)){
             try {
                 String fullPath = getTargetLocation(filename);
-                deleteFile(fullPath);
+                if (deleteFile(fullPath)) {
+                    fileSavedStatusMap.remove(filename);
+                    return new FileInputStream("");
+                }
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
             }
-            fileSavedStatusMap.remove(filename);
-            return super.remove(filename);
         }
         return null;
     }
@@ -67,6 +87,14 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
             LOG.info("Deleted: " + fullPath);
         }
         return deleted;
+    }
+
+    @Override
+    public InputStream replace(String filename, InputStream inputStream) {
+        if (!containsKey(filename)) return null;
+        InputStream old = read(filename);
+        put(filename, inputStream);
+        return old;
     }
 
     protected synchronized List<String> getUnsavedFiles(){
