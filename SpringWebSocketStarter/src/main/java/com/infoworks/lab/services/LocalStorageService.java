@@ -30,6 +30,11 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     }
 
     @Override
+    public int size() {
+        return fileSavedStatusMap.size();
+    }
+
+    @Override
     public InputStream read(String filename) {
         try {
             String fileLocation = getTargetLocation(filename);
@@ -81,6 +86,14 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
             LOG.info("Deleted: " + fullPath);
         }
         return deleted;
+    }
+
+    @Override
+    public InputStream replace(String filename, InputStream inputStream) {
+        if (!containsKey(filename)) return null;
+        InputStream old = read(filename);
+        put(filename, inputStream);
+        return old;
     }
 
     protected synchronized List<String> getUnsavedFiles(){
