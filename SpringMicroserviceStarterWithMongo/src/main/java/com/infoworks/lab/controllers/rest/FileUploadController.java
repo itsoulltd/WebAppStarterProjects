@@ -1,6 +1,7 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.rest.models.ItemCount;
+import com.infoworks.lab.services.iFileStorageService;
 import com.infoworks.lab.services.impl.LocalStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,10 +23,10 @@ import java.util.List;
 @RequestMapping("/files")
 public class FileUploadController {
 
-    private LocalStorageService storageService;
+    private iFileStorageService<InputStream> storageService;
 
     @Autowired
-    public FileUploadController(@Qualifier("local") LocalStorageService storageService) {
+    public FileUploadController(@Qualifier("localStorageService") iFileStorageService storageService) {
         this.storageService = storageService;
     }
 
@@ -39,7 +40,7 @@ public class FileUploadController {
     @GetMapping
     public ResponseEntity<List<String>> query(@RequestParam("limit") Integer limit
             , @RequestParam("offset") Integer offset){
-        List<String> names = Arrays.asList(storageService.readKeys());
+        List<String> names = Arrays.asList(storageService.fileNames());
         return ResponseEntity.ok(names);
     }
 
@@ -49,7 +50,6 @@ public class FileUploadController {
             RedirectAttributes redirectAttributes) throws IOException {
         //Store-InMemory First:
         storageService.put(content.getOriginalFilename(), content.getInputStream());
-        //storageService.save(false);
         return ResponseEntity.ok("Content Received: " + content.getOriginalFilename());
     }
 

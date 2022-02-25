@@ -1,7 +1,11 @@
 package com.infoworks.lab.services.impl;
 
-import com.it.soul.lab.data.base.DataStorage;
+import com.infoworks.lab.rest.models.SearchQuery;
+import com.infoworks.lab.services.iFileStorageService;
 import com.it.soul.lab.data.simple.SimpleDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -10,45 +14,54 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-@Service("local")
-public class LocalStorageService extends SimpleDataSource<String, InputStream> implements DataStorage, AutoCloseable {
+@Service("localStorageService")
+public class LocalStorageService extends SimpleDataSource<String, InputStream> implements iFileStorageService<InputStream> {
 
-    private String uuid;
-    @Override
-    public String getUuid() {
-        if (uuid == null) uuid = UUID.randomUUID().toString();
-        return uuid;
-    }
-
+    private static Logger LOG = LoggerFactory.getLogger(LocalStorageService.class);
     private Map<String, Boolean> fileSavedStatusMap = new ConcurrentHashMap<>();
-    private ExecutorService service = Executors.newSingleThreadExecutor();
+    private Executor executor = Executors.newSingleThreadExecutor();
 
-    @Override
-    public void close() throws Exception {
-        fileSavedStatusMap.clear();
-        service.shutdown();
-    }
+    @Value("${app.upload.dir}")
+    private String uploadPath;
 
-    public String[] readKeys(){
+    public String[] fileNames(){
         return getInMemoryStorage().keySet().toArray(new String[0]);
     }
 
     @Override
-    public void put(String s, InputStream multipartFile) {
-        super.put(s, multipartFile);
-        fileSavedStatusMap.put(s, false);
+    public void put(String filename, InputStream multipartFile) {
+        super.put(filename, multipartFile);
+        try {
+            String fileLocation = getTargetLocation(filename);
+            fileSavedStatusMap.put(filename, save(fileLocation, multipartFile));
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+            fileSavedStatusMap.put(filename, false);
+        }
     }
 
     @Override
-    public InputStream remove(String s) {
-        fileSavedStatusMap.remove(s);
-        return super.remove(s);
+    public InputStream remove(String filename) {
+        try {
+            String fullPath = getTargetLocation(filename);
+            deleteFile(fullPath);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        fileSavedStatusMap.remove(filename);
+        return super.remove(filename);
+    }
+
+    private void deleteFile(String fullPath) throws SecurityException {
+        File file = new File(fullPath);
+        if (file.delete()){
+            LOG.info("Deleted: " + fullPath);
+        }
     }
 
     protected synchronized List<String> getUnsavedFiles(){
@@ -60,41 +73,59 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
         return notSavedYet;
     }
 
+    private String getTargetLocation(String fileName) {
+        File currDir = new File(uploadPath);
+        String path = currDir.getAbsolutePath();
+        String fileLocation = path + "/" + fileName;
+        return fileLocation;
+    }
+
     @Override
-    public void save(boolean async) {
+    public boolean save(String fileLocation, InputStream in) throws IOException {
+        try(FileOutputStream f = new FileOutputStream(fileLocation)){
+            int data;
+            while ((data = in.read()) != -1) {
+                f.write(data);
+            }
+        }
+        return true;
+    }
+
+    private void retrySave(String fileName, Map fileSavedStatusMap) throws IOException {
+        InputStream file = read(fileName);
+        String fileLocation = getTargetLocation(fileName);
+        fileSavedStatusMap.put(fileName, save(fileLocation, file));
+    }
+
+    public void retry(boolean async) {
         List<String> notSavedYet = getUnsavedFiles();
         notSavedYet.forEach(fileName -> {
-            try {
-                InputStream file = read(fileName);
-                fileSavedStatusMap.put(fileName, saveFile(file, fileName));
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
+            if (async){
+                executor.execute(() -> {
+                    try {
+                        retrySave(fileName, fileSavedStatusMap);
+                    } catch (IOException e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                });
+            }else {
+                try {
+                    retrySave(fileName, fileSavedStatusMap);
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                }
             }
         });
     }
 
-    protected boolean saveFile(InputStream file, String name) throws IOException {
-        InputStream in = file;
-        File currDir = new File(".");
-        String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + name;
-        FileOutputStream f = new FileOutputStream(fileLocation);
-        int ch = 0;
-        while ((ch = in.read()) != -1) {
-            f.write(ch);
-        }
-        f.flush();
-        f.close();
-        return true;
+    @Override
+    public InputStream findByName(String name) {
+        return read(name);
     }
 
     @Override
-    public boolean retrieve() {
-        return false;
-    }
-
-    @Override
-    public boolean delete() {
-        return false;
+    public List<InputStream> search(SearchQuery query) {
+        //TODO:
+        return null;
     }
 }
