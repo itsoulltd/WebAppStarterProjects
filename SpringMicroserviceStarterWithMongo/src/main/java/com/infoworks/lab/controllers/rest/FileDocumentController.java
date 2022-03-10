@@ -96,12 +96,12 @@ public class FileDocumentController {
             mp.put("uuid", document.getUuid());
             return ResponseEntity.ok(mp);
         }
-        Map<String, String > data = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("error", "contentType not an image.");
         return ResponseEntity.badRequest().body(data);
     }
 
-    @GetMapping("/download/image")
+    @GetMapping("/download/image") @SuppressWarnings("Duplicates")
     public ResponseEntity<Resource> downloadContent(@RequestParam("uuid") String uuid) throws IOException {
         //
         FileDocument document = docService.read(uuid);
@@ -134,7 +134,7 @@ public class FileDocumentController {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
         }
-        Map<String, String > data = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("error", "contentType not an image.");
         return ResponseEntity.badRequest().build();
     }
