@@ -35,6 +35,8 @@ services:
          app.db.username: root
          app.db.password: root@123
          management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
+         app.home.logs: /home/logs
+         app.upload.dir: /home/downloads
       ports:
          - 8080:8080
       depends_on:

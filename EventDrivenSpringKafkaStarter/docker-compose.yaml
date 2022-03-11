@@ -75,6 +75,7 @@ services:
          app.kafka.host: kafka
          app.kafka.port: 9092
          management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
+         app.home.logs: /home/logs
       ports:
          - 8080:8080
       depends_on:

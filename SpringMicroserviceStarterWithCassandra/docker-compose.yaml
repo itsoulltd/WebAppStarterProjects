@@ -30,6 +30,8 @@ services:
       cassandra.db.host: cassandra-db
       cassandra.db.port: 9042
       management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
+      app.home.logs: /home/logs
+      app.upload.dir: /home/downloads
     ports:
       - 8080:8080
     depends_on:
