@@ -25,13 +25,13 @@ import java.util.Properties;
 @PropertySource("classpath:h2-db.properties")
 public class TestJPAConfig {
 
-    @Value("${app.db.driver-class-name}")
+    @Value("${spring.datasource.driver-class-name}")
     String driverClassName;
-    @Value("${app.db.url}")
+    @Value("${spring.datasource.url}")
     String url;
-    @Value("${app.db.user}")
+    @Value("${app.db.username}")
     String username;
-    @Value("${app.db.pass}")
+    @Value("${app.db.password}")
     String password;
     @Value("${app.db.name}")
     String persistenceUnitName;
