@@ -57,8 +57,7 @@ public class KafkaConfig {
     @Value("${app.consumer.group.id}")
     private String consumerGroupID;
 
-    @Bean
-    public ConsumerFactory<String, String> getConsumerFactory() {
+    private ConsumerFactory<String, String> getConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
