@@ -5,6 +5,7 @@ import com.infoworks.lab.beans.queue.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -23,20 +24,22 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
     }
 
     @KafkaListener(topics = {"${topic.execute}"}, concurrency = "5")
-    public void startListener(@Payload String message) {
+    public void startListener(@Payload String message, Acknowledgment ack) {
         // retrieve the message content
         String text = message;
+        logger.log(Level.INFO, "EXE-QUEUE: Message received {0} ", text);
         if (handleTextOnStart(text)){
-            logger.log(Level.INFO, "EXE-QUEUE: Message received {0} ", text);
+            ack.acknowledge();
         }
     }
 
     @KafkaListener(topics = {"${topic.abort}"}, concurrency = "3")
-    public void abortListener(@Payload String message) {
+    public void abortListener(@Payload String message, Acknowledgment ack) {
         // retrieve the message content
         String text = message;
+        logger.log(Level.INFO, "ABORT-QUEUE: Message received {0} ", text);
         if (handleTextOnStop(text)){
-            logger.log(Level.INFO, "ABORT-QUEUE: Message received {0} ", text);
+            ack.acknowledge();
         }
     }
 
