@@ -1,5 +1,8 @@
 package com.infoworks.lab.webapp.config.kafka;
 
+import com.infoworks.lab.rest.models.Message;
+import kafka.utils.ZKStringSerializer$;
+import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -30,27 +33,25 @@ public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Bean("createJsonSerializableProps")
-    public Map<String, Object> createJsonSerializableProps(){
+    @Bean("kafkaMessageTemplate")
+    public KafkaTemplate<String, Message> getKafkaMessageTemplate() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return props;
+        //
+        DefaultKafkaProducerFactory factory = new DefaultKafkaProducerFactory<>(props);
+        return new KafkaTemplate<>(factory);
     }
 
-    @Bean("createStringSerializableProps")
-    public Map<String, Object> createStringSerializableProps(){
+    @Bean("kafkaTextTemplate")
+    public KafkaTemplate<String, String> getKafkaTextTemplate() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        return props;
-    }
-
-    @Bean("kafkaTemplate")
-    public KafkaTemplate<String, String> getKafkaTemplate() {
-        DefaultKafkaProducerFactory factory = new DefaultKafkaProducerFactory<>(createStringSerializableProps());
+        //
+        DefaultKafkaProducerFactory factory = new DefaultKafkaProducerFactory<>(props);
         return new KafkaTemplate<>(factory);
     }
 
@@ -79,6 +80,19 @@ public class KafkaConfig {
         //In this listener, all the messages matching the filter will be discarded.
         //factory.setRecordFilterStrategy(consumerRecord -> consumerRecord.value().contains("loc:"));
         return factory;
+    }
+
+    @Value("${app.zookeeper.servers}")
+    private String zookeeperServers;
+
+    @Bean("myZooKeeper")
+    public ZkClient getZookeeper() {
+        int sessionTimeout = 10 * 1000;
+        int connectionTimeout = 8 * 1000;
+        return new ZkClient(zookeeperServers
+                , sessionTimeout
+                , connectionTimeout
+                , ZKStringSerializer$.MODULE$);
     }
 
 }

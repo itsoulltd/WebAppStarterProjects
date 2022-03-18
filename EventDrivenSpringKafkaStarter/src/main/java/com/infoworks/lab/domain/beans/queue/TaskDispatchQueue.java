@@ -14,7 +14,7 @@ public class TaskDispatchQueue extends AbstractTaskQueue {
 
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public TaskDispatchQueue(@Qualifier("kafkaTemplate") KafkaTemplate kafkaTemplate) {
+    public TaskDispatchQueue(@Qualifier("kafkaTextTemplate") KafkaTemplate kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 

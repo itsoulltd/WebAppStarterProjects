@@ -24,7 +24,7 @@ public class MessageController {
     private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public MessageController(@Qualifier("kafkaTemplate") KafkaTemplate kafkaTemplate) {
+    public MessageController(@Qualifier("kafkaTextTemplate") KafkaTemplate kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
