@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2d8ad9f6-7a14-4f4a-888a-3e32082a0436",
+		"_postman_id": "48b53cac-e805-401a-ab66-7f60ae21de12",
 		"name": "SpringMServiceStarter",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,20 +9,81 @@
 			"name": "EventDrivenSpringMServiceStarter",
 			"item": [
 				{
-					"name": "http://localhost:8080/api/message/{message}",
+					"name": "Kafka",
+					"item": [
+						{
+							"name": "http://localhost:8080/v1/kafka/create/topic/go-home",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/v1/kafka/create/topic/go-home",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"kafka",
+										"create",
+										"topic",
+										"go-home"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/v1/kafka/post/message/test",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"payload\":\"wanna goo home\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/kafka/post/message/test",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"kafka",
+										"post",
+										"message",
+										"test"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "http://localhost:8080/v1/message/message/{message}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/message/jms hi there!",
+							"raw": "http://localhost:8080/v1/message/send/jms hi there!",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"api",
+								"v1",
 								"message",
+								"send",
 								"jms hi there!"
 							]
 						}
@@ -30,19 +91,20 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/queue/task/{message}",
+					"name": "http://localhost:8080/v1/message/queue/task/{message}",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/queue/task/abor hi there",
+							"raw": "http://localhost:8080/v1/message/queue/task/abor hi there",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"api",
+								"v1",
+								"message",
 								"queue",
 								"task",
 								"abor hi there"
@@ -51,8 +113,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "SpringMServiceStarter",
@@ -63,7 +124,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/passenger?limit=1&offset=0",
+							"raw": "http://localhost:8080/passenger?limit=10&page=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -75,10 +136,10 @@
 							"query": [
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "10"
 								},
 								{
-									"key": "offset",
+									"key": "page",
 									"value": "0"
 								}
 							]
@@ -162,8 +223,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "SpringSecurity",
@@ -217,8 +277,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "http://localhost:8080/passenger/rowCount",
@@ -321,6 +380,5 @@
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
