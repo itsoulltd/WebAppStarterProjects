@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/socket/session")
+@RequestMapping("/v1/socket/session")
 public class SocketSessionStatusController {
 
     private StatefulRedisConnection connection;
