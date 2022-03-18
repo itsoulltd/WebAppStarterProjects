@@ -56,6 +56,21 @@ services:
       networks:
         - web-app-net
 
+   kafka-ui:
+      image: provectuslabs/kafka-ui
+      ports:
+        - 8081:8080
+      restart: on-failure
+      environment:
+        - KAFKA_CLUSTERS_0_NAME=local
+        - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+        - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+        - KAFKA_CLUSTERS_0_READONLY=true
+      depends_on:
+        - kafka
+      networks:
+        - web-app-net
+
    webapp:
       image: event-driven-microservice-starter:1.0
       build:
