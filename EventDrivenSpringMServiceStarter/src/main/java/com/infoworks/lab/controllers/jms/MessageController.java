@@ -19,7 +19,7 @@ import javax.jms.Queue;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/v1/message")
 public class MessageController {
 
     private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
@@ -31,7 +31,7 @@ public class MessageController {
     @Autowired
     private JmsTemplate jmsTemplate;
 
-    @GetMapping("/message/{message}")
+    @GetMapping("/send/{message}")
     public ResponseEntity<String> publish(@PathVariable("message") final String message){
         //
         jmsTemplate.convertAndSend(queue, message);

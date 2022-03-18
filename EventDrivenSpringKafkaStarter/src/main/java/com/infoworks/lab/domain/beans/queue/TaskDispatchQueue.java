@@ -12,9 +12,11 @@ import org.springframework.stereotype.Component;
 @Component("taskDispatchQueue")
 public class TaskDispatchQueue extends AbstractTaskQueue {
 
-    @Autowired
-    @Qualifier("kafkaTemplate")
     private KafkaTemplate<String, String> kafkaTemplate;
+
+    public TaskDispatchQueue(@Qualifier("kafkaTemplate") KafkaTemplate kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     @Autowired
     @Qualifier("topic.execute")

@@ -18,20 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/v1/message")
 public class MessageController {
 
     private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
-
-    @Autowired
-    @Qualifier("kafkaTemplate")
     private KafkaTemplate<String, String> kafkaTemplate;
+
+    public MessageController(@Qualifier("kafkaTemplate") KafkaTemplate kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     @Autowired
     @Qualifier("topic.test")
     private String queue;
 
-    @GetMapping("/message/{message}")
+    @GetMapping("/send/{message}")
     public ResponseEntity<String> publish(@PathVariable("message") final String message){
         //
         kafkaTemplate.send(queue, message);

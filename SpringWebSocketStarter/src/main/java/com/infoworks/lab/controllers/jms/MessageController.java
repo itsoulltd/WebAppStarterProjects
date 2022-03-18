@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.jms.Queue;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/v1/message")
 public class MessageController {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
@@ -27,7 +27,7 @@ public class MessageController {
     @Autowired
     private JmsTemplate jmsTemplate;
 
-    @GetMapping("/message/{message}")
+    @GetMapping("/send/{message}")
     public ResponseEntity<String> publish(@PathVariable("message") final String message){
         jmsTemplate.convertAndSend(queue, message);
         return new ResponseEntity(message, HttpStatus.OK);
