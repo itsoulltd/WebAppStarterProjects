@@ -81,8 +81,13 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
 
     @Override
     public List<FileDocument> search(SearchQuery query) {
-        //TODO: Template
-        return null;
+        String search = query.get("search", String.class);
+        Query mQuery = new Query();
+        mQuery.limit(query.getSize());
+        //Start with aa -> "^aa"; End with aa -> "aa$"
+        mQuery.addCriteria(Criteria.where("fileMeta.name").regex("^" + search));
+        List<FileDocument> iterable = template.find(mQuery, FileDocument.class);
+        return iterable;
     }
 
     @Override

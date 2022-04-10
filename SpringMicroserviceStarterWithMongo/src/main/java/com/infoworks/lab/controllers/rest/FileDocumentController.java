@@ -2,6 +2,7 @@ package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.domain.entities.FileDocument;
 import com.infoworks.lab.rest.models.ItemCount;
+import com.infoworks.lab.rest.models.SearchQuery;
 import com.infoworks.lab.services.iDocumentService;
 import com.infoworks.lab.util.services.iResourceService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,6 +48,10 @@ public class FileDocumentController {
     public ResponseEntity<List<Map>> query(@RequestParam("limit") Integer limit
             , @RequestParam("offset") Integer offset){
         List<FileDocument> documents = Arrays.asList(docService.readSync(offset, limit));
+        return convertFileDocumentIntoMap(documents);
+    }
+
+    private ResponseEntity<List<Map>> convertFileDocumentIntoMap(List<FileDocument> documents) {
         List<Map> metas = documents
                 .stream()
                 .map(doc -> {
@@ -56,6 +61,12 @@ public class FileDocumentController {
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(metas);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Map>> searchByName(@RequestBody SearchQuery query) {
+        List<FileDocument> documents = docService.search(query);
+        return convertFileDocumentIntoMap(documents);
     }
 
     @GetMapping("/findByName/{name}")
