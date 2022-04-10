@@ -81,11 +81,18 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
 
     @Override
     public List<FileDocument> search(SearchQuery query) {
-        String search = query.get("search", String.class);
         Query mQuery = new Query();
         mQuery.limit(query.getSize());
         //Start with aa -> "^aa"; End with aa -> "aa$"
-        mQuery.addCriteria(Criteria.where("fileMeta.name").regex("^" + search));
+        query.getProperties().forEach(prop -> {
+            if (prop.getKey().equalsIgnoreCase("name")){
+                mQuery.addCriteria(Criteria.where("fileMeta.name").regex("^" + prop.getValue()));
+            } else if (prop.getKey().equalsIgnoreCase("description")){
+                mQuery.addCriteria(Criteria.where("fileMeta.description").regex("^" + prop.getValue()));
+            } else if (prop.getKey().equalsIgnoreCase("contentType")){
+                mQuery.addCriteria(Criteria.where("fileMeta.contentType").regex("^" + prop.getValue()));
+            }
+        });
         List<FileDocument> iterable = template.find(mQuery, FileDocument.class);
         return iterable;
     }
