@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +94,7 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
                 mQuery.addCriteria(Criteria.where("fileMeta.contentType").regex("^" + prop.getValue()));
             }
         });
+        if (mQuery.getQueryObject().isEmpty()) return new ArrayList<>();
         List<FileDocument> iterable = template.find(mQuery, FileDocument.class);
         return iterable;
     }
