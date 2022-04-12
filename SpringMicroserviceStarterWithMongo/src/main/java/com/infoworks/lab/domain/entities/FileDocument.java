@@ -18,6 +18,7 @@ public class FileDocument extends Entity {
     @PrimaryKey(name = "uuid")
     private String uuid = UUID.randomUUID().toString();
     private String content;
+    private Long timestamp = System.currentTimeMillis();
     private Map<String, Object> fileMeta = new HashMap<>();
 
     public String getUuid() {
@@ -76,4 +77,11 @@ public class FileDocument extends Entity {
         fileMeta.put("contentLength", contentLength);
     }
 
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

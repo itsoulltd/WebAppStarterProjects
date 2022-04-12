@@ -20,6 +20,7 @@ public class GridFileDocument extends Entity {
     @PrimaryKey(name = "uuid")
     private String uuid;
     private String name;
+    private Long timestamp = System.currentTimeMillis();
     private Map<String, Object> fileMeta = new HashMap<>();
 
     @Ignore @Transient
@@ -79,5 +80,13 @@ public class GridFileDocument extends Entity {
 
     public void setContentLength(long contentLength) {
         fileMeta.put("contentLength", contentLength);
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }
