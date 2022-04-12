@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
 
 @Service("fileDocumentService")
 public class FileDocumentService extends SimpleDataSource<String, FileDocument> implements iDocumentService<FileDocument> {
@@ -100,10 +101,35 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
     @Override
     public Map<Long, List<FileDocument>> searchInBatchGroup(SearchQuery query) {
         Map<Long, List<FileDocument>> result = new HashMap<>();
+        search(query, (cursor, iterable) -> {
+            result.put(cursor, new ArrayList<>(iterable));
+            iterable.forEach(fileDocument -> LOG.info("Document: " + fileDocument.getName()));
+            LOG.info("-----------------------------------------");
+        });
+        return result;
+    }
+
+    @Override
+    public long remove(SearchQuery query) {
+        AtomicLong rowEffected = new AtomicLong(0);
+        search(query, (cursor, iterable) -> {
+            if (iterable != null && !iterable.isEmpty()){
+                rowEffected.addAndGet(iterable.size());
+                repository.deleteAll(iterable);
+            }
+        });
+        return rowEffected.get();
+    }
+
+    @Override
+    public void search(SearchQuery query, BiConsumer<Long, List<FileDocument>> consumer) {
+        if (consumer == null) return;
         Query mQuery = convertIntoMQuery(query);
-        //
         long maxSize =  template.count(mQuery, FileDocument.class);
-        if (maxSize == 0) return result;
+        if (maxSize == 0) {
+            consumer.accept(maxSize, new ArrayList<>());
+            return;
+        }
         //
         long cursor = (query.getPage() < 0) ? 0 : query.getPage();
         long batchSize = (query.getSize() <= 0) ? 100 : query.getSize();
@@ -118,24 +144,10 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
             List<FileDocument> iterable = template.find(mQuery, FileDocument.class);
             last = iterable.get(iterable.size() - 1);
             //
-            result.put(cursor, new ArrayList<>(iterable));
-            iterable.forEach(fileDocument -> LOG.info("Document: " + fileDocument.getName()));
-            LOG.info("-----------------------------------------");
-            //
+            consumer.accept(cursor, new ArrayList<>(iterable));
             cursor = cursor + batchSize; //Loop-Increment
+            //
         } while (maxSize != -1 && cursor < maxSize);
-        return result;
-    }
-
-    @Override
-    public long remove(SearchQuery query) {
-        AtomicLong cursor = new AtomicLong((query.getPage() < 0) ? 0 : query.getPage());
-        Map<Long, List<FileDocument>> data = searchInBatchGroup(query);
-        data.forEach((key, set) -> {
-            cursor.addAndGet(set.size());
-            repository.deleteAll(set);
-        });
-        return cursor.get();
     }
 
     private Query convertIntoMQuery(SearchQuery query) {
