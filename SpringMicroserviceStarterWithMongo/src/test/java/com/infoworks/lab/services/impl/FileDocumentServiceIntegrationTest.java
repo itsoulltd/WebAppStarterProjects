@@ -93,5 +93,6 @@ public class FileDocumentServiceIntegrationTest {
         //
         long data = service.remove(searchQuery);
         Assert.assertTrue("", data >= 0);
+        System.out.println("deleted: " + data);
     }
 }
