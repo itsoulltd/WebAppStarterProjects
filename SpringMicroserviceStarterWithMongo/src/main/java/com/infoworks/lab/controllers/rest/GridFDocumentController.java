@@ -52,6 +52,7 @@ public class GridFDocumentController {
                     Map mp = new HashMap(doc.getFileMeta());
                     mp.put("uuid", doc.getUuid());
                     mp.put("name", doc.getName());
+                    mp.put("timestamp", doc.getTimestamp());
                     return mp;
                 })
                 .collect(Collectors.toList());
@@ -64,6 +65,7 @@ public class GridFDocumentController {
         Map mp = new HashMap(document.getFileMeta());
         mp.put("uuid", document.getUuid());
         mp.put("name", document.getName());
+        mp.put("timestamp", document.getTimestamp());
         return ResponseEntity.ok(mp);
     }
 
@@ -89,6 +91,7 @@ public class GridFDocumentController {
         Map mp = new HashMap(document.getFileMeta());
         mp.put("uuid", document.getUuid());
         mp.put("name", document.getName());
+        mp.put("timestamp", document.getTimestamp());
         return ResponseEntity.ok(mp);
     }
 

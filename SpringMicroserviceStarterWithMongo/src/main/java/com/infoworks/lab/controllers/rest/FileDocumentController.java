@@ -57,6 +57,7 @@ public class FileDocumentController {
                 .map(doc -> {
                     Map mp = new HashMap(doc.getFileMeta());
                     mp.put("uuid", doc.getUuid());
+                    mp.put("timestamp", doc.getTimestamp());
                     return mp;
                 })
                 .collect(Collectors.toList());
@@ -105,6 +106,7 @@ public class FileDocumentController {
             docService.add(document);
             Map mp = new HashMap(document.getFileMeta());
             mp.put("uuid", document.getUuid());
+            mp.put("timestamp", document.getTimestamp());
             return ResponseEntity.ok(mp);
         }
         Map<String, String> data = new HashMap<>();
