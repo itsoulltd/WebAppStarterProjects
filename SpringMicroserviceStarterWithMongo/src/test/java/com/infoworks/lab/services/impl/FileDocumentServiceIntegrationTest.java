@@ -83,6 +83,47 @@ public class FileDocumentServiceIntegrationTest {
     }
 
     @Test
+    public void testSearchInBatch_5(){
+        FileDocumentService service = new FileDocumentService(repository, template);
+        //
+        int batchSize = 5;
+        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        searchQuery.add("timestamp").isEqualTo("1649778638175");
+        //
+        List<FileDocument> data = service.search(searchQuery);
+        System.out.println("Item Found: " + data.size());
+        Assert.assertTrue("", data.size() >= 0);
+        Assert.assertTrue(data.get(0).getTimestamp().equals(Long.valueOf("1649778638175")));
+    }
+
+    @Test
+    public void testSearchInBatch_6(){
+        FileDocumentService service = new FileDocumentService(repository, template);
+        //
+        int batchSize = 5;
+        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        searchQuery.add("timestamp").isGreaterThenOrEqual("1649778638175");
+        //
+        List<FileDocument> data = service.search(searchQuery);
+        System.out.println("Item Found: " + data.size());
+        Assert.assertTrue("", data.size() >= 0);
+        Assert.assertTrue(data.get(0).getTimestamp().equals(Long.valueOf("1649778638175")));
+    }
+
+    @Test
+    public void testSearchInBatch_7(){
+        FileDocumentService service = new FileDocumentService(repository, template);
+        //
+        int batchSize = 5;
+        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        searchQuery.add("timestamp").isLessThenOrEqual("q1649778638175w");
+        //
+        List<FileDocument> data = service.search(searchQuery);
+        System.out.println("Item Found: " + data.size());
+        Assert.assertTrue("", data.size() >= 0);
+    }
+
+    @Test
     public void testRemoveInBatch(){
         FileDocumentService service = new FileDocumentService(repository, template);
         //

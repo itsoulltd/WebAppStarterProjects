@@ -137,7 +137,7 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
         do{
             //Skip-first-time:
             if (last != null){
-                mQuery = convertIntoMQuery(query);
+                mQuery = convertIntoMQuery(query, "timestamp");
                 mQuery.addCriteria(Criteria.where("timestamp").gt(last.getTimestamp()));
             }
             mQuery.limit(query.getSize());
@@ -150,17 +150,41 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
         } while (maxSize != -1 && cursor < maxSize);
     }
 
-    private Query convertIntoMQuery(SearchQuery query) {
+    private Query convertIntoMQuery(SearchQuery query, String...skipKeys) {
         Query mQuery = new Query();
         //Start with aa -> "^aa"; End with aa -> "aa$"
-        query.getProperties().forEach(prop -> {
-            if (prop.getKey().equalsIgnoreCase("name")){
-                mQuery.addCriteria(Criteria.where("fileMeta.name").regex("^" + prop.getValue()));
-            } else if (prop.getKey().equalsIgnoreCase("description")){
-                mQuery.addCriteria(Criteria.where("fileMeta.description").regex("^" + prop.getValue()));
-            } else if (prop.getKey().equalsIgnoreCase("contentType")){
-                mQuery.addCriteria(Criteria.where("fileMeta.contentType").regex("^" + prop.getValue()));
-            }
+        List<String> skipList = Arrays.asList(skipKeys);
+        query.getProperties().stream()
+                .filter(prop -> !skipList.contains(prop.getKey()))
+                .forEach(prop -> {
+                    if (prop.getKey().equalsIgnoreCase("name")){
+                        mQuery.addCriteria(Criteria.where("fileMeta.name").regex("^" + prop.getValue()));
+                    } else if (prop.getKey().equalsIgnoreCase("timestamp")){
+                        //
+                        long timestampVal = new Date().getTime();
+                        try { timestampVal = Long.valueOf(prop.getValue()); }
+                        catch (Exception e) {LOG.error("ERROR: " + e.getMessage());}
+                        switch (prop.getOperator()){
+                            case GREATER_THAN:
+                                mQuery.addCriteria(Criteria.where("timestamp").gt(timestampVal));
+                                break;
+                            case GREATER_THAN_OR_EQUAL:
+                                mQuery.addCriteria(Criteria.where("timestamp").gte(timestampVal));
+                                break;
+                            case LESS_THAN:
+                                mQuery.addCriteria(Criteria.where("timestamp").lt(timestampVal));
+                                break;
+                            case LESS_THAN_OR_EQUAL:
+                                mQuery.addCriteria(Criteria.where("timestamp").lte(timestampVal));
+                                break;
+                            default:
+                                mQuery.addCriteria(Criteria.where("timestamp").is(timestampVal));
+                        }
+                    } else if (prop.getKey().equalsIgnoreCase("description")){
+                        mQuery.addCriteria(Criteria.where("fileMeta.description").regex("^" + prop.getValue()));
+                    } else if (prop.getKey().equalsIgnoreCase("contentType")){
+                        mQuery.addCriteria(Criteria.where("fileMeta.contentType").regex("^" + prop.getValue()));
+                    }
         });
         return mQuery;
     }
