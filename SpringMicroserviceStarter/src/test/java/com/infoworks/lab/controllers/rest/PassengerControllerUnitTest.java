@@ -3,7 +3,7 @@ package com.infoworks.lab.controllers.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infoworks.lab.webapp.WebApplicationTest;
 import com.infoworks.lab.webapp.config.BeanConfig;
-import com.infoworks.lab.webapp.config.TestJPAConfig;
+import com.infoworks.lab.webapp.config.TestJPAH2Config;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-        classes = {WebApplicationTest.class, TestJPAConfig.class, BeanConfig.class})
+        classes = {WebApplicationTest.class, TestJPAH2Config.class, BeanConfig.class})
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:h2-db.properties")
 public class PassengerControllerUnitTest {

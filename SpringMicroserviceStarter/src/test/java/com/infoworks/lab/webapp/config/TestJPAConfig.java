@@ -1,16 +1,18 @@
 package com.infoworks.lab.webapp.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.infoworks.lab.jsql.ExecutorType;
+import com.infoworks.lab.jsql.JsqlConfig;
+import com.it.soul.lab.sql.SQLExecutor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
@@ -22,37 +24,54 @@ import java.util.Properties;
 @EnableJpaRepositories(
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
-@PropertySource("classpath:h2-db.properties")
+@PropertySource("classpath:mysql-db.properties")
 public class TestJPAConfig {
+
+    private Environment env;
+
+    public TestJPAConfig(Environment env) {
+        this.env = env;
+    }
 
     @Value("${spring.datasource.driver-class-name}")
     String driverClassName;
     @Value("${spring.datasource.url}")
     String url;
-    @Value("${app.db.username}")
+    @Value("${spring.datasource.username}")
     String username;
-    @Value("${app.db.password}")
+    @Value("${spring.datasource.password}")
     String password;
     @Value("${app.db.name}")
     String persistenceUnitName;
 
-    @Autowired
-    private Environment env;
-
     @Bean
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+    JsqlConfig getJsqlConfig(DataSource dataSource){
+        return new JsqlConfig(dataSource);
+    }
+
+    @Bean @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    SQLExecutor executor(JsqlConfig config) throws Exception {
+        SQLExecutor exe = (SQLExecutor) config.create(ExecutorType.SQL, env.getProperty("app.db.name"));
+        System.out.println("Created DB Connections.");
+        return exe;
+    }
+
+    @Primary @Bean
+    public DataSource dataSource(){
+        DataSource dataSource = DataSourceBuilder
+                .create()
+                .username(username)
+                .password(password)
+                .url(url)
+                .driverClassName(driverClassName)
+                .build();
         return dataSource;
     }
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    @Primary @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource){
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource());
+        em.setDataSource(dataSource);
         em.setPackagesToScan(new String[]{"com.infoworks.lab.domain.entities"});
         em.setPersistenceUnitName(persistenceUnitName);
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
@@ -60,18 +79,18 @@ public class TestJPAConfig {
         return em;
     }
 
-    @Bean
-    JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
-        final JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory);
-        return transactionManager;
+    @Primary @Bean
+    public PlatformTransactionManager transactionManager(
+            EntityManagerFactory entityManagerFactory){
+        return new JpaTransactionManager(entityManagerFactory);
     }
 
     private Properties additionalProperties() {
         final Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-        hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
-        hibernateProperties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+        hibernateProperties.setProperty("hibernate.generate-ddl", env.getProperty("spring.jpa.generate-ddl"));
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
+        hibernateProperties.setProperty("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
+        hibernateProperties.setProperty("hibernate.show_sql", env.getProperty("spring.jpa.show-sql"));
         return hibernateProperties;
     }
 }

@@ -5,6 +5,7 @@ import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.webapp.WebApplicationTest;
 import com.infoworks.lab.webapp.config.BeanConfig;
+import com.infoworks.lab.webapp.config.TestJPAConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {WebApplicationTest.class, BeanConfig.class, PassengerController.class})
-@TestPropertySource(locations = {"classpath:h2-db.properties"})
+@SpringBootTest(classes = {WebApplicationTest.class
+        , PassengerController.class, BeanConfig.class, TestJPAConfig.class})
+@TestPropertySource(locations = {"classpath:mysql-db.properties"})
 public class PassengerControllerIntegrationTest {
 
     @Before
