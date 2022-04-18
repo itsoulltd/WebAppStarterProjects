@@ -49,10 +49,8 @@ public class PrimaryJPAConfig {
     @Value("${spring.datasource.password}") String password;
     @Value("${app.db.name}") String persistenceUnitName;
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public DataSource dataSource(){
-
         DataSource dataSource = DataSourceBuilder
                 .create()
                 .username(username)
@@ -63,12 +61,9 @@ public class PrimaryJPAConfig {
         return dataSource;
     }
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            EntityManagerFactoryBuilder builder
-            , DataSource dataSource){
-
+            EntityManagerFactoryBuilder builder, DataSource dataSource){
         return builder
                 .dataSource(dataSource)
                 .packages("com.infoworks.lab.domain.entities")
@@ -76,11 +71,9 @@ public class PrimaryJPAConfig {
                 .build();
     }
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public PlatformTransactionManager transactionManager(
             EntityManagerFactory entityManagerFactory){
-
         return new JpaTransactionManager(entityManagerFactory);
     }
 

@@ -1,7 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
 import com.infoworks.lab.domain.entities.Username;
-import com.infoworks.lab.jsql.DataSourceKey;
 import com.infoworks.lab.jsql.JsqlConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,19 +48,6 @@ public class PrimaryJPAConfig {
         return new JsqlConfig(dataSource);
     }
 
-    DataSourceKey getSourceKey(){
-        DataSourceKey container = new DataSourceKey();
-        container.set(DataSourceKey.Keys.DRIVER, env.getProperty("spring.datasource.driver-class-name"));
-        container.set(DataSourceKey.Keys.SCHEMA, env.getProperty("app.db.mysql.url.schema"));
-        container.set(DataSourceKey.Keys.URL, env.getProperty("spring.datasource.url"));
-        container.set(DataSourceKey.Keys.NAME, env.getProperty("app.db.name"));
-        container.set(DataSourceKey.Keys.HOST, env.getProperty("app.db.host"));
-        container.set(DataSourceKey.Keys.PORT, env.getProperty("app.db.port"));
-        container.set(DataSourceKey.Keys.USERNAME, env.getProperty("spring.datasource.username"));
-        container.set(DataSourceKey.Keys.PASSWORD, env.getProperty("spring.datasource.password"));
-        return container;
-    }
-
     @Bean("AppDBNameKey")
     String appDBNameKey(){
         return env.getProperty("app.db.name");
@@ -73,8 +59,7 @@ public class PrimaryJPAConfig {
     @Value("${spring.datasource.password}") String password;
     @Value("${app.db.name}") String persistenceUnitName;
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public DataSource dataSource(){
         DataSource dataSource = DataSourceBuilder
                 .create()
@@ -86,11 +71,9 @@ public class PrimaryJPAConfig {
         return dataSource;
     }
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            EntityManagerFactoryBuilder builder
-            , DataSource dataSource){
+            EntityManagerFactoryBuilder builder, DataSource dataSource){
         return builder
                 .dataSource(dataSource)
                 .packages("com.infoworks.lab.domain.entities")
@@ -98,8 +81,7 @@ public class PrimaryJPAConfig {
                 .build();
     }
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public PlatformTransactionManager transactionManager(
             EntityManagerFactory entityManagerFactory){
         return new JpaTransactionManager(entityManagerFactory);

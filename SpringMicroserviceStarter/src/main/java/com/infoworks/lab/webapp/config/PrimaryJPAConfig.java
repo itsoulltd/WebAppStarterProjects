@@ -64,8 +64,7 @@ public class PrimaryJPAConfig {
 
     @Primary @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            EntityManagerFactoryBuilder builder
-            , DataSource dataSource){
+            EntityManagerFactoryBuilder builder, DataSource dataSource){
         return builder
                 .dataSource(dataSource)
                 .packages("com.infoworks.lab.domain.entities")
