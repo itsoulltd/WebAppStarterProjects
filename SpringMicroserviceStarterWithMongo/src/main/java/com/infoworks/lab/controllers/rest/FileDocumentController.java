@@ -73,7 +73,10 @@ public class FileDocumentController {
     @GetMapping("/findByName/{name}")
     public ResponseEntity<Map> findByName(@PathVariable("name") String name) {
         FileDocument document = docService.findByName(name);
-        return ResponseEntity.ok(document.getFileMeta());
+        Map mp = new HashMap(document.getFileMeta());
+        mp.put("uuid", document.getUuid());
+        mp.put("timestamp", document.getTimestamp());
+        return ResponseEntity.ok(mp);
     }
 
     @DeleteMapping
@@ -112,6 +115,29 @@ public class FileDocumentController {
         Map<String, String> data = new HashMap<>();
         data.put("error", "contentType not an image.");
         return ResponseEntity.badRequest().body(data);
+    }
+
+    @PostMapping("/upload/image/base64")
+    public ResponseEntity<Map> uploadStringContent(@RequestBody SearchQuery content) throws IOException {
+        //
+        FileDocument document = new FileDocument();
+        document.setName(content.get("name", String.class));
+        document.setContentType(content.get("contentType", String.class));
+        document.setDescription(content.get("description", String.class));
+        String base64Str = content.get("content", String.class);
+        if (base64Str != null && !base64Str.isEmpty() && iDocumentService.isValidBase64String(base64Str)) {
+            document.setContent(base64Str);
+            docService.add(document);
+            //
+            Map mp = new HashMap(document.getFileMeta());
+            mp.put("uuid", document.getUuid());
+            mp.put("name", document.getName());
+            mp.put("timestamp", document.getTimestamp());
+            return ResponseEntity.ok(mp);
+        }
+        Map<String, String> data = new HashMap<>();
+        data.put("error", "content is empty or null.");
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/download/image") @SuppressWarnings("Duplicates")
