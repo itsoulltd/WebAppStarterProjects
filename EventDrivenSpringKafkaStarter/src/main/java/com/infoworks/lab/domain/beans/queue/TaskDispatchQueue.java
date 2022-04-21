@@ -1,11 +1,12 @@
 package com.infoworks.lab.domain.beans.queue;
 
+import com.infoworks.lab.beans.queue.AbstractTaskQueue;
+import com.infoworks.lab.beans.queue.JmsMessage;
 import com.infoworks.lab.beans.tasks.definition.Task;
 import com.infoworks.lab.beans.tasks.definition.TaskQueue;
 import com.infoworks.lab.rest.models.Message;
-import com.infoworks.lab.beans.queue.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +19,10 @@ public class TaskDispatchQueue extends AbstractTaskQueue {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @Autowired
-    @Qualifier("topic.execute")
+    @Value("${topic.execute}")
     private String exeQueue;
 
-    @Autowired
-    @Qualifier("topic.abort")
+    @Value("${topic.abort}")
     private String abortQueue;
 
     @Override

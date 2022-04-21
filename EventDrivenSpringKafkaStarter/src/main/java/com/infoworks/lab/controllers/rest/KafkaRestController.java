@@ -1,5 +1,9 @@
 package com.infoworks.lab.controllers.rest;
 
+import com.infoworks.lab.beans.tasks.definition.Task;
+import com.infoworks.lab.beans.tasks.definition.TaskQueue;
+import com.infoworks.lab.domain.beans.tasks.mocks.AbortTask;
+import com.infoworks.lab.domain.beans.tasks.mocks.ConsolePrintTask;
 import com.infoworks.lab.rest.models.Message;
 import kafka.admin.AdminUtils;
 import kafka.admin.RackAwareMode;
@@ -25,14 +29,17 @@ public class KafkaRestController {
     private static Logger LOG = LoggerFactory.getLogger(KafkaRestController.class.getSimpleName());
     private ZkClient zooKeeper;
     private KafkaTemplate<String, String> kafkaTemplate;
+    private TaskQueue taskQueue;
 
     @Value("${app.zookeeper.servers}")
     private String zookeeperServers;
 
     public KafkaRestController(@Qualifier("myZooKeeper") ZkClient zooKeeper
-            , @Qualifier("kafkaTextTemplate") KafkaTemplate kafkaTemplate) {
+            , @Qualifier("kafkaTextTemplate") KafkaTemplate kafkaTemplate
+            , @Qualifier("taskDispatchQueue") TaskQueue taskQueue) {
         this.zooKeeper = zooKeeper;
         this.kafkaTemplate = kafkaTemplate;
+        this.taskQueue = taskQueue;
     }
 
     private boolean isTopicExist(String topic){
@@ -84,5 +91,33 @@ public class KafkaRestController {
         }
         kafkaTemplate.send(topicName, event.toString());
         return ResponseEntity.ok("Message posted: " + topicName);
+    }
+
+    @GetMapping("/queue/task/{message}")
+    public ResponseEntity<String> addToQueue(@PathVariable("message") final String message){
+        //
+        Task task;
+        if (message.trim().toLowerCase().startsWith("abort")){
+            Message mac = new Message().setPayload(String.format("{\"message\":\"%s\"}", message));
+            AbortTask abortTask = new AbortTask();
+            abortTask.setMessage(mac);
+            task = abortTask;
+        }else{
+            Message mac = new Message().setPayload(String.format("{\"message\":\"%s\"}", message));
+            ConsolePrintTask consolePrintTask = new ConsolePrintTask();
+            consolePrintTask.setMessage(mac);
+            task = consolePrintTask;
+        }
+        taskQueue.add(task);
+        //Test:
+        taskQueue.onTaskComplete((message1, state) -> {
+            System.out.println("RUNNING ON " + Thread.currentThread().getName());
+            System.out.println(state.name());
+            System.out.println(message1.toString());
+        });
+        System.out.println("/queue/task/ " + "RETURNING");
+        System.out.println("RUNNING ON " + Thread.currentThread().getName());
+        //
+        return new ResponseEntity(message, HttpStatus.OK);
     }
 }
