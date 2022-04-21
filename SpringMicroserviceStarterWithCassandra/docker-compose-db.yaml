@@ -19,4 +19,17 @@ services:
     volumes:
       - cassandra-db-storage:/var/lib/cassandra
 
+  cassandra-web:
+    image: ipushc/cassandra-web:latest
+    ports:
+      - 8081:8083
+    environment:
+      READ_ONLY: false
+      CASSANDRA_HOST: cassandra-db
+      CASSANDRA_PORT: 9042
+      #CASSANDRA_USERNAME: cassandra
+      #CASSANDRA_PASSWORD: cassandra
+    networks:
+      - web-app-net
+
 ##End of Scripts
