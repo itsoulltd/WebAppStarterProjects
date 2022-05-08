@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableBatchProcessing
 @ComponentScan(basePackages = {"com.infoworks.lab.batch"
+        , "com.infoworks.lab.services"
         , "com.infoworks.lab.webapp.config"
         , "com.infoworks.lab.domain"})
 public class BatchProcessingServicesApplication extends SpringBootServletInitializer {

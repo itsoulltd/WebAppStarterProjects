@@ -17,7 +17,7 @@ public interface ReportItemWriter<T, S> extends ItemWriter<T>, JobExecutionListe
     String getOutputName();
     String[] getColumnHeaders();
     ContentWriter getWriter();
-    default String getSheetName() {return "";}
+    default String getSheetName() {return "default";}
     Map<Integer, S> convert(List<? extends T> list);
 
     @Override
