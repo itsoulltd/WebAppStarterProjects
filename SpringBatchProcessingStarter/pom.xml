@@ -84,8 +84,9 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.0.202</version>
-            <scope>test</scope>
+            <!--<version>2.0.202</version>-->
+            <!-- Version H2:1.4.200 is compatible with SpringBatch:4.3.4 or later -->
+            <version>1.4.200</version>
         </dependency>
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>

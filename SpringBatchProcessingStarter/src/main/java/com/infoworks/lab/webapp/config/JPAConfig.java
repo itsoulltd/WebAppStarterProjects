@@ -26,6 +26,7 @@ import javax.sql.DataSource;
         transactionManagerRef = "jpa-transaction-ref"
 )
 @PropertySource("classpath:mysql-db.properties")
+@PropertySource("classpath:h2-db.properties")
 public class JPAConfig {
 
     private Environment env;
@@ -54,8 +55,7 @@ public class JPAConfig {
     @Value("${app.db.name}")
     String persistenceUnitName;
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public DataSource dataSource(){
         DataSource dataSource = DataSourceBuilder
                 .create()
@@ -67,8 +67,7 @@ public class JPAConfig {
         return dataSource;
     }
 
-    @Primary
-    @Bean
+    @Primary @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             EntityManagerFactoryBuilder builder
             , DataSource dataSource){
