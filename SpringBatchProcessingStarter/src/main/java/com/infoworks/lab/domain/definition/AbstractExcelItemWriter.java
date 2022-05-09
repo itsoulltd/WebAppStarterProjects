@@ -51,4 +51,8 @@ public abstract class AbstractExcelItemWriter<M extends Message> implements Exce
         return writer;
     }
 
+    @Override
+    public void setWriter(ContentWriter writer) {
+        this.writer = writer;
+    }
 }

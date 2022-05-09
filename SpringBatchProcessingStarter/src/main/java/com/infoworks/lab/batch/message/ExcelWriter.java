@@ -34,6 +34,7 @@ public class ExcelWriter extends AbstractExcelItemWriter<Message> {
     @Override
     public Map<Integer, List<String>> convert(List<? extends Message> list) {
         //TODO:Dummy
+        System.out.println("ExcelWriter " + Thread.currentThread().getName());
         Map<Integer, List<String>> data = new HashMap<>();
         list.forEach(msg -> {
             String from = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
