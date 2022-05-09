@@ -51,7 +51,7 @@ public class BatchConfig {
         /*int numberOfCore = Runtime.getRuntime().availableProcessors();
         ((SimpleAsyncTaskExecutor)executor).setConcurrencyLimit((numberOfCore / 2) + 1);*/
         //
-        ReportItemWriter writer = new ExcelWriter(exportPath, batchSize, service);
+        ReportItemWriter writer = new ExcelWriter(service, exportPath, batchSize);
         Step one = steps.get("stepOne")
                 .<Message, Message>chunk(batchSize)
                 .reader(new MessageReader())

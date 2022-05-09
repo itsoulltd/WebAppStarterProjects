@@ -1,29 +1,19 @@
 package com.infoworks.lab.batch.message;
 
-import com.infoworks.lab.domain.definition.ExcelItemWriter;
+import com.infoworks.lab.domain.definition.AbstractExcelItemWriter;
 import com.infoworks.lab.rest.models.Message;
-import com.infoworks.lab.services.definition.ContentWriter;
 import com.infoworks.lab.services.impl.ExcelWritingService;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-public class ExcelWriter implements ExcelItemWriter<Message> {
+public class ExcelWriter extends AbstractExcelItemWriter<Message> {
 
-    private static Logger LOG = Logger.getLogger(MessageWriter.class.getSimpleName());
-    private String exportPath;
-    private ExcelWritingService service;
-    private int batchSize = 10;
-    private ContentWriter writer;
-    private AtomicInteger progressCounter;
+    private static Logger LOG = Logger.getLogger(ExcelWriter.class.getSimpleName());
 
-    public ExcelWriter(String exportPath, int batchSize, ExcelWritingService service) {
-        this.exportPath = exportPath;
-        this.service = service;
-        this.batchSize = batchSize;
-        this.progressCounter = new AtomicInteger(1);
+    public ExcelWriter(ExcelWritingService service, String exportPath, int batchSize) {
+        super(service, exportPath, batchSize);
     }
 
     @Override
@@ -33,7 +23,7 @@ public class ExcelWriter implements ExcelItemWriter<Message> {
 
     @Override
     public String getOutputName() {
-        return exportPath + "sample-excel-" + System.currentTimeMillis() + ".xlsx";
+        return getExportPath() + "sample-excel-" + System.currentTimeMillis() + ".xlsx";
     }
 
     @Override
@@ -42,32 +32,14 @@ public class ExcelWriter implements ExcelItemWriter<Message> {
     }
 
     @Override
-    public ContentWriter getWriter() {
-        if (writer == null){
-            this.writer = createWriter();
-        }
-        return writer;
-    }
-
-    @Override
     public Map<Integer, List<String>> convert(List<? extends Message> list) {
         //TODO:Dummy
         Map<Integer, List<String>> data = new HashMap<>();
         list.forEach(msg -> {
             String from = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-            data.put(progressCounter.getAndIncrement(), Arrays.asList("message", msg.getPayload(), from));
+            data.put(getNextRowIndex(), Arrays.asList("message", msg.getPayload(), from));
         });
         return data;
-    }
-
-    @Override
-    public int getBatchSize() {
-        return batchSize;
-    }
-
-    @Override
-    public ExcelWritingService getService() {
-        return service;
     }
 
 }
