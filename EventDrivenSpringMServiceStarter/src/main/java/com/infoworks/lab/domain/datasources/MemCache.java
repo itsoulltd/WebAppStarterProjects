@@ -80,6 +80,10 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
 
     @Override
     public void put(String key, Entity entity) {
+        put(key, entity, 0l);
+    }
+
+    public void put(String key, Entity entity, long ttl) {
         Map<String, Object> data = entity.marshallingToMap(true);
         RMap rData = client.getMap(key);
         if (rData.size() > 0){
@@ -93,6 +97,9 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         //Saving: Type
         String classFullName = entity.getClass().getName();
         rData.put(CLASS_NAME_KEY, classFullName);
+        if (ttl > 0l){
+            rData.expireAt(ttl);
+        }
     }
 
     @Override
