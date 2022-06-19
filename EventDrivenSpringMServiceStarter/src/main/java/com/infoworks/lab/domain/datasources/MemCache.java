@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,9 +98,7 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         //Saving: Type
         String classFullName = entity.getClass().getName();
         rData.put(CLASS_NAME_KEY, classFullName);
-        if (ttl > 0l){
-            rData.expireAt(ttl);
-        }
+        if (ttl > 0l) rData.expire(ttl, TimeUnit.MILLISECONDS);
     }
 
     @Override
