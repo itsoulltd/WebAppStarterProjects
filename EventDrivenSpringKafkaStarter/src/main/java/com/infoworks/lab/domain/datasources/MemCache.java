@@ -119,6 +119,14 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         return getCounter().getCount();
     }
 
+    public String getEntityClassFullName() {
+        return entityClassFullName;
+    }
+
+    protected void setEntityClassFullName(String entityClassFullName) {
+        if (this.entityClassFullName == null || this.entityClassFullName.isEmpty())
+            this.entityClassFullName = entityClassFullName;
+    }
 
     ///////////////////////////////////////////Private Inner Classes////////////////////////////////////////////////////
 
@@ -145,15 +153,6 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
             }
         }
         return counter;
-    }
-
-    public String getEntityClassFullName() {
-        return entityClassFullName;
-    }
-
-    protected void setEntityClassFullName(String entityClassFullName) {
-        if (this.entityClassFullName == null || this.entityClassFullName.isEmpty())
-            this.entityClassFullName = entityClassFullName;
     }
 
     protected void increment(){
