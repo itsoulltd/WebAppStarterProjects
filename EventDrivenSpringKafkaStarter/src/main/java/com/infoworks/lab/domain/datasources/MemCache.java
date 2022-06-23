@@ -5,6 +5,7 @@ import com.it.soul.lab.sql.entity.EntityInterface;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
     private RedissonClient client;
     private static final String CLASS_NAME_KEY = "classname";
     private String entityClassFullName;
+    private long timeToLive = 0l;
 
     public MemCache(RedissonClient client) {
         this.client = client;
@@ -29,6 +31,11 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         this(client);
         if(aClass != null)
             setEntityClassFullName(aClass.getName());
+    }
+
+    public MemCache(RedissonClient client, Class<? extends EntityInterface> aClass, Duration ttl) {
+        this(client, aClass);
+        this.timeToLive = ttl.toMillis();
     }
 
     public Entity read(String key){
@@ -74,23 +81,23 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         RMap rData = client.getMap(key);
         if (rData.size() > 0){
             rData.clear();
-            decrement();
+            if (isEnabledItemCounter()) decrement();
         }
         return value;
     }
 
     @Override
     public void put(String key, Entity entity) {
-        put(key, entity, 0l);
+        put(key, entity, timeToLive);
     }
 
-    public void put(String key, Entity entity, long ttl) {
+    protected final void put(String key, Entity entity, long ttl) {
         Map<String, Object> data = entity.marshallingToMap(true);
         RMap rData = client.getMap(key);
         if (rData.size() > 0){
             rData.clear();
         }else{
-            increment();
+            if (isEnabledItemCounter()) increment();
         }
         data.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
@@ -98,6 +105,7 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         //Saving: Type
         String classFullName = entity.getClass().getName();
         rData.put(CLASS_NAME_KEY, classFullName);
+        //We are adding time_to_live only if ttl is greater than 0l:
         if (ttl > 0l) rData.expire(ttl, TimeUnit.MILLISECONDS);
     }
 
@@ -116,7 +124,8 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
 
     @Override
     public int size() {
-        return getCounter().getCount();
+        if (isEnabledItemCounter()) return getCounter().getCount();
+        return 0; //TODO:
     }
 
     public String getEntityClassFullName() {
@@ -127,6 +136,8 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         if (this.entityClassFullName == null || this.entityClassFullName.isEmpty())
             this.entityClassFullName = entityClassFullName;
     }
+
+    protected boolean isEnabledItemCounter() {return timeToLive <= 0l;}
 
     ///////////////////////////////////////////Private Inner Classes////////////////////////////////////////////////////
 
