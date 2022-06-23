@@ -125,7 +125,7 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
     @Override
     public int size() {
         if (isEnabledItemCounter()) return getCounter().getCount();
-        return 0; //TODO:
+        return 0;
     }
 
     public String getEntityClassFullName() {
@@ -138,6 +138,10 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
     }
 
     protected boolean isEnabledItemCounter() {return timeToLive <= 0l;}
+
+    public long getTimeToLive() {
+        return timeToLive;
+    }
 
     ///////////////////////////////////////////Private Inner Classes////////////////////////////////////////////////////
 
