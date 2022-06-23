@@ -119,6 +119,9 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
         return getCounter().getCount();
     }
 
+
+    ///////////////////////////////////////////Private Inner Classes////////////////////////////////////////////////////
+
     private ItemCounter counter;
 
     private ItemCounter getCounter() {
@@ -170,8 +173,6 @@ public class MemCache<Entity extends EntityInterface> implements DataSource<Stri
                 countMap.put(getEntityClassFullName(), value);
         }
     }
-
-    ///////////////////////////////////////////Private Inner Classes////////////////////////////////////////////////////
 
     private static class ItemCounter {
 
