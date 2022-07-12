@@ -54,6 +54,7 @@ public abstract class AbstractExcelItemWriter<M extends Message> implements Exce
 
     @Override
     public void afterJobCleanup(JobExecution jobExecution) {
+        excelRowCounter.set(1);
         try {
             getWriter().close();
         } catch (Exception e) {}
