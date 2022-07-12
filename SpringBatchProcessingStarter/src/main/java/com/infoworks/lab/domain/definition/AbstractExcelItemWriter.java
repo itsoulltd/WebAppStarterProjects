@@ -18,7 +18,6 @@ public abstract class AbstractExcelItemWriter<M extends Message> implements Exce
     public AbstractExcelItemWriter(ExcelWritingService service, String exportPath) {
         this.exportPath = exportPath;
         this.service = service;
-        this.excelRowCounter = new AtomicInteger(1);
     }
 
     public AbstractExcelItemWriter(ExcelWritingService service, String exportPath, int batchSize) {
@@ -47,6 +46,7 @@ public abstract class AbstractExcelItemWriter<M extends Message> implements Exce
     @Override
     public ContentWriter getWriter() {
         if (writer == null){
+            this.excelRowCounter = new AtomicInteger(1);
             this.writer = createWriter();
         }
         return writer;
@@ -54,10 +54,10 @@ public abstract class AbstractExcelItemWriter<M extends Message> implements Exce
 
     @Override
     public void afterJobCleanup(JobExecution jobExecution) {
-        excelRowCounter.set(1);
         try {
             getWriter().close();
         } catch (Exception e) {}
+        this.excelRowCounter = null;
         this.writer = null;
     }
 }

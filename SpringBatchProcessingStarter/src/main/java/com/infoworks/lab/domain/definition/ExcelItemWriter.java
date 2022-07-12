@@ -19,5 +19,5 @@ public interface ExcelItemWriter<T> extends ReportItemWriter<T, List<String>>{
     int getBatchSize();
     ExcelWritingService getService();
     default boolean createAsyncWriter(){return true;}
-
+    int getNextRowIndex();
 }

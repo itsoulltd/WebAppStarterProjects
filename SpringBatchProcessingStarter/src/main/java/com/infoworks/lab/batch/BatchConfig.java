@@ -1,4 +1,4 @@
-package com.infoworks.lab.webapp.config;
+package com.infoworks.lab.batch;
 
 import com.infoworks.lab.batch.message.ExcelWriter;
 import com.infoworks.lab.batch.message.MessageProcessor;
