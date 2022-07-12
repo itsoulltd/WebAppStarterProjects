@@ -3,6 +3,7 @@ package com.infoworks.lab.domain.definition;
 import com.infoworks.lab.rest.models.Message;
 import com.infoworks.lab.services.definition.ContentWriter;
 import com.infoworks.lab.services.impl.ExcelWritingService;
+import org.springframework.batch.core.JobExecution;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,7 +53,10 @@ public abstract class AbstractExcelItemWriter<M extends Message> implements Exce
     }
 
     @Override
-    public void setWriter(ContentWriter writer) {
-        this.writer = writer;
+    public void afterJobCleanup(JobExecution jobExecution) {
+        try {
+            getWriter().close();
+        } catch (Exception e) {}
+        this.writer = null;
     }
 }
