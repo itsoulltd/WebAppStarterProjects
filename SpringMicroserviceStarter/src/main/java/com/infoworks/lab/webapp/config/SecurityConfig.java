@@ -1,5 +1,7 @@
 package com.infoworks.lab.webapp.config;
 
+import com.it.soul.lab.connect.DriverClass;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             , "/swagger-resources/configuration/**"
             , "/actuator/health"
             , "/actuator/prometheus"
+            , "/h2-console/**"
     };
+
+    @Value("${spring.datasource.driver-class-name}") String activeDriverClass;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -44,7 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new AuthorizationFilter(), BasicAuthenticationFilter.class);
         //Disable for H2 DB:
-        //http.headers().frameOptions().disable();
+        if (activeDriverClass.equalsIgnoreCase(DriverClass.H2_EMBEDDED.toString())){
+            http.headers().frameOptions().disable();
+        }
     }
 
     @Override
