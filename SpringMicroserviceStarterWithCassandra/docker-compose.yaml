@@ -42,6 +42,7 @@ services:
       cassandra.db.keyspace: cassandradb
       cassandra.db.host: cassandra-db
       cassandra.db.port: 9042
+      cassandra.db.drop.table.onstart: false
       management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
       app.home.logs: /home/logs
       app.upload.dir: /home/downloads

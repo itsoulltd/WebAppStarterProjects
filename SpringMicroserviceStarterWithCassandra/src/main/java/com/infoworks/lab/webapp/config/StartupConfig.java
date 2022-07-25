@@ -4,6 +4,7 @@ import com.infoworks.lab.domain.entities.Passenger;
 import com.it.soul.lab.cql.CQLExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,9 @@ public class StartupConfig implements CommandLineRunner {
     private static Logger LOG = LoggerFactory.getLogger(StartupConfig.class);
     private CQLExecutor executor;
 
+    @Value("${cassandra.db.drop.table.onstart}")
+    private boolean dropOnStart;
+
     public StartupConfig(CQLExecutor executor) {
         this.executor = executor;
     }
@@ -23,7 +27,9 @@ public class StartupConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //Initialize Cassandra Tables from their entities:
-        //dropsTables(executor, Passenger.class);
+        if (dropOnStart) {
+            dropsTables(executor, Passenger.class);
+        }
         createTables(executor, Passenger.class);
     }
 
