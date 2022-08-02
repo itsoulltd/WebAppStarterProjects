@@ -32,6 +32,7 @@ public class SimpleBatchScheduler {
     @Async
     @Scheduled(cron = "${batch.processing.cron.expression}")
     public void process() {
+        //System.out.println("Process: " + Thread.currentThread().getName());
         if (shouldPreventExecution){
             System.out.println("ShouldPreventExecution: YES");
             return;
@@ -53,5 +54,23 @@ public class SimpleBatchScheduler {
             e.printStackTrace();
         }
     }
+
+    /*@Async
+    @Scheduled(cron = "${batch.processing.cron.expression}")
+    public void testOne(){
+        System.out.println("One: " + Thread.currentThread().getName());
+        for (int i = 0; i < 100; i++){
+            System.out.println("One: " + i);
+        }
+    }*/
+
+    /*@Async
+    @Scheduled(cron = "${batch.processing.cron.expression}")
+    public void testTwo(){
+        System.out.println("Two: " + Thread.currentThread().getName());
+        for (int i = 0; i < 100; i++){
+            System.out.println("Two: " + i);
+        }
+    }*/
 
 }
