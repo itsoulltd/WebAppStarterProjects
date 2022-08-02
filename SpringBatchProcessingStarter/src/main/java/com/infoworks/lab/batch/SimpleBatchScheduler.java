@@ -10,6 +10,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,7 @@ public class SimpleBatchScheduler {
      *  "0 0 0 25 12 ?" = every Christmas Day at midnight
      */
 
+    @Async
     @Scheduled(cron = "${batch.processing.cron.expression}")
     public void process() {
         if (shouldPreventExecution){
