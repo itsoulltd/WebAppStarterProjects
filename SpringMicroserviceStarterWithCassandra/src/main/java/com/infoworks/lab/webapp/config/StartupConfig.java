@@ -33,6 +33,11 @@ public class StartupConfig implements CommandLineRunner {
             dropsTables(executor, Passenger.class);
         }
         createTables(executor, Passenger.class);
+        //e.g. How to alter an existing Entity Property:
+        //executeAlter(executor, Passenger.class, AlterAction.ADD, new Property("<new-property-name>", "<property-datatype-as-value>"));
+        //executeAlter(executor, Passenger.class, AlterAction.DROP, new Property("<property-to-drop>"));
+        //executeAlter(executor, Passenger.class, AlterAction.RENAME, new Property("<property-to-rename>", "<property-new-name>"));
+        //executeAlter(executor, Passenger.class, AlterAction.ALTER, new Property("<name-of-non-key-property>", "<property-datatype-as-value-to-alter>"));
     }
 
     private void executeAlter(CQLExecutor cqlExecutor, Class aClass, AlterAction action, Property property) {
