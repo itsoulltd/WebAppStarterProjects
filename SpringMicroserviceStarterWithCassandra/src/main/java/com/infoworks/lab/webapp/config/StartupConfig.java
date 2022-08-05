@@ -2,6 +2,8 @@ package com.infoworks.lab.webapp.config;
 
 import com.infoworks.lab.domain.entities.Passenger;
 import com.it.soul.lab.cql.CQLExecutor;
+import com.it.soul.lab.cql.query.AlterAction;
+import com.it.soul.lab.sql.query.models.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,15 @@ public class StartupConfig implements CommandLineRunner {
             dropsTables(executor, Passenger.class);
         }
         createTables(executor, Passenger.class);
+    }
+
+    private void executeAlter(CQLExecutor cqlExecutor, Class aClass, AlterAction action, Property property) {
+        try {
+            boolean res = cqlExecutor.alterTable(aClass, action, property);
+            LOG.info("{} is Altered By {} {}", aClass.getSimpleName(), action.name(), (res ? "YES" : "NO"));
+        } catch (SQLException e) {
+            LOG.info("{} is Altered By {} Failed with {}", aClass.getSimpleName(), action.name(), e.getMessage());
+        }
     }
 
     private void createTables(CQLExecutor cqlExecutor, Class...classes) {
