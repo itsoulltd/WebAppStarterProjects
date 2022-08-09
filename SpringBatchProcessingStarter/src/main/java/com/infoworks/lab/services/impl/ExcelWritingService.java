@@ -30,7 +30,7 @@ public class ExcelWritingService implements WritingService {
         writer.close();
     }
 
-    public AsyncWriter createWriter(boolean xssf, String outFileName, boolean replace) {
+    public ContentWriter createWriter(boolean xssf, String outFileName, boolean replace) {
         try {
             if(outFileName == null || outFileName.isEmpty()) return null;
             if (replace) removeIfExist(outFileName);
@@ -39,7 +39,7 @@ public class ExcelWritingService implements WritingService {
         return null;
     }
 
-    public AsyncWriter createAsyncWriter(int rowSize, String outFileName, boolean replace) {
+    public ContentWriter createAsyncWriter(int rowSize, String outFileName, boolean replace) {
         try {
             if(outFileName == null || outFileName.isEmpty()) return null;
             if (replace) removeIfExist(outFileName);
