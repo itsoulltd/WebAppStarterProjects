@@ -7,6 +7,7 @@ import com.infoworks.lab.batch.tasks.MyTaskOne;
 import com.infoworks.lab.batch.tasks.MyTaskTwo;
 import com.infoworks.lab.domain.definition.ReportItemWriter;
 import com.infoworks.lab.rest.models.Message;
+import com.infoworks.lab.services.impl.ExcelReadingService;
 import com.infoworks.lab.services.impl.ExcelWritingService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -43,6 +44,16 @@ public class BatchConfig {
 
     @Value("${app.excel.report.export.path}")
     private String exportPath;
+
+    @Bean
+    public ExcelWritingService getWritingService() {
+        return new ExcelWritingService();
+    }
+
+    @Bean
+    public ExcelReadingService getReadingService() {
+        return new ExcelReadingService();
+    }
 
     @Bean("simpleJob")
     public Job simpleJob(ExcelWritingService service){

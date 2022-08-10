@@ -5,15 +5,16 @@ import com.infoworks.lab.services.definition.WritingService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Service
 public class ExcelWritingService implements WritingService {
 
     private static Logger LOG = Logger.getLogger(ExcelWritingService.class.getSimpleName());
