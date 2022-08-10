@@ -1,6 +1,6 @@
-package com.infoworks.lab.services.impl;
+package com.infoworks.lab.services;
 
-import com.infoworks.lab.services.definition.ContentWriter;
+import com.infoworks.lab.definition.ContentWriter;
 import com.infoworks.lab.services.definition.WritingService;
 
 import java.io.File;

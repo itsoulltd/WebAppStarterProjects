@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jersey2.version>2.27</jersey2.version>
         <poi-version>4.1.2</poi-version>
-        <WebComponentKit.version>v1.12.0-RELEASE</WebComponentKit.version>
+        <WebComponentKit.version>v1.12.6-RELEASE</WebComponentKit.version>
     </properties>
 
     <repositories>
@@ -126,6 +126,11 @@
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>
             <artifactId>jsql-editor-components</artifactId>
+            <version>${WebComponentKit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.itsoulltd.WebComponentKit</groupId>
+            <artifactId>report-content-io-kit</artifactId>
             <version>${WebComponentKit.version}</version>
         </dependency>
         <!-- -->

@@ -1,4 +1,4 @@
-package com.infoworks.lab.services.impl;
+package com.infoworks.lab.services;
 
 import com.infoworks.lab.services.definition.ContentWriter;
 import com.it.soul.lab.sql.QueryExecutor;

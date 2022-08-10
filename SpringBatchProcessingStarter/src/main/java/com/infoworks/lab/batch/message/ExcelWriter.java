@@ -2,7 +2,7 @@ package com.infoworks.lab.batch.message;
 
 import com.infoworks.lab.domain.definition.AbstractExcelItemWriter;
 import com.infoworks.lab.rest.models.Message;
-import com.infoworks.lab.services.impl.ExcelWritingService;
+import com.infoworks.lab.services.excel.ExcelWritingService;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

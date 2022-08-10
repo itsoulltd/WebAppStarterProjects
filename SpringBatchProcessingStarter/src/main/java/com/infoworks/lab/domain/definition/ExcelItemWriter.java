@@ -1,7 +1,7 @@
 package com.infoworks.lab.domain.definition;
 
-import com.infoworks.lab.services.definition.ContentWriter;
-import com.infoworks.lab.services.impl.ExcelWritingService;
+import com.infoworks.lab.definition.ContentWriter;
+import com.infoworks.lab.services.excel.ExcelWritingService;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.infoworks.lab.domain.definition;
 
 import com.infoworks.lab.services.definition.ContentWriter;
-import com.infoworks.lab.services.impl.PdfWritingService;
+import com.infoworks.lab.services.PdfWritingService;
 
 import java.util.List;
 
