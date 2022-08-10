@@ -1,7 +1,7 @@
 package com.infoworks.lab.services;
 
 import com.infoworks.lab.definition.ContentWriter;
-import com.infoworks.lab.services.definition.WritingService;
+import com.infoworks.lab.definition.WritingService;
 
 import java.io.File;
 import java.io.FileOutputStream;

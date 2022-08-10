@@ -1,6 +1,6 @@
 package com.infoworks.lab.services;
 
-import com.infoworks.lab.services.definition.ContentWriter;
+import com.infoworks.lab.definition.ContentWriter;
 import com.it.soul.lab.sql.QueryExecutor;
 import com.it.soul.lab.sql.entity.Entity;
 import com.it.soul.lab.sql.query.QueryType;
