@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             , "/swagger-resources/configuration/**"
             , "/actuator/health"
             , "/actuator/prometheus"
+            , "/h2-console/**"
     };
 
     @Override
