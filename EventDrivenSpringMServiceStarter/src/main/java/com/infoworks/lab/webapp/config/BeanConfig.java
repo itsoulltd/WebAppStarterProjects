@@ -1,6 +1,8 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.domain.datasources.MemCache;
+import com.infoworks.lab.MemCache;
+import com.infoworks.lab.datasources.RedisDataSource;
+import com.infoworks.lab.datasources.RedissonDataSource;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.util.services.iResourceService;
 import org.redisson.Redisson;
@@ -41,8 +43,9 @@ public class BeanConfig {
     }
 
     @Bean("passengerCache")
-    MemCache<Passenger> getPassengerCache(){
-        return new MemCache<>(getRedisClient(), Passenger.class);
+    MemCache<Passenger> getPassengerCache(RedissonClient client){
+        RedisDataSource dataSource = new RedissonDataSource(client);
+        return new MemCache<>(dataSource, Passenger.class);
     }
 
     @Bean

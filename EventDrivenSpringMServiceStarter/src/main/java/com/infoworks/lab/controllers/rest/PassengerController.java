@@ -1,6 +1,6 @@
 package com.infoworks.lab.controllers.rest;
 
-import com.infoworks.lab.domain.datasources.MemCache;
+import com.infoworks.lab.MemCache;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.rest.models.ItemCount;
 import org.springframework.beans.factory.annotation.Autowired;
