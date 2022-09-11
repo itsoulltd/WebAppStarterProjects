@@ -1,20 +1,16 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.domain.datasources.MemCache;
+import com.infoworks.lab.MemCache;
+import com.infoworks.lab.datasources.RedisDataSource;
+import com.infoworks.lab.datasources.RedissonDataSource;
 import com.infoworks.lab.domain.entities.Passenger;
-import com.infoworks.lab.jsql.ExecutorType;
-import com.infoworks.lab.jsql.JsqlConfig;
 import com.infoworks.lab.util.services.iResourceService;
-import com.it.soul.lab.sql.SQLExecutor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.env.Environment;
 
 @Configuration
@@ -42,8 +38,9 @@ public class BeanConfig {
     }
 
     @Bean("passengerCache")
-    MemCache<Passenger> getPassengerCache(){
-        return new MemCache<>(getRedisClient(), Passenger.class);
+    MemCache<Passenger> getPassengerCache(RedissonClient client){
+        RedisDataSource dataSource = new RedissonDataSource(client);
+        return new MemCache<>(dataSource, Passenger.class);
     }
 
     @Bean
