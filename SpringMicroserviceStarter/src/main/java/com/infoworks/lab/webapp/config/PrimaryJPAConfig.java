@@ -1,20 +1,22 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.lab.jsql.ExecutorType;
 import com.infoworks.lab.jsql.JsqlConfig;
+import com.it.soul.lab.sql.SQLExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -28,6 +30,7 @@ import javax.sql.DataSource;
 @PropertySource("classpath:h2-db.properties")
 public class PrimaryJPAConfig {
 
+    private static Logger LOG = LoggerFactory.getLogger(PrimaryJPAConfig.class);
     private Environment env;
 
     public PrimaryJPAConfig(@Autowired Environment env) {
@@ -42,6 +45,14 @@ public class PrimaryJPAConfig {
     @Bean("AppDBNameKey")
     String appDBNameKey(){
         return env.getProperty("app.db.name");
+    }
+
+    @Bean
+    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public SQLExecutor executor(JsqlConfig config) throws Exception {
+        SQLExecutor exe = (SQLExecutor) config.create(ExecutorType.SQL, env.getProperty("app.db.name"));
+        LOG.info("Executor-Connection Has been Created.");
+        return exe;
     }
 
     @Value("${spring.datasource.driver-class-name}") String driverClassName;
