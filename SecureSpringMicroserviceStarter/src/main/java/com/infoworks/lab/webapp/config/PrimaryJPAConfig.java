@@ -49,6 +49,7 @@ public class PrimaryJPAConfig {
 
     @Bean
     @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    //Since SQLExecutor is a WebApplicationContext.SCOPE_REQUEST Variable, it will automatically close connection when garbage-collected.
     public SQLExecutor executor(JsqlConfig config) throws Exception {
         SQLExecutor exe = (SQLExecutor) config.create(ExecutorType.SQL, env.getProperty("app.db.name"));
         LOG.info("Executor-Connection Has been Created.");
