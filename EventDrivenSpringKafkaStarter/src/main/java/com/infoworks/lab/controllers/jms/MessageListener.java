@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-@PropertySource("classpath:application.properties")
 @PropertySource("classpath:kafka.properties")
 public class MessageListener {
 

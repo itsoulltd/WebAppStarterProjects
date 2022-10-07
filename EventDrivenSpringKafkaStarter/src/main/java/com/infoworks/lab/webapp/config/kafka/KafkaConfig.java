@@ -28,7 +28,6 @@ import java.util.Map;
 
 @Configuration
 @EnableKafka
-@PropertySource("classpath:application.properties")
 @PropertySource("classpath:kafka.properties")
 public class KafkaConfig {
 
