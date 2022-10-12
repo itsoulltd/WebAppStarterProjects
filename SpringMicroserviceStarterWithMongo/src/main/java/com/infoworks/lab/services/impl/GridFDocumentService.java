@@ -62,15 +62,16 @@ public class GridFDocumentService extends SimpleDataSource<String, GridFileDocum
     }
 
     @Override
-    public void add(GridFileDocument saved) {
-        if (saved == null) return;
+    public String add(GridFileDocument saved) {
+        if (saved == null) return null;
         try {
             ObjectId _id = template.store(saved.getContent(), saved.getName(), saved.getContentType());
             saved.setUuid(_id.toString());
-            repository.save(saved);
+            return repository.save(saved).getUuid();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
+        return null;
     }
 
     @Override

@@ -49,10 +49,10 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
     }
 
     @Override
-    public void add(FileDocument fileDocument) {
-        if (fileDocument == null) return;
-        if (fileDocument.getUuid() == null || fileDocument.getUuid().isEmpty()) return;
-        repository.save(fileDocument);
+    public String add(FileDocument fileDocument) {
+        if (fileDocument == null) return null;
+        if (fileDocument.getUuid() == null || fileDocument.getUuid().isEmpty()) return null;
+        return repository.save(fileDocument).getUuid();
     }
 
     @Override
