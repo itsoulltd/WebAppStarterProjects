@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = {WebApplicationTest.class, TestJPAH2Config.class, BeanConfig.class})
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:h2-db.properties")
+@TestPropertySource(locations = "classpath:application-h2db.properties")
 public class PassengerControllerUnitTest {
 
     @Before

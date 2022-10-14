@@ -19,7 +19,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {WebApplicationTest.class
         , PassengerController.class, BeanConfig.class, TestJPAConfig.class})
-@TestPropertySource(locations = {"classpath:mysql-db.properties"})
+@TestPropertySource(locations = {"classpath:application-mysql.properties"})
 public class PassengerControllerIntegrationTest {
 
     @Before

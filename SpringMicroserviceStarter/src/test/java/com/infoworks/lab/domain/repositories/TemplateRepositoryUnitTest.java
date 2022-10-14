@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TestJPAH2Config.class})
 @Transactional
-@TestPropertySource(locations = {"classpath:h2-db.properties"})
+@TestPropertySource(locations = {"classpath:application-h2db.properties"})
 public class TemplateRepositoryUnitTest {
 
     /*@Autowired

@@ -24,7 +24,7 @@ import java.util.Properties;
 @EnableJpaRepositories(
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
-@PropertySource("classpath:mysql-db.properties")
+@PropertySource("classpath:application-mysql.properties")
 public class TestJPAConfig {
 
     private Environment env;

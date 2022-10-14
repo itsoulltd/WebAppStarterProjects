@@ -26,8 +26,8 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
-@PropertySource("classpath:mysql-db.properties")
-@PropertySource("classpath:h2-db.properties")
+@PropertySource("classpath:application-mysql.properties")
+@PropertySource("classpath:application-h2db.properties")
 public class PrimaryJPAConfig {
 
     private static Logger LOG = LoggerFactory.getLogger(PrimaryJPAConfig.class);

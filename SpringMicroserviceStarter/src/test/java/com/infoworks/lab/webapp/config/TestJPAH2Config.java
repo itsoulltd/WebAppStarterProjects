@@ -22,7 +22,7 @@ import java.util.Properties;
 @EnableJpaRepositories(
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
-@PropertySource("classpath:h2-db.properties")
+@PropertySource("classpath:application-h2db.properties")
 public class TestJPAH2Config {
 
     @Value("${spring.datasource.driver-class-name}")
