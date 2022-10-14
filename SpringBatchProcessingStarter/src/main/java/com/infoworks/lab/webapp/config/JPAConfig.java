@@ -25,8 +25,8 @@ import javax.sql.DataSource;
         basePackages = {"com.infoworks.lab.domain.repositories"},
         transactionManagerRef = "jpa-transaction-ref"
 )
-@PropertySource("classpath:mysql-db.properties")
-@PropertySource("classpath:h2-db.properties")
+@PropertySource("classpath:application-mysql.properties")
+@PropertySource("classpath:application-h2db.properties")
 public class JPAConfig {
 
     private Environment env;
