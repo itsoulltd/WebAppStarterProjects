@@ -2,7 +2,6 @@ package com.infoworks.lab.webapp.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
-@PropertySource("classpath:mongo-db.properties")
+@PropertySource("classpath:application-mongo.properties")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.uri}") String url;
