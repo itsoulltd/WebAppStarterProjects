@@ -12,7 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import java.sql.SQLException;
 
 @Configuration
-@PropertySource("classpath:cassandra-db.properties")
+@PropertySource("classpath:application-cassandra.properties")
 public class CassandraConfig {
 
     private static Logger LOG = LoggerFactory.getLogger(CassandraConfig.class);
