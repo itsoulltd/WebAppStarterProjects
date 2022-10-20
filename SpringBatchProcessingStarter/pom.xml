@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jersey2.version>2.27</jersey2.version>
         <poi-version>4.1.2</poi-version>
+        <jsqleditor.version>1.1.4.6-RELEASE</jsqleditor.version>
         <WebComponentKit.version>v1.12.6-RELEASE</WebComponentKit.version>
     </properties>
 
@@ -116,7 +117,7 @@
         <dependency>
             <groupId>com.github.itsoulltd</groupId>
             <artifactId>JSQLEditor</artifactId>
-            <version>1.1.4.6-RELEASE</version>
+            <version>${jsqleditor.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.itsoulltd.WebComponentKit</groupId>

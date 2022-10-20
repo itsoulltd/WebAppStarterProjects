@@ -20,6 +20,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jersey2.version>2.27</jersey2.version>
+        <jsqleditor.version>1.1.4.6-RELEASE</jsqleditor.version>
         <WebComponentKit.version>v1.12.1-RELEASE</WebComponentKit.version>
     </properties>
 
@@ -44,7 +45,7 @@
         <dependency>
             <groupId>com.github.itsoulltd</groupId>
             <artifactId>JSQLEditor</artifactId>
-            <version>1.1.4.6-RELEASE</version>
+            <version>${jsqleditor.version}</version>
         </dependency>
         <!-- Cassandra Manual -->
         <!-- https://mvnrepository.com/artifact/com.datastax.cassandra/cassandra-driver-core -->
