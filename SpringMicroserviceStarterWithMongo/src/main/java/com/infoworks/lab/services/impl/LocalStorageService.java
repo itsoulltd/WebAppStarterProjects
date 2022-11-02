@@ -22,13 +22,15 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     private static Logger LOG = LoggerFactory.getLogger(LocalStorageService.class);
     private Map<String, Boolean> fileSavedStatusMap = new ConcurrentHashMap<>();
     private Executor executor = Executors.newSingleThreadExecutor();
+    private String uploadPath;
+
+    public LocalStorageService(@Value("${app.upload.dir}") String uploadPath) {
+        this.uploadPath = uploadPath;
+    }
 
     protected Map<String, Boolean> getFileSavedStatusMap() {
         return fileSavedStatusMap;
     }
-
-    @Value("${app.upload.dir}")
-    private String uploadPath;
 
     public String[] fileNames(){
         return getFileSavedStatusMap().keySet().toArray(new String[0]);
