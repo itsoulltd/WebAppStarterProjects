@@ -23,16 +23,20 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     private Map<String, Boolean> fileSavedStatusMap = new ConcurrentHashMap<>();
     private Executor executor = Executors.newSingleThreadExecutor();
 
+    protected Map<String, Boolean> getFileSavedStatusMap() {
+        return fileSavedStatusMap;
+    }
+
     @Value("${app.upload.dir}")
     private String uploadPath;
 
     public String[] fileNames(){
-        return fileSavedStatusMap.keySet().toArray(new String[0]);
+        return getFileSavedStatusMap().keySet().toArray(new String[0]);
     }
 
     @Override
     public int size() {
-        return fileSavedStatusMap.size();
+        return getFileSavedStatusMap().size();
     }
 
     @Override
@@ -52,16 +56,16 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     public void put(String filename, InputStream multipartFile) {
         try {
             String fileLocation = getTargetLocation(filename);
-            fileSavedStatusMap.put(filename, save(fileLocation, multipartFile));
+            getFileSavedStatusMap().put(filename, save(fileLocation, multipartFile));
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
-            fileSavedStatusMap.put(filename, false);
+            getFileSavedStatusMap().put(filename, false);
         }
     }
 
     @Override
     public boolean containsKey(String filename) {
-        return fileSavedStatusMap.containsKey(filename);
+        return getFileSavedStatusMap().containsKey(filename);
     }
 
     @Override
@@ -70,7 +74,7 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
             try {
                 String fullPath = getTargetLocation(filename);
                 if (deleteFile(fullPath)) {
-                    fileSavedStatusMap.remove(filename);
+                    getFileSavedStatusMap().remove(filename);
                     return new FileInputStream("");
                 }
             } catch (Exception e) {
@@ -97,10 +101,10 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
         return old;
     }
 
-    protected synchronized List<String> getUnsavedFiles(){
-        final List<String> notSavedYet = fileSavedStatusMap.entrySet()
+    protected List<String> getUnsavedFiles() {
+        final List<String> notSavedYet = getFileSavedStatusMap().entrySet()
                 .stream()
-                .filter(enty -> !enty.getValue())
+                .filter(entry -> !entry.getValue())
                 .map(entry -> entry.getKey())
                 .collect(Collectors.toList());
         return notSavedYet;
@@ -136,14 +140,14 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
             if (async){
                 executor.execute(() -> {
                     try {
-                        retrySave(fileName, fileSavedStatusMap);
+                        retrySave(fileName, getFileSavedStatusMap());
                     } catch (IOException e) {
                         LOG.error(e.getMessage(), e);
                     }
                 });
             }else {
                 try {
-                    retrySave(fileName, fileSavedStatusMap);
+                    retrySave(fileName, getFileSavedStatusMap());
                 } catch (IOException e) {
                     LOG.error(e.getMessage(), e);
                 }
