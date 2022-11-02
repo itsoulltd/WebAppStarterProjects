@@ -185,14 +185,17 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
             });
             if (results != null) {
                 subFiles.addAll(Arrays.stream(results)
-                        .filter(inFile -> inFile.isDirectory())
-                        .flatMap(inDir -> Arrays.stream(inDir.listFiles()))
+                        .filter(File::isDirectory)
+                        .flatMap(inDir -> {
+                            File[] files = inDir.listFiles();
+                            return (files != null) ? Arrays.stream(files) : null;
+                        })
                         .collect(Collectors.toList()));
             }
         }
         List<InputStream> finalRes = new ArrayList<>();
         subFiles.stream()
-                .filter(inFile -> inFile.isFile())
+                .filter(File::isFile)
                 .forEach(inFile -> {
                     try {
                         finalRes.add(new FileInputStream(inFile));

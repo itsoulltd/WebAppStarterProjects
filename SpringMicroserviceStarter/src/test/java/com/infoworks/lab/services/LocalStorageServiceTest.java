@@ -69,4 +69,14 @@ public class LocalStorageServiceTest {
         System.out.println("Count: " + stream.size());
     }
 
+    @Test
+    public void emptyDirTest() {
+        iFileStorageService<InputStream> iFile = new LocalStorageService("/Users/Public");
+        SearchQuery query = new SearchQuery();
+        query.add("dirname").isEqualTo("Reports");
+        List<InputStream> stream = iFile.search(query);
+        //Assert.assertTrue(!stream.isEmpty());
+        System.out.println("Count: " + stream.size());
+    }
+
 }
