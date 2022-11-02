@@ -12,5 +12,13 @@ public interface iFileStorageService<IOStream> extends DataSource<String, IOStre
     default void retry(boolean async) {}
     String[] fileNames();
     InputStream findByName(String name);
+    /**
+     * TO Search files (containing file-name), pass SearchQuery.add("filename").isEqualTo("abc");
+     * where filename should be the key.
+     * TO Search files in Directory (containing directory-name), pass SearchQuery.add("dirname").isEqualTo("abc");
+     * where dirname should be the key.
+     * @param query
+     * @return List<InputStream>
+     */
     List<InputStream> search(SearchQuery query);
 }
