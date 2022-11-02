@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -163,7 +166,41 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
 
     @Override
     public List<InputStream> search(SearchQuery query) {
-        //TODO:
-        return null;
+        File searchDir = Paths.get(uploadPath).toFile();
+        List<File> subFiles = new ArrayList<>();
+        if (query.get("filename", String.class) != null) {
+            final String fileName = query.get("filename", String.class);
+            File[] results = searchDir.listFiles((dir, name) -> {
+                boolean found = name.contains(fileName);
+                return found;
+            });
+            if (results != null) {
+                subFiles.addAll(Arrays.asList(results));
+            }
+        } else if (query.get("dirname", String.class) != null) {
+            final String dirName = query.get("dirname", String.class);
+            File[] results = searchDir.listFiles((dirPath) -> {
+                boolean found = dirPath.isDirectory() && dirPath.getName().contains(dirName);
+                return found;
+            });
+            if (results != null) {
+                subFiles.addAll(Arrays.stream(results)
+                        .filter(inFile -> inFile.isDirectory())
+                        .flatMap(inDir -> Arrays.stream(inDir.listFiles()))
+                        .collect(Collectors.toList()));
+            }
+        }
+        List<InputStream> finalRes = new ArrayList<>();
+        subFiles.stream()
+                .filter(inFile -> inFile.isFile())
+                .forEach(inFile -> {
+                    try {
+                        finalRes.add(new FileInputStream(inFile));
+                    } catch (FileNotFoundException e) {
+                        LOG.error(e.getMessage());
+                    }
+                });
+        return finalRes;
     }
+
 }
