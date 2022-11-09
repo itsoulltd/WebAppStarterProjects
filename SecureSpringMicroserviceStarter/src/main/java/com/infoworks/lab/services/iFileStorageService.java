@@ -3,6 +3,7 @@ package com.infoworks.lab.services;
 import com.infoworks.lab.rest.models.SearchQuery;
 import com.it.soul.lab.data.base.DataSource;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -21,4 +22,5 @@ public interface iFileStorageService<IOStream> extends DataSource<String, IOStre
      * @return List<InputStream>
      */
     List<InputStream> search(SearchQuery query);
+    List<File> searchFiles(File searchDir, SearchQuery query);
 }

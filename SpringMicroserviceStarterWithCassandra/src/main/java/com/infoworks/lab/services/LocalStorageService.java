@@ -166,33 +166,10 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
 
     @Override
     public List<InputStream> search(SearchQuery query) {
-        File searchDir = Paths.get(uploadPath).toFile();
-        List<File> subFiles = new ArrayList<>();
-        if (query.get("filename", String.class) != null) {
-            final String fileName = query.get("filename", String.class);
-            File[] results = searchDir.listFiles((dir, name) -> {
-                boolean found = name.contains(fileName);
-                return found;
-            });
-            if (results != null) {
-                subFiles.addAll(Arrays.asList(results));
-            }
-        } else if (query.get("dirname", String.class) != null) {
-            final String dirName = query.get("dirname", String.class);
-            File[] results = searchDir.listFiles((dirPath) -> {
-                boolean found = dirPath.isDirectory() && dirPath.getName().contains(dirName);
-                return found;
-            });
-            if (results != null) {
-                subFiles.addAll(Arrays.stream(results)
-                        .filter(inFile -> inFile.isDirectory())
-                        .flatMap(inDir -> Arrays.stream(inDir.listFiles()))
-                        .collect(Collectors.toList()));
-            }
-        }
+        List<File> subFiles = searchFiles(Paths.get(uploadPath).toFile(), query);
         List<InputStream> finalRes = new ArrayList<>();
         subFiles.stream()
-                .filter(inFile -> inFile.isFile())
+                .filter(File::isFile)
                 .forEach(inFile -> {
                     try {
                         finalRes.add(new FileInputStream(inFile));
@@ -202,4 +179,37 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
                 });
         return finalRes;
     }
+
+    @Override
+    public List<File> searchFiles(File searchDir, SearchQuery query) {
+        List<File> subFiles = new ArrayList<>();
+        if (query != null) {
+            query.getProperties()
+                    .stream()
+                    .filter(qp -> qp.getValue() != null && !qp.getValue().isEmpty())
+                    .forEach(qp -> {
+                        final String lookingFor = qp.getValue();
+                        File[] results = searchDir.listFiles((dirPath, name) -> {
+                            boolean found = dirPath.isDirectory() && dirPath.getName().contains(lookingFor);
+                            if(!found) found = name.contains(lookingFor);
+                            return found;
+                        });
+                        if (results == null) return; //Means Continue:
+                        List<File> allFiles = new ArrayList<>();
+                        allFiles.addAll(Arrays.stream(results)
+                                .filter(File::isFile)
+                                .collect(Collectors.toList()));
+                        allFiles.addAll(Arrays.stream(results)
+                                .filter(File::isDirectory)
+                                .flatMap(inDir -> {
+                                    File[] files = inDir.listFiles();
+                                    return (files != null) ? Arrays.stream(files) : null;
+                                })
+                                .collect(Collectors.toList()));
+                        subFiles.addAll(allFiles);
+                    });
+        }
+        return subFiles;
+    }
+
 }
