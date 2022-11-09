@@ -6,7 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class LocalStorageServiceTest {
@@ -46,6 +48,26 @@ public class LocalStorageServiceTest {
         query.add("filename").isEqualTo("emn");
         List<InputStream> stream = iFile.search(query);
         //Assert.assertTrue(!stream.isEmpty());
+        System.out.println("Count: " + stream.size());
+    }
+
+    @Test
+    public void searchByFileNameInDir() {
+        iFileStorageService<InputStream> iFile = new LocalStorageService("/Users/Public");
+        SearchQuery query = new SearchQuery();
+        query.add("filename").isEqualTo("emn");
+        List<File> stream = iFile.searchFiles(Paths.get("/Users/Public").toFile(), query);
+        //Assert.assertTrue(!stream.isEmpty());
+        System.out.println("Count: " + stream.size());
+    }
+
+    @Test
+    public void searchByDirNameInDir() {
+        iFileStorageService<InputStream> iFile = new LocalStorageService("/Users/Public");
+        SearchQuery query = new SearchQuery();
+        query.add("dirname").isEqualTo("Reports");
+        List<File> stream = iFile.searchFiles(Paths.get("/Users/Public").toFile(), query);
+        //Assert.assertTrue(stream.isEmpty());
         System.out.println("Count: " + stream.size());
     }
 
