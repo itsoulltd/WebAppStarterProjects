@@ -36,8 +36,7 @@ services:
     image: spring-microservice-with-cassandra-starter:1.0
     build:
       context: .
-      #dockerfile: Dockerfile
-      dockerfile: Dockerfile-embedded
+      dockerfile: Dockerfile
     environment:
       cassandra.db.keyspace: cassandradb
       cassandra.db.host: cassandra-db

@@ -26,8 +26,7 @@ services:
       image: spring-microservice-starter:1.0
       build:
          context: .
-         #dockerfile: Dockerfile
-         dockerfile: Dockerfile-embedded
+         dockerfile: Dockerfile
       environment:
          app.db.name: testDB
          app.db.host: mysql-db

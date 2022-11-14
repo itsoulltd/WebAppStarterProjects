@@ -47,8 +47,7 @@ services:
      image: spring-microservice-with-mongo-starter:1.0
      build:
        context: .
-       #dockerfile: Dockerfile
-       dockerfile: Dockerfile-embedded
+       dockerfile: Dockerfile
      environment:
        mongo.db.name: testDB
        mongo.db.host: mongo-db

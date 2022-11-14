@@ -26,8 +26,7 @@ services:
       image: secure-spring-microservice-starter:1.0
       build:
          context: .
-         #dockerfile: Dockerfile
-         dockerfile: Dockerfile-embedded
+         dockerfile: Dockerfile
       environment:
          app.ssl.key-store: cert.p12
          app.ssl.key-store-password: password
