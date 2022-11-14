@@ -25,7 +25,7 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
     private static Logger LOG = LoggerFactory.getLogger(LocalStorageService.class);
     private Map<String, Boolean> fileSavedStatusMap = new ConcurrentHashMap<>();
     private Executor executor = Executors.newSingleThreadExecutor();
-    private String uploadPath;
+    private final String uploadPath;
 
     public LocalStorageService(@Value("${app.upload.dir}") String uploadPath) {
         this.uploadPath = uploadPath;
