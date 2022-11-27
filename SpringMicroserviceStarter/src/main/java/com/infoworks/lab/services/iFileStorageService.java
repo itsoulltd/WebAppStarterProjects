@@ -6,6 +6,7 @@ import com.it.soul.lab.data.base.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface iFileStorageService<IOStream> extends DataSource<String, IOStream> {
@@ -23,4 +24,5 @@ public interface iFileStorageService<IOStream> extends DataSource<String, IOStre
      */
     List<InputStream> search(SearchQuery query);
     List<File> searchFiles(File searchDir, SearchQuery query);
+    void prepareZipEntryFrom(List<File> files, OutputStream oStream) throws IOException;
 }

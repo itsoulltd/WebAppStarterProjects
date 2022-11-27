@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service("localStorageService")
 public class LocalStorageService extends SimpleDataSource<String, InputStream> implements iFileStorageService<InputStream> {
@@ -210,6 +212,28 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
                     });
         }
         return subFiles;
+    }
+
+    public void prepareZipEntryFrom(List<File> files, OutputStream oStream) throws IOException {
+        ZipOutputStream zips = new ZipOutputStream(oStream);
+        files.forEach(fileToZip -> {
+            //Making Zip-entry:-
+            try (FileInputStream fis = new FileInputStream(fileToZip)) {
+                ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+                zips.putNextEntry(zipEntry);
+                //
+                byte[] bytes = new byte[1024];
+                int length;
+                while((length = fis.read(bytes)) >= 0) {
+                    zips.write(bytes, 0, length);
+                }
+            } catch (IOException e) {
+                LOG.error(e.getMessage(), e);
+            }
+            //Zipping Done
+        });
+        zips.finish();
+        zips.close();
     }
 
 }
