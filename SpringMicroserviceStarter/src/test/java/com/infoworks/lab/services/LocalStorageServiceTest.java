@@ -2,15 +2,15 @@ package com.infoworks.lab.services;
 
 import com.infoworks.lab.rest.models.SearchQuery;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 public class LocalStorageServiceTest {
@@ -120,6 +120,27 @@ public class LocalStorageServiceTest {
         List<InputStream> stream = iFile.search(query);
         //Assert.assertTrue(!stream.isEmpty());
         System.out.println("Count: " + stream.size());
+    }
+
+    @Test
+    public void makingZip() throws IOException {
+        iFileStorageService<InputStream> iFile = new LocalStorageService("/Users/Public/Reports");
+        SearchQuery query = new SearchQuery();
+        query.add("filename").isEqualTo("emn");
+        List<File> files = iFile.searchFiles(Paths.get("/Users/Public/Reports").toFile(), query);
+        SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        String fileName = String.format("%s_%s.zip", UUID.randomUUID().toString().substring(0, 8)
+                , fileNameDateFormatter.format(new Date()));
+        File toWrite = Paths.get("/Users/Public/Reports", fileName).toFile();
+        //
+        if (!files.isEmpty()) {
+            //Searching By File-Names:-
+            OutputStream fos = new FileOutputStream(toWrite);
+            iFile.prepareZipEntryFrom(files, fos);
+            fos.flush();
+            fos.close();
+        }
+        System.out.println("Count: " + files.size());
     }
 
 }
