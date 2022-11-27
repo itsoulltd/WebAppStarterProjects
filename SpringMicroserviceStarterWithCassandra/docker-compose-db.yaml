@@ -31,5 +31,6 @@ services:
       #CASSANDRA_PASSWORD: cassandra
     networks:
       - web-app-net
+    restart: on-failure
 
 ##End of Scripts
