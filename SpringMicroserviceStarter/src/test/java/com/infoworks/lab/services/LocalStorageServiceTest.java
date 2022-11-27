@@ -7,9 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class LocalStorageServiceTest {
 
@@ -48,6 +50,25 @@ public class LocalStorageServiceTest {
         query.add("filename").isEqualTo("emn");
         List<InputStream> stream = iFile.search(query);
         //Assert.assertTrue(!stream.isEmpty());
+        System.out.println("Count: " + stream.size());
+    }
+
+    @Test
+    public void contentLengthCheck() {
+        iFileStorageService<InputStream> iFile = new LocalStorageService("/Users/Public");
+        SearchQuery query = new SearchQuery();
+        query.add("filename").isEqualTo("emn");
+        List<InputStream> stream = iFile.search(query);
+        //Assert.assertTrue(!stream.isEmpty());
+        int cLength = stream.stream()
+                .flatMapToInt(ios -> {
+                    try {
+                        int length = ios.available();
+                        return IntStream.of(length);
+                    } catch (IOException e) {}
+                    return IntStream.of(0);
+                }).sum();
+        System.out.println("Total Content Length: " + cLength);
         System.out.println("Count: " + stream.size());
     }
 
