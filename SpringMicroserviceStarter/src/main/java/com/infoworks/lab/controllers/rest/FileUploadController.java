@@ -1,8 +1,12 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.rest.models.ItemCount;
+import com.infoworks.lab.rest.models.SearchQuery;
 import com.infoworks.lab.services.iFileStorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -12,15 +16,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/files")
 public class FileUploadController {
 
+    private static Logger LOG = LoggerFactory.getLogger(FileUploadController.class);
     private iFileStorageService<InputStream> storageService;
 
     @Autowired
@@ -63,6 +74,11 @@ public class FileUploadController {
         ByteArrayResource resource = new ByteArrayResource(bytes);
         ios.close();
         //
+        return createResponseEntity(fileName, contentLength, resource);
+    }
+
+    private ResponseEntity<Resource> createResponseEntity(String fileName, int contentLength, Resource resource) {
+        if (resource == null) return ResponseEntity.notFound().build();
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", fileName));
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -80,6 +96,29 @@ public class FileUploadController {
     public Boolean delete(@RequestParam("filename") String name){
         InputStream stream = storageService.remove(name);
         return stream != null;
+    }
+
+    private static SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Value("${app.upload.dir}")
+    private String uploadPath;
+
+    @GetMapping("/search/{query}")
+    public ResponseEntity<Resource> searchContent(@PathVariable("query") String query) throws IOException {
+        SearchQuery search = new SearchQuery();
+        search.add("query").isEqualTo(query);
+        List<File> files = storageService.searchFiles(Paths.get(uploadPath).toFile(), search);
+        if (files.isEmpty()) return ResponseEntity.notFound().build();
+        //Searching By File-Names:-
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        storageService.prepareZipEntryFrom(files, baos);
+        int contentLength = baos.size();
+        ByteArrayResource resource = new ByteArrayResource(baos.toByteArray());
+        baos.close();
+        //
+        String fileName = String.format("%s_%s.zip", UUID.randomUUID().toString().substring(0, 8)
+                , fileNameDateFormatter.format(new Date()));
+        return createResponseEntity(fileName, contentLength, resource);
     }
 
 }
