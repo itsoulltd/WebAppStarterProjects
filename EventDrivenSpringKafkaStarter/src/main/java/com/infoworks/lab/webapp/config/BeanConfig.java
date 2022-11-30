@@ -1,6 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.MemCache;
+import com.infoworks.lab.cache.MemCache;
 import com.infoworks.lab.datasources.RedisDataSource;
 import com.infoworks.lab.datasources.RedissonDataSource;
 import com.infoworks.lab.domain.entities.Passenger;

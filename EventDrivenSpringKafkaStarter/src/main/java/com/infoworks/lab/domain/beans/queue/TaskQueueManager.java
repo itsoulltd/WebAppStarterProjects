@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +24,7 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
     }
 
     @Override
-    protected Task createTask(String text) throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException {
+    protected Task createTask(String text) throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Task task = super.createTask(text);
         //Inject dependency into Task during MOM's task execution.
         return task;
