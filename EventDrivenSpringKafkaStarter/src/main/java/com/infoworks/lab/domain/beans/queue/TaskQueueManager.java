@@ -3,7 +3,7 @@ package com.infoworks.lab.domain.beans.queue;
 import com.infoworks.lab.beans.queue.AbstractTaskQueueManager;
 import com.infoworks.lab.beans.tasks.definition.QueuedTaskLifecycleListener;
 import com.infoworks.lab.beans.tasks.definition.Task;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -19,12 +19,14 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
 
     private static final Logger logger = Logger.getLogger("TaskQueueManager");
 
-    public TaskQueueManager(@Autowired QueuedTaskLifecycleListener listener) {
+    public TaskQueueManager(@Qualifier("taskDispatchQueue") QueuedTaskLifecycleListener listener) {
         super(listener);
     }
 
     @Override
-    protected Task createTask(String text) throws ClassNotFoundException, IOException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    protected Task createTask(String text) throws ClassNotFoundException, IOException
+            , IllegalAccessException, InstantiationException
+            , NoSuchMethodException, InvocationTargetException {
         Task task = super.createTask(text);
         //Inject dependency into Task during MOM's task execution.
         return task;
