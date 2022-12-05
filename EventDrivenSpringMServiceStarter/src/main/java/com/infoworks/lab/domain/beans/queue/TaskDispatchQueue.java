@@ -1,10 +1,10 @@
 package com.infoworks.lab.domain.beans.queue;
 
+import com.infoworks.lab.beans.queue.AbstractTaskQueue;
+import com.infoworks.lab.beans.queue.JmsMessage;
 import com.infoworks.lab.beans.tasks.definition.Task;
 import com.infoworks.lab.beans.tasks.definition.TaskQueue;
 import com.infoworks.lab.rest.models.Message;
-import com.infoworks.lab.beans.queue.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -14,16 +14,17 @@ import javax.jms.Queue;
 @Component("taskDispatchQueue")
 public class TaskDispatchQueue extends AbstractTaskQueue {
 
-    @Autowired
-    @Qualifier("exeQueue")
     private Queue exeQueue;
-
-    @Autowired
-    @Qualifier("abortQueue")
     private Queue abortQueue;
-
-    @Autowired
     private JmsTemplate jmsTemplate;
+
+    public TaskDispatchQueue(@Qualifier("exeQueue") Queue exeQueue
+            , @Qualifier("abortQueue") Queue abortQueue
+            , JmsTemplate jmsTemplate) {
+        this.exeQueue = exeQueue;
+        this.abortQueue = abortQueue;
+        this.jmsTemplate = jmsTemplate;
+    }
 
     @Override
     public TaskQueue add(Task task) {

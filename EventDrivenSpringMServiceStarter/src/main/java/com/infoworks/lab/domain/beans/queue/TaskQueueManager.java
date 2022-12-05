@@ -1,12 +1,16 @@
 package com.infoworks.lab.domain.beans.queue;
 
+import com.infoworks.lab.beans.queue.AbstractTaskQueueManager;
 import com.infoworks.lab.beans.tasks.definition.QueuedTaskLifecycleListener;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.infoworks.lab.beans.tasks.definition.Task;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-import com.infoworks.lab.beans.queue.*;
+
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,8 +19,17 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
 
     private static final Logger logger = Logger.getLogger("TaskQueueManager");
 
-    public TaskQueueManager(@Autowired QueuedTaskLifecycleListener listener) {
+    public TaskQueueManager(@Qualifier("taskDispatchQueue") QueuedTaskLifecycleListener listener) {
         super(listener);
+    }
+
+    @Override
+    protected Task createTask(String text) throws ClassNotFoundException, IOException
+            , IllegalAccessException, InstantiationException
+            , NoSuchMethodException, InvocationTargetException {
+        Task task = super.createTask(text);
+        //Inject dependency into Task during MOM's task execution.
+        return task;
     }
 
     @JmsListener(destination = "${jms.queue.exe}", concurrency = "1-5")

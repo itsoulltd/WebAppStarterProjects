@@ -1,7 +1,6 @@
 package com.infoworks.lab.webapp.config.jms;
 
 import org.apache.activemq.command.ActiveMQQueue;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -13,8 +12,11 @@ import javax.jms.Queue;
 @PropertySource("classpath:jms.properties")
 public class JmsQueueConfig {
 
-    @Autowired
     public Environment env;
+
+    public JmsQueueConfig(Environment env) {
+        this.env = env;
+    }
 
     @Bean("testQueue")
     public Queue queue(){
