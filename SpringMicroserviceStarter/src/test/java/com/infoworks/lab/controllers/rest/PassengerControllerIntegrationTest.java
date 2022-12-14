@@ -35,7 +35,7 @@ public class PassengerControllerIntegrationTest {
         //
         controller.insert(new Passenger("Sayed The Coder", Gender.MALE, 24));
         //
-        ItemCount count = controller.getRowCount();
+        ItemCount count = controller.rowCount();
         System.out.println(count.getCount());
     }
 
@@ -46,8 +46,8 @@ public class PassengerControllerIntegrationTest {
         controller.insert(new Passenger("Evan The Pankha Coder", Gender.MALE, 24));
         controller.insert(new Passenger("Razib The Pagla", Gender.MALE, 26));
         //
-        int size = Long.valueOf(controller.getRowCount().getCount()).intValue();
-        List<Passenger> items = controller.query(size, 0);
+        int size = Long.valueOf(controller.rowCount().getCount()).intValue();
+        List<Passenger> items = controller.fetch(size, 0);
         items.stream().forEach(passenger -> System.out.println(passenger.getName()));
     }
 
