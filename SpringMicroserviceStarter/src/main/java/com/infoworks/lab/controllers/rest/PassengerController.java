@@ -34,12 +34,11 @@ public class PassengerController implements RestRepository<Passenger, String> {
     @GetMapping
     public List<Passenger> fetch(
             @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit
-            , @RequestParam(value = "page", defaultValue = "0", required = false) Integer page){
+            , @RequestParam(value = "page", defaultValue = "1", required = false) Integer page){
         //
         if (limit < 0) limit = 10;
-        if (page < 0) page = 0;
-        int offset = page * limit;
-        List<Passenger> passengers = Arrays.asList(dataSource.readSync(offset, limit));
+        if (page < 0) page = 1;
+        List<Passenger> passengers = Arrays.asList(dataSource.readSync(page, limit));
         return passengers;
     }
 
