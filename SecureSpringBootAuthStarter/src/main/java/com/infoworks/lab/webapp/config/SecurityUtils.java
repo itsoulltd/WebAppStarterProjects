@@ -62,7 +62,7 @@ public final class SecurityUtils {
         return Optional.ofNullable(securityContext.getAuthentication())
                 .map(authentication -> authentication.getAuthorities().stream()
                         .noneMatch(grantedAuthority -> grantedAuthority.getAuthority()
-                                .equals(AuthoritiesConstants.ANONYMOUS)))
+                                .equals(AuthoritiesConstants.GUEST)))
                 .orElse(false);
     }
 
