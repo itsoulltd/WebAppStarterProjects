@@ -6,13 +6,18 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Utility class for Spring Security.
  * JHipster implementation
  */
 public final class SecurityUtils {
+
+    public static final String MATCH_ANY_ADMIN_ROLE = "ADMIN";
 
     private SecurityUtils() {}
 
@@ -71,26 +76,36 @@ public final class SecurityUtils {
      * <p>
      * The name of this method comes from the isUserInRole() method in the Servlet API
      *
-     * @param authorities the authority to check
+     * @param anyRoles the authority to check
      * @return true if the current user has the authority, false otherwise
      */
-    public static boolean isCurrentUserInRole(String...authorities) {
+    public static boolean isCurrentUserInRole(String...anyRoles) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        Set<String> authoritiesSet = new HashSet<>(Arrays.asList(authorities));
+        Set<String> authoritiesSet = new HashSet<>(Arrays.asList(anyRoles));
         return Optional.ofNullable(securityContext.getAuthentication())
-                .map(authentication -> authentication.getAuthorities().stream()
+                .map(authentication -> authentication.getAuthorities()
+                        .stream()
                         .map(GrantedAuthority::getAuthority)
                         .anyMatch(authoritiesSet::contains))
                 .orElse(false);
     }
 
-    public static boolean matchAnyAdminRole(Collection<? extends GrantedAuthority> authority) {
-        String[] args = AuthorityUtils.authorityListToSet(authority).toArray(new String[0]);
+    public static boolean matchAnyRole(String...anyRoles) {
+        return isCurrentUserInRole(anyRoles);
+    }
+
+    public static boolean matchAnyAdminRole() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Set<String> authoritySet =
+                Optional.ofNullable(securityContext.getAuthentication())
+                .map(authentication -> AuthorityUtils.authorityListToSet(authentication.getAuthorities()))
+                .orElse(new HashSet<>());
+        String[] args = authoritySet.toArray(new String[0]);
         return matchAnyAdminRole(args);
     }
 
     public static boolean matchAnyAdminRole(String...args) {
-        return String.join(" ", args).toUpperCase().contains("ADMIN");
+        return String.join(" ", args).toUpperCase().contains(MATCH_ANY_ADMIN_ROLE);
     }
 
 }
