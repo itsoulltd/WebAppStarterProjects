@@ -6,10 +6,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Utility class for Spring Security.
@@ -99,6 +96,14 @@ public final class SecurityUtils {
         Set<String> authoritySet =
                 Optional.ofNullable(securityContext.getAuthentication())
                 .map(authentication -> AuthorityUtils.authorityListToSet(authentication.getAuthorities()))
+                .orElse(new HashSet<>());
+        String[] args = authoritySet.toArray(new String[0]);
+        return matchAnyAdminRole(args);
+    }
+
+    public static boolean matchAnyAdminRole(Collection<? extends GrantedAuthority> authorities) {
+        Set<String> authoritySet = Optional.ofNullable(authorities)
+                .map(AuthorityUtils::authorityListToSet)
                 .orElse(new HashSet<>());
         String[] args = authoritySet.toArray(new String[0]);
         return matchAnyAdminRole(args);
