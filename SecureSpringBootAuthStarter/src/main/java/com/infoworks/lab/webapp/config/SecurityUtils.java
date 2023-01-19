@@ -109,7 +109,7 @@ public final class SecurityUtils {
         return matchAnyAdminRole(args);
     }
 
-    public static boolean matchAnyAdminRole(String...args) {
+    private static boolean matchAnyAdminRole(String...args) {
         return String.join(" ", args).toUpperCase().contains(MATCH_ANY_ADMIN_ROLE);
     }
 
