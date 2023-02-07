@@ -77,6 +77,13 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
     }
 
     @Override
+    public void delete(FileDocument fileDocument) throws RuntimeException {
+        if (fileDocument == null || fileDocument.getUuid() == null || fileDocument.getUuid().isEmpty())
+            throw new RuntimeException("UUID is null or empty!");
+        remove(fileDocument.getUuid());
+    }
+
+    @Override
     public FileDocument findByName(String name) {
         //Using Template
         FileDocument document = template.findOne(Query.query(Criteria.where("fileMeta.name").is(name)), FileDocument.class);
