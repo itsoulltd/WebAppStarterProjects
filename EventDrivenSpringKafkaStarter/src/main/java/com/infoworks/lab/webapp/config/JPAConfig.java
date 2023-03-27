@@ -25,11 +25,11 @@ import javax.sql.DataSource;
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
 @PropertySource("classpath:application-mysql.properties")
-public class PrimaryJPAConfig {
+public class JPAConfig {
 
     private Environment env;
 
-    public PrimaryJPAConfig(@Autowired Environment env) {
+    public JPAConfig(@Autowired Environment env) {
         this.env = env;
     }
 

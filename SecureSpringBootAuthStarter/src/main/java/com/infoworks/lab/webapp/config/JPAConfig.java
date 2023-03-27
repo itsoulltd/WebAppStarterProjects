@@ -37,12 +37,12 @@ import java.util.Optional;
 )
 @PropertySource("classpath:application-mysql.properties")
 @PropertySource("classpath:application-h2db.properties")
-public class PrimaryJPAConfig {
+public class JPAConfig {
 
-    private static Logger LOG = LoggerFactory.getLogger(PrimaryJPAConfig.class);
+    private static Logger LOG = LoggerFactory.getLogger(JPAConfig.class);
     private Environment env;
 
-    public PrimaryJPAConfig(@Autowired Environment env) {
+    public JPAConfig(@Autowired Environment env) {
         this.env = env;
     }
 
