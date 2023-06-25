@@ -33,6 +33,7 @@ services:
          app.db.port: 3306
          app.db.username: root
          app.db.password: root@123
+         spring.profiles.active: mysql
          management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
          app.home.logs: /home/logs
       ports:

@@ -59,6 +59,7 @@ services:
        app.db.host: mysql-db
        app.db.port: 3306
        app.db.password: root@123
+       spring.profiles.active: mysql
        app.redis.host: redis
        app.redis.port: 6379
        app.token.to.live: 18000
