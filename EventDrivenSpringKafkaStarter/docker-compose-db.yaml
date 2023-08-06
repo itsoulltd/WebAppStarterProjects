@@ -49,6 +49,7 @@ services:
       environment:
         - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
         - ALLOW_PLAINTEXT_LISTENER=yes
+        - KAFKA_ENABLE_KRAFT=no #From kafka-v3.3.2 replace ZooKeeper with KRaft consensus protocol.
         #Place Device-Current IP Or EC2-Private-IP
         #To connect from an external machine, change localhost to your host's external IP/hostname,
         #EXTERNAL://localhost:9093, If we need to access the kafka from our host-machine for debug purpose.
