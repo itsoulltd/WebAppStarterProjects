@@ -19,7 +19,9 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {WebApplicationTest.class
         , PassengerController.class, BeanConfig.class, TestJPAConfig.class})
-@TestPropertySource(locations = {"classpath:application-mysql.properties"})
+@TestPropertySource(locations = {"classpath:application.properties"
+        , "classpath:application-test.properties"
+        , "classpath:application-mysql.properties"})
 public class PassengerControllerIntegrationTest {
 
     @Before
@@ -29,6 +31,11 @@ public class PassengerControllerIntegrationTest {
 
     @Autowired
     private PassengerController controller;
+
+    @Test
+    public void loadTest() {
+        System.out.println("Object Loaded: " + (controller != null ? "Yes" : "No"));
+    }
 
     @Test
     public void count(){

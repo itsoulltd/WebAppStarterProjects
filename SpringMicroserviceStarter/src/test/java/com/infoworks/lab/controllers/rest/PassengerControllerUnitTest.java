@@ -24,7 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = {WebApplicationTest.class, TestJPAH2Config.class, BeanConfig.class})
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:application-h2db.properties")
+@TestPropertySource(locations = {"classpath:application.properties"
+        , "classpath:application-test.properties"
+        , "classpath:application-h2db.properties"})
 public class PassengerControllerUnitTest {
 
     @Before
@@ -40,6 +42,11 @@ public class PassengerControllerUnitTest {
 
     @InjectMocks
     PassengerController controller;
+
+    @Test
+    public void loadTest() {
+        System.out.println("Object Loaded: " + (controller != null ? "Yes" : "No"));
+    }
 
     @Test
     public void rowCountGetTest() throws Exception {
