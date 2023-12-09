@@ -19,6 +19,7 @@
         <module>SecureSpringBootAuthStarter</module>
         <module>SpringWebSocketStarter</module>
         <module>SpringBatchProcessingStarter</module>
+        <module>SpringMicroserviceStarterWithDataRest</module>
     </modules>
 
     <properties>
