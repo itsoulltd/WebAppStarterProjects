@@ -22,6 +22,7 @@
         <jersey2.version>2.27</jersey2.version>
         <jsqleditor.version>1.1.4.6-RELEASE</jsqleditor.version>
         <WebComponentKit.version>v1.12.0-RELEASE</WebComponentKit.version>
+        <springfox.version>2.9.2</springfox.version>
     </properties>
 
     <repositories>
@@ -143,13 +144,18 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-data-rest</artifactId>
+            <version>${springfox.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <version>${springfox.version}</version>
         </dependency>
     </dependencies>
 
