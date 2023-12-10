@@ -1,4 +1,4 @@
-## FollowingTutorial: [Spring Data-Rest: How To CRUD](https://www.baeldung.com/spring-data-rest-intro)
+## Tutorial Spring Data-Rest API:
 
 #### Accessing the REST API:
 ##### If we run the application and go to http://localhost:8080/api/data in a browser, we will receive the following JSON:
@@ -171,3 +171,55 @@
     ~>$ curl --location --request DELETE 'http://localhost:8080/api/data/passengers/1'
     == Result:
     http status: 204 No Content [Server successfully process the request, but no content returns.] 
+##### We can checkout the search api exist in Passenger data-rest api:
+    ~>$ curl --location 'http://localhost:8080/api/data/passengers/search'
+    == Result: 
+    {
+        "_links": {
+            "findByAgeLimit": {
+                "href": "http://localhost:8080/api/data/passengers/search/findByAgeLimit{?min,max}",
+                "templated": true
+            },
+            "findByName": {
+                "href": "http://localhost:8080/api/data/passengers/search/findByName{?name}",
+                "templated": true
+            },
+            "self": {
+                "href": "http://localhost:8080/api/data/passengers/search"
+            }
+        }
+    }
+##### Let's search using: findByAgeLimit?min=20&max=30
+    ~>$ curl --location 'http://localhost:8080/api/data/passengers/search/findByAgeLimit?min=27&max=29'
+    == Result:
+    {
+        "_embedded": {
+            "passengers": [
+                {
+                    "name": "Test Updated",
+                    "sex": "NONE",
+                    "age": 29,
+                    "dob": "2023-12-10T14:49:19.156+0000",
+                    "active": false,
+                    "_links": {
+                        "self": {
+                            "href": "http://localhost:8080/api/data/passengers/323"
+                        },
+                        "passenger": {
+                            "href": "http://localhost:8080/api/data/passengers/323"
+                        }
+                    }
+                }
+            ]
+        },
+        "_links": {
+            "self": {
+                "href": "http://localhost:8080/api/data/passengers/search/findByAgeLimit?min=27&max=29"
+            }
+        }
+    }
+
+#### Reference: (Thanks to all)
+##### [Spring Data-Rest Intro By baeldung.com](https://www.baeldung.com/spring-data-rest-intro)
+##### [Data-Rest Intro By springboottutorial.com](https://www.springboottutorial.com/introduction-to-spring-data-rest-using-spring-boot)
+##### [Spring Data Jpa@Query By baeldung.com](https://www.baeldung.com/spring-data-jpa-query)
