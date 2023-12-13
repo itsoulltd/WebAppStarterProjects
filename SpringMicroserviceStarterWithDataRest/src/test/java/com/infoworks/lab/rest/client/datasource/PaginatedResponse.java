@@ -14,6 +14,7 @@ public class PaginatedResponse extends Response {
     public PaginatedResponse() {}
 
     public PaginatedResponse(Map<String, Object> dataMap) {
+        if (dataMap == null) return;
         this.embedded = (Map) dataMap.get("_embedded");
         this.links = new Links((Map) dataMap.get("_links"));
         this.page = new Page((Map) dataMap.get("page"));
@@ -41,5 +42,13 @@ public class PaginatedResponse extends Response {
 
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    public void updatePage(Map<String, Object> dataMap) {
+        if (dataMap == null) return;
+        Map<String, Object> pageData = (Map) dataMap.get("page");
+        if (pageData != null) {
+            this.page = new Page(pageData);
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,6 @@ import java.util.function.Consumer;
 
 public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSource<Key, Value> implements AutoCloseable{
 
-    private int pageCursor = 0;
     private final URL baseUrl;
     private ExecutorService service;
     private RestTemplate template;
@@ -51,8 +51,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
 
     @Override
     public void close() throws Exception {
-        //TODO: Do all memory clean-up and terminate running process:
-        pageCursor = 0;
+        //Do all memory clean-up and terminate running process:
         clear();
         //immediate shutdown all enqueued tasks and return
         service.shutdown();
@@ -151,7 +150,67 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         //TODO:
         //First Check in cache:
         //Otherwise Fetch-From Server:
+        if (baseResponse != null){
+            Page page = baseResponse.getPage();
+            Map<String, Object> dataMap = fetchNext(page);
+            //Update Next page info:
+            baseResponse.updatePage(dataMap);
+            //Parse next items:
+            List<Value> items = parsePageItems(dataMap);
+            return items;
+        }
         return new ArrayList<>();
+    }
+
+    /**
+     * May return Null
+     * @param current
+     * @return
+     */
+    private Map<String, Object> fetchNext(Page current) {
+        int currentPage = current.getNumber();
+        int pageSize = current.getSize();
+        if (currentPage >= current.getTotalPages()) {
+            return null;
+        }
+        int nextPage = currentPage + 1;
+        HttpHeaders headers = new HttpHeaders();
+        Map body = new HashMap();
+        HttpEntity<Map> entity = new HttpEntity<>(body, headers);
+        //
+        String nextPagePath = baseUrl.toString() + "?page={page}&size={size}";
+        ResponseEntity<String> rs = template.exchange(nextPagePath
+                , HttpMethod.GET
+                , entity
+                , String.class, nextPage, pageSize);
+        String result = rs.getBody();
+        Map<String, Object> dataMap = null;
+        try {
+            dataMap = Message.unmarshal(
+                    new TypeReference<Map<String, Object>>() {}, result);
+        } catch (IOException e) {}
+        return dataMap;
+    }
+
+    private List<Value> parsePageItems(Map<String, Object> dataMap) {
+        List<Value> typedObjects = new ArrayList<>();
+        if (dataMap == null) return typedObjects;
+        //Parse DataMap to get-objects:
+        Map<String, List<Map<String, Object>>> embedded =
+                (Map) dataMap.get("_embedded");
+        String path = baseUrl.getPath();
+        String[] paths = path.split("/");
+        String last = paths[paths.length - 1];
+        List<Map<String, Object>> objects = embedded.get(last);
+        for (Map<String, Object> entry : objects) {
+            try {
+                Value parsed = (Value) anyClassType.newInstance();
+                parsed.unmarshallingFromMap(entry, false);
+                typedObjects.add(parsed);
+            } catch (InstantiationException
+                     | IllegalAccessException e) {}
+        }
+        return typedObjects;
     }
 
     public void next(Consumer<List<Value>> consumer) {
