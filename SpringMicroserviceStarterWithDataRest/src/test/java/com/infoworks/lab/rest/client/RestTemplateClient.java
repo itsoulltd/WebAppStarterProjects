@@ -22,7 +22,7 @@ public class RestTemplateClient {
     public void DataRestApis() {
         //
         RestTemplate template = new RestTemplateBuilder()
-                .rootUri("http://localhost:8080")
+                .rootUri("http://localhost:8080/api/data")
                 .setConnectTimeout(Duration.ofMillis(5000))
                 .setReadTimeout(Duration.ofMillis(7000))
                 .build();
@@ -31,7 +31,7 @@ public class RestTemplateClient {
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
         //http://localhost:8080/api/data
-        ResponseEntity<String> rs = template.exchange("/api/data"
+        ResponseEntity<String> rs = template.exchange("/"
                 , HttpMethod.GET
                 , entity
                 , String.class);
@@ -40,7 +40,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void DataRestApisForPassengers() {
+    public void DataRestApisForPassengersType1() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -53,6 +53,49 @@ public class RestTemplateClient {
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
         //http://localhost:8080/api/data/passengers
         ResponseEntity<String> rs = template.exchange("/passengers"
+                , HttpMethod.GET
+                , entity
+                , String.class);
+        String result = rs.getBody();
+        System.out.println(result);
+    }
+
+    @Test
+    public void DataRestApisForPassengersType2() {
+        //
+        RestTemplate template = new RestTemplateBuilder()
+                .rootUri("http://localhost:8080/api/data")
+                .setConnectTimeout(Duration.ofMillis(5000))
+                .setReadTimeout(Duration.ofMillis(7000))
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        Map body = new HashMap();
+        HttpEntity<Map> entity = new HttpEntity<>(body, headers);
+        String rootURL = "http://localhost:8080/api/data/passengers";
+        ResponseEntity<String> rs = template.exchange(rootURL
+                , HttpMethod.GET
+                , entity
+                , String.class);
+        String result = rs.getBody();
+        System.out.println(result);
+    }
+
+    @Test
+    public void DataRestApisForPassengersType3() {
+        //
+        RestTemplate template = new RestTemplateBuilder()
+                .rootUri("http://localhost:8080/api/data/passengers")
+                .setConnectTimeout(Duration.ofMillis(5000))
+                .setReadTimeout(Duration.ofMillis(7000))
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        Map body = new HashMap();
+        HttpEntity<Map> entity = new HttpEntity<>(body, headers);
+        //http://localhost:8080/api/data/passengers
+        //FIX: Will throw exception if pass empty string in url:
+        ResponseEntity<String> rs = template.exchange("/"
                 , HttpMethod.GET
                 , entity
                 , String.class);
