@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -119,10 +121,10 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
 
     @Override
     public Value read(Key key) throws RuntimeException{
-        //TODO: Read will do GET
+        //First check in Cache:
         Value any = super.read(key);
         if (any != null) return any;
-        //
+        //Read will do GET
         try {
             HttpHeaders headers = new HttpHeaders();
             Map<String, Object> body = new HashMap();
@@ -141,23 +143,20 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     /**
-     * Always read from Local-Cache.
-     * @param offset
-     * @param pageSize
+     * First try to read from Local-Cache:
+     * Otherwise goto server:
      * @return
      */
-    @Override
-    public Value[] readSync(int offset, int pageSize) {
-        return super.readSync(offset, pageSize);
+    public List<Value> next() {
+        //TODO:
+        //First Check in cache:
+        //Otherwise Fetch-From Server:
+        return new ArrayList<>();
     }
 
-    @Override
-    public void readAsync(int offset, int pageSize, Consumer<Value[]> consumer) {
-        //TODO:
-        Value[] res = (Value[]) new Object[0];
-        //...
+    public void next(Consumer<List<Value>> consumer) {
         if (consumer != null) {
-            getService().submit(() -> consumer.accept(res));
+            getService().submit(() -> consumer.accept(next()));
         }
     }
 
