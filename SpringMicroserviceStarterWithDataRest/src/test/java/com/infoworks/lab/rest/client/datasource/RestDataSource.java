@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-public class RestDataSource<Key, Value> extends SimpleDataSource<Key, Value> implements AutoCloseable{
+public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSource<Key, Value> implements AutoCloseable{
 
     private int pageCursor = 0;
     private final URL baseUrl;
@@ -95,19 +95,19 @@ public class RestDataSource<Key, Value> extends SimpleDataSource<Key, Value> imp
 
     @Override
     public void put(Key key, Value value) {
-        //TODO:
+        //TODO: Put will do PUT
     }
 
     @Override
     public Key add(Value value) throws RuntimeException {
-        Object key = value.hashCode();
-        put((Key) key, value);
-        return (Key) key;
+        //TODO: Add will do POST
+        Key key = value.getId();
+        return key;
     }
 
     @Override
     public Value remove(Key key) {
-        //TODO:
+        //TODO: Remove will do DELETE
         return null;
     }
 
