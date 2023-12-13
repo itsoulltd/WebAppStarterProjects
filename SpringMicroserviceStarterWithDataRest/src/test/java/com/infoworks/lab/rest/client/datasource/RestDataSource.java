@@ -23,12 +23,18 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     private ExecutorService service;
     private RestTemplate template;
     private PaginatedResponse baseResponse;
+    private Class<? extends Any<Key>> anyClassType;
 
-    public RestDataSource(URL baseUrl, RestTemplate template) {
-        this(baseUrl, template, Executors.newSingleThreadExecutor());
+    public RestDataSource(Class<? extends Any<Key>> type, URL baseUrl) {
+        this(type, baseUrl, new RestTemplate());
     }
 
-    public RestDataSource(URL baseUrl, RestTemplate template, ExecutorService service) {
+    public RestDataSource(Class<? extends Any<Key>> type,URL baseUrl, RestTemplate template) {
+        this(type, baseUrl, template, Executors.newSingleThreadExecutor());
+    }
+
+    public RestDataSource(Class<? extends Any<Key>> type,URL baseUrl, RestTemplate template, ExecutorService service) {
+        this.anyClassType = type;
         this.baseUrl = baseUrl;
         this.service = service;
         this.template = template;
@@ -112,9 +118,26 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     @Override
-    public Value read(Key key) {
-        //TODO:
-        return null;
+    public Value read(Key key) throws RuntimeException{
+        //TODO: Read will do GET
+        Value any = super.read(key);
+        if (any != null) return any;
+        //
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            Map<String, Object> body = new HashMap();
+            HttpEntity<Map> get = new HttpEntity<>(body, headers);
+            String getPath = baseUrl.toString() + "/" + key.toString();
+            ResponseEntity<String> getResponse = template.exchange(getPath
+                    , HttpMethod.GET
+                    , get
+                    , String.class);
+            String getResult = getResponse.getBody();
+            Value value = (Value) Message.unmarshal(anyClassType, getResult);
+            return value;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -140,8 +163,12 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
 
     @Override
     public int size() {
-        //TODO:
-        return 0;
+        //If baseResponse has been loaded:
+        if (baseResponse != null) {
+            return baseResponse.getPage().getTotalElements();
+        }
+        //
+        return super.size();
     }
 
 }
