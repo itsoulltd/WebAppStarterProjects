@@ -1,10 +1,6 @@
 package com.infoworks.lab.rest.client;
 
-import com.infoworks.lab.domain.entities.Passenger;
-import com.infoworks.lab.rest.client.datasource.Links;
-import com.infoworks.lab.rest.client.datasource.Page;
-import com.infoworks.lab.rest.client.datasource.PaginatedResponse;
-import com.infoworks.lab.rest.client.datasource.RestDataSource;
+import com.infoworks.lab.rest.client.datasource.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -27,7 +23,7 @@ public class DatasourceClientTest {
                 .build();
         //
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<String, Passenger> dataSource = new RestDataSource(url, template);
+        RestDataSource<Long, Passenger> dataSource = new RestDataSource(url, template);
 
         PaginatedResponse response = dataSource.load();
         Assert.assertTrue(response != null);
@@ -45,7 +41,7 @@ public class DatasourceClientTest {
         //
         RestTemplate template = new RestTemplate();
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<String, Passenger> dataSource = new RestDataSource(url, template);
+        RestDataSource<Long, Passenger> dataSource = new RestDataSource(url, template);
         dataSource.load((response) -> {
             //In-case of exception:
             if (response.getStatus() >= 400) {
@@ -68,6 +64,10 @@ public class DatasourceClientTest {
     }
 
     /////////////////////////////////////////////////////////////////////////////
+
+    public static class Passenger extends Any<Long> {
+        //
+    }
 
     /////////////////////////////////////////////////////////////////////////////
 }
