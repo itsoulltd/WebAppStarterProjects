@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
 
 public class DatasourceClientTest {
 
@@ -36,6 +37,34 @@ public class DatasourceClientTest {
 
         Links links = response.getLinks();
         Assert.assertTrue(links != null);
+    }
+
+    @Test
+    public void doAsyncLoadTest() throws IOException, InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        //
+        RestTemplate template = new RestTemplate();
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        RestDataSource<String, Passenger> dataSource = new RestDataSource(url, template);
+        dataSource.load((response) -> {
+            //In-case of exception:
+            if (response.getStatus() >= 400) {
+                System.out.println(response.getError());
+                latch.countDown();
+            }
+            //When success:
+            Assert.assertTrue(response != null);
+
+            Page page = response.getPage();
+            Assert.assertTrue(page != null);
+
+            Links links = response.getLinks();
+            Assert.assertTrue(links != null);
+            //
+            latch.countDown();
+        });
+
+        latch.await();
     }
 
     /////////////////////////////////////////////////////////////////////////////

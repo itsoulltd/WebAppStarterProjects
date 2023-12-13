@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,21 +51,46 @@ public class RestDataSource<Key, Value> extends SimpleDataSource<Key, Value> imp
         service = null;
     }
 
-    public PaginatedResponse load() throws IOException {
+    public PaginatedResponse load() throws RuntimeException {
         if (baseResponse != null) return baseResponse;
         //Load the base URL:
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
         String rootURL = baseUrl.toString();
-        ResponseEntity<String> rs = template.exchange(rootURL
-                , HttpMethod.GET
-                , entity
-                , String.class);
-        String result = rs.getBody();
-        Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
-        baseResponse = new PaginatedResponse(dataMap);
-        return baseResponse;
+        try {
+            ResponseEntity<String> rs = template.exchange(rootURL
+                    , HttpMethod.GET
+                    , entity
+                    , String.class);
+            //Checking Network Error:
+            if (rs.getStatusCodeValue() >= 400)
+                throw new RuntimeException( rs.getBody() + ". Status Code: " + rs.getStatusCodeValue());
+            String result = rs.getBody();
+            Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
+            baseResponse = new PaginatedResponse(dataMap);
+            return baseResponse;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void load(Consumer<PaginatedResponse> consumer) {
+        if (consumer == null) return;
+        if (baseResponse != null)
+            consumer.accept(baseResponse);
+        //Load the base URL:
+        getService().submit(() -> {
+            try {
+                baseResponse = load();
+                consumer.accept(baseResponse);
+            } catch (RuntimeException e) {
+                PaginatedResponse response = new PaginatedResponse();
+                response.setError(e.getMessage());
+                response.setStatus(400);
+                consumer.accept(response);
+            }
+        });
     }
 
     @Override
