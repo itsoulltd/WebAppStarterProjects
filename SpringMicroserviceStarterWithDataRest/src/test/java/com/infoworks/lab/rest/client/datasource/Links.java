@@ -7,6 +7,9 @@ import java.util.Map;
 public class Links extends Entity {
 
     private Map<String, Object> self;
+    private Map<String, Object> first;
+    private Map<String, Object> prev;
+    private Map<String, Object> last;
     private Map<String, Object> profile;
     private Map<String, Object> search;
     public Links() {}
@@ -15,6 +18,9 @@ public class Links extends Entity {
         this.profile = dataMap.get("profile");
         this.search = dataMap.get("search");
         this.self = dataMap.get("self");
+        this.first = dataMap.get("first");
+        this.last = dataMap.get("last");
+        this.prev = dataMap.get("prev");
     }
 
     public Map<String, Object> getSelf() {
@@ -39,5 +45,29 @@ public class Links extends Entity {
 
     public void setSearch(Map<String, Object> search) {
         this.search = search;
+    }
+
+    public Map<String, Object> getFirst() {
+        return first;
+    }
+
+    public void setFirst(Map<String, Object> first) {
+        this.first = first;
+    }
+
+    public Map<String, Object> getPrev() {
+        return prev;
+    }
+
+    public void setPrev(Map<String, Object> prev) {
+        this.prev = prev;
+    }
+
+    public Map<String, Object> getLast() {
+        return last;
+    }
+
+    public void setLast(Map<String, Object> last) {
+        this.last = last;
     }
 }

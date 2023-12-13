@@ -155,6 +155,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             Map<String, Object> dataMap = fetchNext(page);
             //Update Next page info:
             baseResponse.updatePage(dataMap);
+            baseResponse.updateLinks(dataMap);
             //Parse next items:
             List<Value> items = parsePageItems(dataMap);
             return items;

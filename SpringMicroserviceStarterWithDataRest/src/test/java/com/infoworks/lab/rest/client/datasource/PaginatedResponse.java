@@ -51,4 +51,12 @@ public class PaginatedResponse extends Response {
             this.page = new Page(pageData);
         }
     }
+
+    public void updateLinks(Map<String, Object> dataMap) {
+        if (dataMap == null) return;
+        Map<String, Map<String, Object>> linksData = (Map) dataMap.get("_links");
+        if (linksData != null) {
+            this.links = new Links(linksData);
+        }
+    }
 }
