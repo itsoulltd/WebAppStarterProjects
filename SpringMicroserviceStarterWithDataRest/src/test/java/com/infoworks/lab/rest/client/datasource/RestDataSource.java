@@ -24,6 +24,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     private PaginatedResponse baseResponse;
     private Class<? extends Any<Key>> anyClassType;
     private HttpHeaders httpHeaders;
+    private boolean enableLogging;
 
     public RestDataSource(Class<? extends Any<Key>> type, URL baseUrl) {
         this(type, baseUrl, new RestTemplate());
@@ -56,6 +57,14 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         this.httpHeaders = httpHeaders;
     }
 
+    public boolean isEnableLogging() {
+        return enableLogging;
+    }
+
+    public void setEnableLogging(boolean enableLogging) {
+        this.enableLogging = enableLogging;
+    }
+
     @Override
     public void close() throws Exception {
         //Do all memory clean-up and terminate running process:
@@ -72,7 +81,8 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         HttpEntity<Map> update = new HttpEntity<>(putBody, getHttpHeaders());
         String updatePath = baseUrl.toString() + "/" + key.toString();
         String updateResult = exchange(HttpMethod.PUT, update, updatePath);
-        System.out.println(updateResult);
+        if(isEnableLogging()) System.out.println(updateResult);
+        //
         if(containsKey(key))
             super.put(key, value);
     }
@@ -86,8 +96,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             HttpEntity<Map> create = new HttpEntity<>(postBody, getHttpHeaders());
             String rootURL = baseUrl.toString();
             String result = exchange(HttpMethod.POST, create, rootURL);
-            //logs:
-            System.out.println(result);
+            if(isEnableLogging()) System.out.println(result);
             //
             Value created = (Value) Message.unmarshal(anyClassType, result);
             return created.parseId().orElse(null);
@@ -103,8 +112,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         HttpEntity<Map> delete = new HttpEntity<>(body, getHttpHeaders());
         String deletePath = baseUrl.toString() + "/" + key.toString();
         String deleteResult = exchange(HttpMethod.DELETE, delete, deletePath);
-        //log:
-        System.out.println(deleteResult);
+        if(isEnableLogging()) System.out.println(deleteResult);
         //Now remove from local if exist in cache:
         Value any = super.remove(key);
         return any;
@@ -122,8 +130,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             HttpEntity<Map> get = new HttpEntity<>(body, headers);
             String getPath = baseUrl.toString() + "/" + key.toString();
             String getResult = exchange(HttpMethod.GET, get, getPath);
-            //logs:
-            System.out.println(getResult);
+            if(isEnableLogging()) System.out.println(getResult);
             //
             Value value = (Value) Message.unmarshal(anyClassType, getResult);
             return value;
@@ -178,7 +185,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         String rootURL = baseUrl.toString();
         try {
             String result = exchange(HttpMethod.GET, entity, rootURL);
-            //System.out.println(result);
+            //if(isEnableLogging()) System.out.println(result);
             Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
             baseResponse = new PaginatedResponse(dataMap);
             return baseResponse;
@@ -271,8 +278,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
         String nextPagePath = baseUrl.toString() + "?page={page}&size={size}";
         String result = exchange(HttpMethod.GET, entity, nextPagePath, nextPage, pageSize);
-        //logs:
-        System.out.println(result);
+        if(isEnableLogging()) System.out.println(result);
         //
         Map<String, Object> dataMap = null;
         try {
