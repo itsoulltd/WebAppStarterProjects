@@ -139,15 +139,11 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     /**
-     * First try to read from Local-Cache:
-     * Otherwise goto server:
+     * Fetch Next page Until the End of Line
      * @return
      */
-    public List<Value> next() {
-        //TODO:
-        //First Check in cache:
-        //Otherwise Fetch-From Server:
-        if (isLastPage()) return new ArrayList<>();
+    public Optional<List<Value>> next() {
+        if (isLastPage()) return Optional.ofNullable(null);
         if (baseResponse != null){
             Page page = baseResponse.getPage();
             Map<String, Object> dataMap = fetchNext(page);
@@ -156,9 +152,9 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             baseResponse.updateLinks(dataMap);
             //Parse next items:
             List<Value> items = parsePageItems(dataMap);
-            return items;
+            return Optional.ofNullable(items);
         }
-        return new ArrayList<>();
+        return Optional.ofNullable(null);
     }
 
     /**
@@ -247,7 +243,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         return pathName;
     }
 
-    public void next(Consumer<List<Value>> consumer) {
+    public void next(Consumer<Optional<List<Value>>> consumer) {
         if (consumer != null) {
             getService().submit(() -> consumer.accept(next()));
         }
