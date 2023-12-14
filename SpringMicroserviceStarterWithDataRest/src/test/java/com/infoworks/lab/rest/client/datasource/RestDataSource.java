@@ -138,15 +138,6 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
         }
     }
 
-    @Override
-    public int size() {
-        //If baseResponse has been loaded:
-        if (baseResponse != null) {
-            return baseResponse.getPage().getTotalElements();
-        }
-        return super.size();
-    }
-
     /**
      * Following are new-funcs:
      */
