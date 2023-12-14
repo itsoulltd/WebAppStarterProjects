@@ -138,8 +138,19 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         }
     }
 
+    @Override
+    public int size() {
+        //If baseResponse has been loaded:
+        if (baseResponse != null) {
+            return baseResponse.getPage().getTotalElements();
+        }
+        //
+        return super.size();
+    }
+
     /**
-     * Fetch Next page Until the End of Line
+     * Fetch Next page Until the End of Line.
+     * Also add paged items into local cache.
      * @return
      */
     public Optional<List<Value>> next() {
@@ -152,6 +163,13 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             baseResponse.updateLinks(dataMap);
             //Parse next items:
             List<Value> items = parsePageItems(dataMap);
+            //Add into in-memory store:
+            if (items != null || !items.isEmpty()) {
+                items.forEach(item -> {
+                    Key key = item.getId();
+                    super.put(key, item);
+                });
+            }
             return Optional.ofNullable(items);
         }
         return Optional.ofNullable(null);
@@ -223,6 +241,11 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         return typedObjects;
     }
 
+    /**
+     * Declared in Spring-Data-Rest repository annotation:
+     * e.g. @RepositoryRestResource(collectionResourceRel = "passengers")
+     * @return
+     */
     protected List<Map<String, Object>> getCollectionResourceRel(Map<String, List<Map<String, Object>>> embedded) {
         if (embedded == null) return null;
         //String apiPathName = getApiPathName();
@@ -247,16 +270,6 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         if (consumer != null) {
             getService().submit(() -> consumer.accept(next()));
         }
-    }
-
-    @Override
-    public int size() {
-        //If baseResponse has been loaded:
-        if (baseResponse != null) {
-            return baseResponse.getPage().getTotalElements();
-        }
-        //
-        return super.size();
     }
 
 }
