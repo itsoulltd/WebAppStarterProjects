@@ -80,15 +80,20 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     @Override
     public Key add(Value value) throws RuntimeException {
         //Add will do POST
-        Key key = value.getId();
-        Map<String, Object> postBody = value.marshallingToMap(true);
-        HttpEntity<Map> create = new HttpEntity<>(postBody, getHttpHeaders());
-        String rootURL = baseUrl.toString();
-        String result = exchange(HttpMethod.POST, create, rootURL);
-        //logs:
-        System.out.println(result);
-        //
-        return key;
+        try {
+            Key key = value.getId();
+            Map<String, Object> postBody = value.marshallingToMap(true);
+            HttpEntity<Map> create = new HttpEntity<>(postBody, getHttpHeaders());
+            String rootURL = baseUrl.toString();
+            String result = exchange(HttpMethod.POST, create, rootURL);
+            //logs:
+            System.out.println(result);
+            //
+            Value created = (Value) Message.unmarshal(anyClassType, result);
+            return created.parseId().orElse(null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
