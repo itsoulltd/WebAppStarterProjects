@@ -23,6 +23,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     private RestTemplate template;
     private PaginatedResponse baseResponse;
     private Class<? extends Any<Key>> anyClassType;
+    private HttpHeaders httpHeaders;
 
     public RestDataSource(Class<? extends Any<Key>> type, URL baseUrl) {
         this(type, baseUrl, new RestTemplate());
@@ -46,6 +47,15 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         return service;
     }
 
+    public HttpHeaders getHttpHeaders() {
+        if (httpHeaders == null) httpHeaders = new HttpHeaders();
+        return httpHeaders;
+    }
+
+    public void setHttpHeaders(HttpHeaders httpHeaders) {
+        this.httpHeaders = httpHeaders;
+    }
+
     @Override
     public void close() throws Exception {
         //Do all memory clean-up and terminate running process:
@@ -58,19 +68,13 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     public PaginatedResponse load() throws RuntimeException {
         if (baseResponse != null) return baseResponse;
         //Load the base URL:
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getHttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
         String rootURL = baseUrl.toString();
         try {
-            ResponseEntity<String> rs = template.exchange(rootURL
-                    , HttpMethod.GET
-                    , entity
-                    , String.class);
-            //Checking Network Error:
-            if (rs.getStatusCodeValue() >= 400)
-                throw new RuntimeException( rs.getBody() + ". Status Code: " + rs.getStatusCodeValue());
-            String result = rs.getBody();
+            String result = exchange(HttpMethod.GET, entity, rootURL);
+            //System.out.println(result);
             Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
             baseResponse = new PaginatedResponse(dataMap);
             return baseResponse;
@@ -122,15 +126,14 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         if (any != null) return any;
         //Read will do GET
         try {
-            HttpHeaders headers = new HttpHeaders();
+            HttpHeaders headers = getHttpHeaders();
             Map<String, Object> body = new HashMap();
             HttpEntity<Map> get = new HttpEntity<>(body, headers);
             String getPath = baseUrl.toString() + "/" + key.toString();
-            ResponseEntity<String> getResponse = template.exchange(getPath
-                    , HttpMethod.GET
-                    , get
-                    , String.class);
-            String getResult = getResponse.getBody();
+            String getResult = exchange(HttpMethod.GET, get, getPath);
+            //logs:
+            System.out.println(getResult);
+            //
             Value value = (Value) Message.unmarshal(anyClassType, getResult);
             return value;
         } catch (Exception e) {
@@ -144,13 +147,34 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         if (baseResponse != null) {
             return baseResponse.getPage().getTotalElements();
         }
-        //
         return super.size();
     }
 
     /**
      * Following are new-funcs:
      */
+
+    /**
+     * execute(HttpActions)
+     * @param method
+     * @param entity
+     * @param rootURL
+     * @return
+     * @throws RuntimeException
+     */
+    protected String exchange(HttpMethod method, HttpEntity entity, String rootURL, Object...args)
+            throws RuntimeException {
+        try {
+            ResponseEntity<String> rs = template.exchange(rootURL, method, entity, String.class, args);
+            //Checking Network Error:
+            if (rs.getStatusCodeValue() >= 400)
+                throw new RuntimeException( rs.getBody() + ". Status Code: " + rs.getStatusCodeValue());
+            String result = rs.getBody();
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Fetch Next page Until the End of Line.
@@ -161,7 +185,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         if (isLastPage()) return Optional.ofNullable(null);
         if (baseResponse != null){
             Page page = baseResponse.getPage();
-            Map<String, Object> dataMap = fetchNext(page);
+            Map<String, Object> dataMap = fetchNext(page).orElse(null);
             //Update Next page info:
             baseResponse.updatePage(dataMap);
             baseResponse.updateLinks(dataMap);
@@ -177,6 +201,12 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             return Optional.ofNullable(items);
         }
         return Optional.ofNullable(null);
+    }
+
+    public void next(Consumer<Optional<List<Value>>> consumer) {
+        if (consumer != null) {
+            getService().submit(() -> consumer.accept(next()));
+        }
     }
 
     /**
@@ -202,27 +232,25 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
      * @param current
      * @return
      */
-    protected Map<String, Object> fetchNext(Page current) {
+    protected Optional<Map<String, Object>> fetchNext(Page current) {
         int currentPage = current.getNumber();
         int pageSize = current.getSize();
         int nextPage = currentPage + 1;
         //
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getHttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        //
         String nextPagePath = baseUrl.toString() + "?page={page}&size={size}";
-        ResponseEntity<String> rs = template.exchange(nextPagePath
-                , HttpMethod.GET
-                , entity
-                , String.class, nextPage, pageSize);
-        String result = rs.getBody();
+        String result = exchange(HttpMethod.GET, entity, nextPagePath, nextPage, pageSize);
+        //logs:
+        System.out.println(result);
+        //
         Map<String, Object> dataMap = null;
         try {
             dataMap = Message.unmarshal(
                     new TypeReference<Map<String, Object>>() {}, result);
         } catch (IOException e) {}
-        return dataMap;
+        return Optional.ofNullable(dataMap);
     }
 
     protected List<Value> parsePageItems(Map<String, Object> dataMap) {
@@ -252,8 +280,6 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
      */
     protected List<Map<String, Object>> getCollectionResourceRel(Map<String, List<Map<String, Object>>> embedded) {
         if (embedded == null) return null;
-        //String apiPathName = getApiPathName();
-        //List<Map<String, Object>> objects = embedded.get(apiPathName);
         Optional<String> possibleKey = embedded.keySet().stream().findFirst();
         return possibleKey.isPresent() ? embedded.get(possibleKey.get()) : null;
     }
@@ -268,12 +294,6 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         String[] paths = path.split("/");
         String pathName = paths[paths.length - 1];
         return pathName;
-    }
-
-    public void next(Consumer<Optional<List<Value>>> consumer) {
-        if (consumer != null) {
-            getService().submit(() -> consumer.accept(next()));
-        }
     }
 
 }
