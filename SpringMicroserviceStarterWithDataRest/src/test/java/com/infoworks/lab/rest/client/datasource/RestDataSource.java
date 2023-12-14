@@ -149,6 +149,10 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     /**
+     * Following are new-funcs:
+     */
+
+    /**
      * Fetch Next page Until the End of Line.
      * Also add paged items into local cache.
      * @return
