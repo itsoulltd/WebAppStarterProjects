@@ -65,42 +65,6 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         service = null;
     }
 
-    public PaginatedResponse load() throws RuntimeException {
-        if (baseResponse != null) return baseResponse;
-        //Load the base URL:
-        HttpHeaders headers = getHttpHeaders();
-        Map body = new HashMap();
-        HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        String rootURL = baseUrl.toString();
-        try {
-            String result = exchange(HttpMethod.GET, entity, rootURL);
-            //System.out.println(result);
-            Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
-            baseResponse = new PaginatedResponse(dataMap);
-            return baseResponse;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void load(Consumer<PaginatedResponse> consumer) {
-        if (consumer == null) return;
-        if (baseResponse != null)
-            consumer.accept(baseResponse);
-        //Load the base URL:
-        getService().submit(() -> {
-            try {
-                baseResponse = load();
-                consumer.accept(baseResponse);
-            } catch (RuntimeException e) {
-                PaginatedResponse response = new PaginatedResponse();
-                response.setError(e.getMessage());
-                response.setStatus(400);
-                consumer.accept(response);
-            }
-        });
-    }
-
     @Override
     public void put(Key key, Value value) {
         //TODO: Put will do PUT
@@ -174,6 +138,42 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public PaginatedResponse load() throws RuntimeException {
+        if (baseResponse != null) return baseResponse;
+        //Load the base URL:
+        HttpHeaders headers = getHttpHeaders();
+        Map body = new HashMap();
+        HttpEntity<Map> entity = new HttpEntity<>(body, headers);
+        String rootURL = baseUrl.toString();
+        try {
+            String result = exchange(HttpMethod.GET, entity, rootURL);
+            //System.out.println(result);
+            Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
+            baseResponse = new PaginatedResponse(dataMap);
+            return baseResponse;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void load(Consumer<PaginatedResponse> consumer) {
+        if (consumer == null) return;
+        if (baseResponse != null)
+            consumer.accept(baseResponse);
+        //Load the base URL:
+        getService().submit(() -> {
+            try {
+                baseResponse = load();
+                consumer.accept(baseResponse);
+            } catch (RuntimeException e) {
+                PaginatedResponse response = new PaginatedResponse();
+                response.setError(e.getMessage());
+                response.setStatus(400);
+                consumer.accept(response);
+            }
+        });
     }
 
     /**
