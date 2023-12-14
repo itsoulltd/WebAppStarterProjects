@@ -96,9 +96,13 @@ public class DatasourceClientTest {
         RestDataSource<Long, Passenger> dataSource = new RestDataSource(Passenger.class, url);
         dataSource.load();
         //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //
         List<Passenger> passengers = dataSource.next();
         Assert.assertTrue(passengers != null);
         System.out.println(passengers.size());
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
     }
 
     /////////////////////////////////////////////////////////////////////////////

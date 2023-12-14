@@ -147,6 +147,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         //TODO:
         //First Check in cache:
         //Otherwise Fetch-From Server:
+        if (isLastPage()) return new ArrayList<>();
         if (baseResponse != null){
             Page page = baseResponse.getPage();
             Map<String, Object> dataMap = fetchNext(page);
@@ -161,6 +162,24 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     /**
+     * "page" : {
+     *     "size" : 5,
+     *     "totalElements" : 50,
+     *     "totalPages" : 10,
+     *     "number" : 0
+     *   }
+     * At the bottom is extra data about the page settings,
+     * including the size of a page, total elements, total pages, and the page number you are currently viewing.
+     * @return
+     */
+    public boolean isLastPage() {
+        if (baseResponse == null) return true;
+        Page current = baseResponse.getPage();
+        int currentPage = current.getNumber();
+        return (currentPage >= current.getTotalPages()) ? true : false;
+    }
+
+    /**
      * May return Null
      * @param current
      * @return
@@ -168,10 +187,8 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     protected Map<String, Object> fetchNext(Page current) {
         int currentPage = current.getNumber();
         int pageSize = current.getSize();
-        if (currentPage >= current.getTotalPages()) {
-            return null;
-        }
         int nextPage = currentPage + 1;
+        //
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
