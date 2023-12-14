@@ -11,10 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -168,7 +165,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
      * @param current
      * @return
      */
-    private Map<String, Object> fetchNext(Page current) {
+    protected Map<String, Object> fetchNext(Page current) {
         int currentPage = current.getNumber();
         int pageSize = current.getSize();
         if (currentPage >= current.getTotalPages()) {
@@ -193,16 +190,15 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         return dataMap;
     }
 
-    private List<Value> parsePageItems(Map<String, Object> dataMap) {
+    protected List<Value> parsePageItems(Map<String, Object> dataMap) {
         List<Value> typedObjects = new ArrayList<>();
         if (dataMap == null) return typedObjects;
         //Parse DataMap to get-objects:
         Map<String, List<Map<String, Object>>> embedded =
                 (Map) dataMap.get("_embedded");
-        String path = baseUrl.getPath();
-        String[] paths = path.split("/");
-        String last = paths[paths.length - 1];
-        List<Map<String, Object>> objects = embedded.get(last);
+        List<Map<String, Object>> objects = getCollectionResourceRel(embedded);
+        if (objects == null) return typedObjects;
+        //Try to re-recreate objects:
         for (Map<String, Object> entry : objects) {
             try {
                 Value parsed = (Value) anyClassType.newInstance();
@@ -212,6 +208,26 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
                      | IllegalAccessException e) {}
         }
         return typedObjects;
+    }
+
+    protected List<Map<String, Object>> getCollectionResourceRel(Map<String, List<Map<String, Object>>> embedded) {
+        if (embedded == null) return null;
+        //String apiPathName = getApiPathName();
+        //List<Map<String, Object>> objects = embedded.get(apiPathName);
+        Optional<String> possibleKey = embedded.keySet().stream().findFirst();
+        return possibleKey.isPresent() ? embedded.get(possibleKey.get()) : null;
+    }
+
+    /**
+     * Declared in Spring-Data-Rest repository annotation:
+     * e.g. @RepositoryRestResource(path = "passengers")
+     * @return
+     */
+    protected String getApiPathName() {
+        String path = baseUrl.getPath();
+        String[] paths = path.split("/");
+        String pathName = paths[paths.length - 1];
+        return pathName;
     }
 
     public void next(Consumer<List<Value>> consumer) {

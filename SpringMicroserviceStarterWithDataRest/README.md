@@ -223,3 +223,4 @@
 ##### [Spring Data-Rest Intro By baeldung.com](https://www.baeldung.com/spring-data-rest-intro)
 ##### [Data-Rest Intro By springboottutorial.com](https://www.springboottutorial.com/introduction-to-spring-data-rest-using-spring-boot)
 ##### [Spring Data Jpa@Query By baeldung.com](https://www.baeldung.com/spring-data-jpa-query)
+##### [@path Vs @collectionResourceRel](https://stackoverflow.com/questions/50411838/spring-data-rest-collectionresourcerel-vs-path)
