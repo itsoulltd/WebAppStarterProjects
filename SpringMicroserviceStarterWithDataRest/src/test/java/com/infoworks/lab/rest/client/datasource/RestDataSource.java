@@ -96,7 +96,9 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
             String result = exchange(HttpMethod.POST, create, rootURL);
             if(isEnableLogging()) System.out.println(result);
             Value created = (Value) Message.unmarshal(anyClassType, result);
-            return created.parseId().orElse(null);
+            Object key = created.parseId().orElse(null);
+            if(key != null) super.put(key, value);
+            return key;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -129,6 +131,7 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
             String getResult = exchange(HttpMethod.GET, get, getPath);
             if(isEnableLogging()) System.out.println(getResult);
             Value value = (Value) Message.unmarshal(anyClassType, getResult);
+            super.put(key, value);
             return value;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -257,6 +260,28 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
         Page current = baseResponse.getPage();
         int currentPage = current.getNumber();
         return (currentPage >= current.getTotalPages()) ? true : false;
+    }
+
+    public int currentPage() {
+        return number();
+    }
+
+    public int number() {
+        if (baseResponse == null) return 0;
+        Page current = baseResponse.getPage();
+        return current.getNumber();
+    }
+
+    public int totalPages() {
+        if (baseResponse == null) return 0;
+        Page current = baseResponse.getPage();
+        return current.getTotalPages();
+    }
+
+    public int totalElements() {
+        if (baseResponse == null) return 0;
+        Page current = baseResponse.getPage();
+        return current.getTotalElements();
     }
 
     /**
