@@ -16,25 +16,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSource<Key, Value> implements AutoCloseable{
+public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, Value> implements AutoCloseable{
 
     private final URL baseUrl;
     private ExecutorService service;
     private RestTemplate template;
     private PaginatedResponse baseResponse;
-    private Class<? extends Any<Key>> anyClassType;
+    private Class<? extends Any> anyClassType;
     private HttpHeaders httpHeaders;
     private boolean enableLogging;
 
-    public RestDataSource(Class<? extends Any<Key>> type, URL baseUrl) {
+    public RestDataSource(Class<? extends Any> type, URL baseUrl) {
         this(type, baseUrl, new RestTemplate());
     }
 
-    public RestDataSource(Class<? extends Any<Key>> type,URL baseUrl, RestTemplate template) {
+    public RestDataSource(Class<? extends Any> type,URL baseUrl, RestTemplate template) {
         this(type, baseUrl, template, Executors.newSingleThreadExecutor());
     }
 
-    public RestDataSource(Class<? extends Any<Key>> type,URL baseUrl, RestTemplate template, ExecutorService service) {
+    public RestDataSource(Class<? extends Any> type,URL baseUrl, RestTemplate template, ExecutorService service) {
         this.anyClassType = type;
         this.baseUrl = baseUrl;
         this.service = service;
@@ -75,29 +75,26 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     @Override
-    public void put(Key key, Value value) throws RuntimeException {
+    public void put(Object key, Value value) throws RuntimeException {
         //Put will do PUT
         Map<String, Object> putBody = value.marshallingToMap(true);
         HttpEntity<Map> update = new HttpEntity<>(putBody, getHttpHeaders());
         String updatePath = baseUrl.toString() + "/" + key.toString();
         String updateResult = exchange(HttpMethod.PUT, update, updatePath);
         if(isEnableLogging()) System.out.println(updateResult);
-        //
         if(containsKey(key))
-            super.put(key, value);
+            super.replace(key, value);
     }
 
     @Override
-    public Key add(Value value) throws RuntimeException {
+    public Object add(Value value) throws RuntimeException {
         //Add will do POST
         try {
-            Key key = value.getId();
             Map<String, Object> postBody = value.marshallingToMap(true);
             HttpEntity<Map> create = new HttpEntity<>(postBody, getHttpHeaders());
             String rootURL = baseUrl.toString();
             String result = exchange(HttpMethod.POST, create, rootURL);
             if(isEnableLogging()) System.out.println(result);
-            //
             Value created = (Value) Message.unmarshal(anyClassType, result);
             return created.parseId().orElse(null);
         } catch (IOException e) {
@@ -106,7 +103,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     @Override
-    public Value remove(Key key) throws RuntimeException {
+    public Value remove(Object key) throws RuntimeException {
         //Remove will do DELETE
         Map<String, Object> body = new HashMap();
         HttpEntity<Map> delete = new HttpEntity<>(body, getHttpHeaders());
@@ -119,7 +116,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     @Override
-    public Value read(Key key) throws RuntimeException {
+    public Value read(Object key) throws RuntimeException {
         //First check in Cache:
         Value any = super.read(key);
         if (any != null) return any;
@@ -131,7 +128,6 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             String getPath = baseUrl.toString() + "/" + key.toString();
             String getResult = exchange(HttpMethod.GET, get, getPath);
             if(isEnableLogging()) System.out.println(getResult);
-            //
             Value value = (Value) Message.unmarshal(anyClassType, getResult);
             return value;
         } catch (Exception e) {
@@ -230,7 +226,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             //Add into in-memory store:
             if (items != null || !items.isEmpty()) {
                 items.forEach(item -> {
-                    Key key = item.getId();
+                    Object key = item.getId();
                     super.put(key, item);
                 });
             }

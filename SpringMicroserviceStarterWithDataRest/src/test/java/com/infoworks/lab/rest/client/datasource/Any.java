@@ -27,14 +27,14 @@ public class Any<ID> extends Entity {
         this._links = _links;
     }
 
-    public Optional<ID> parseId() {
+    public Optional<Object> parseId() {
         if (get_links() == null) return null;
         Map<String, Object> self = (Map<String, Object>) get_links().get("self");
         if (self != null) {
             String href = self.get("href").toString();
             String[] paths = href.split("/");
             Object last = paths[paths.length - 1];
-            return Optional.ofNullable((ID) last);
+            return Optional.ofNullable(last);
         }
         return Optional.ofNullable(null);
     }
