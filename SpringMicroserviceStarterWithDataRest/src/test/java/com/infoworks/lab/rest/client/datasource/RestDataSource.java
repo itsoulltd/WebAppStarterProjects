@@ -66,25 +66,47 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
     }
 
     @Override
-    public void put(Key key, Value value) {
-        //TODO: Put will do PUT
+    public void put(Key key, Value value) throws RuntimeException {
+        //Put will do PUT
+        Map<String, Object> putBody = value.marshallingToMap(true);
+        HttpEntity<Map> update = new HttpEntity<>(putBody, getHttpHeaders());
+        String updatePath = baseUrl.toString() + "/" + key.toString();
+        String updateResult = exchange(HttpMethod.PUT, update, updatePath);
+        System.out.println(updateResult);
+        if(containsKey(key))
+            super.put(key, value);
     }
 
     @Override
     public Key add(Value value) throws RuntimeException {
-        //TODO: Add will do POST
+        //Add will do POST
         Key key = value.getId();
+        Map<String, Object> postBody = value.marshallingToMap(true);
+        HttpEntity<Map> create = new HttpEntity<>(postBody, getHttpHeaders());
+        String rootURL = baseUrl.toString();
+        String result = exchange(HttpMethod.POST, create, rootURL);
+        //logs:
+        System.out.println(result);
+        //
         return key;
     }
 
     @Override
-    public Value remove(Key key) {
-        //TODO: Remove will do DELETE
-        return null;
+    public Value remove(Key key) throws RuntimeException {
+        //Remove will do DELETE
+        Map<String, Object> body = new HashMap();
+        HttpEntity<Map> delete = new HttpEntity<>(body, getHttpHeaders());
+        String deletePath = baseUrl.toString() + "/" + key.toString();
+        String deleteResult = exchange(HttpMethod.DELETE, delete, deletePath);
+        //log:
+        System.out.println(deleteResult);
+        //Now remove from local if exist in cache:
+        Value any = super.remove(key);
+        return any;
     }
 
     @Override
-    public Value read(Key key) throws RuntimeException{
+    public Value read(Key key) throws RuntimeException {
         //First check in Cache:
         Value any = super.read(key);
         if (any != null) return any;
@@ -134,6 +156,8 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
             if (rs.getStatusCodeValue() >= 400)
                 throw new RuntimeException( rs.getBody() + ". Status Code: " + rs.getStatusCodeValue());
             String result = rs.getBody();
+            if (result == null || result.isEmpty())
+                result = "Response Code: " + rs.getStatusCode();
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -265,7 +289,7 @@ public class RestDataSource<Key, Value extends Any<Key>> extends SimpleDataSourc
         for (Map<String, Object> entry : objects) {
             try {
                 Value parsed = (Value) anyClassType.newInstance();
-                parsed.unmarshallingFromMap(entry, false);
+                parsed.unmarshallingFromMap(entry, true);
                 typedObjects.add(parsed);
             } catch (InstantiationException
                      | IllegalAccessException e) {}
