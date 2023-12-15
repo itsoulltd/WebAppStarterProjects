@@ -229,8 +229,8 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
         //Add into in-memory store:
         if (items != null || !items.isEmpty()) {
             items.forEach(item -> {
-                Object key = item.getId();
-                super.put(key, item);
+                Object key = item.parseId().orElse(null);
+                if(key != null) super.put(key, item);
             });
         }
         return items;
