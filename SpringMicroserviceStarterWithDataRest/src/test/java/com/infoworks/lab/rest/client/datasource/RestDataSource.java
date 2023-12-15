@@ -175,7 +175,7 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
         String rootURL = baseUrl.toString();
         try {
             String result = exchange(HttpMethod.GET, entity, rootURL);
-            //if(isEnableLogging()) System.out.println(result);
+            if(isEnableLogging()) System.out.println(result);
             Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
             baseResponse = new PaginatedResponse(dataMap);
             return baseResponse;
