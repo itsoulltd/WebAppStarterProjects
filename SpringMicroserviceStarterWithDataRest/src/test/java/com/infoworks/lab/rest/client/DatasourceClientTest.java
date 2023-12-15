@@ -11,9 +11,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Stream;
 
 public class DatasourceClientTest {
 
@@ -27,10 +31,11 @@ public class DatasourceClientTest {
                 .build();
         //
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Long, Passenger> dataSource = new RestDataSource(Passenger.class
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class
                 , url
                 , template);
 
+        dataSource.setEnableLogging(true);
         PaginatedResponse response = dataSource.load();
         Assert.assertTrue(response != null);
 
@@ -46,7 +51,7 @@ public class DatasourceClientTest {
         CountDownLatch latch = new CountDownLatch(1);
         //
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Long, Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
         dataSource.load((response) -> {
             //In-case of exception:
             if (response.getStatus() >= 400) {
@@ -69,9 +74,28 @@ public class DatasourceClientTest {
     }
 
     @Test
+    public void addSingleItem() throws MalformedURLException {
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        dataSource.load();
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //
+        Passenger newPassenger = new Passenger();
+        newPassenger.setName("Sohana Islam Khan");
+        newPassenger.setAge(28);
+        newPassenger.setSex("FEMALE");
+        newPassenger.setActive(true);
+        newPassenger.setDob(new Date(Instant.now().plus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
+        //Create:
+        Object id = dataSource.add(newPassenger);
+        Assert.assertTrue(id != null);
+    }
+
+    @Test
     public void readTest() throws MalformedURLException {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Long, Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
         dataSource.load();
         //
         Passenger passenger = dataSource.read(1l);
@@ -82,7 +106,7 @@ public class DatasourceClientTest {
     @Test
     public void sizeTest() throws MalformedURLException {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Long, Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
         dataSource.load();
         //
         int size = dataSource.size();
@@ -93,16 +117,112 @@ public class DatasourceClientTest {
     @Test
     public void readNextTest() throws MalformedURLException {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Long, Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
         //
-        List<Passenger> passengers = dataSource.next();
-        Assert.assertTrue(passengers != null);
-        System.out.println(passengers.size());
+        Optional<List<Passenger>> passengers = dataSource.next();
+        Assert.assertTrue(passengers.isPresent());
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
+    }
+
+    @Test
+    public void readAsyncNextTest() throws MalformedURLException, InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        //
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        dataSource.load();
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //
+        dataSource.next((passengers) -> {
+            Assert.assertTrue(passengers.isPresent());
+            latch.countDown();
+        });
+        latch.await();
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+    }
+
+    @Test
+    public void CRUDTest() throws Exception {
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        dataSource.load();
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //
+        Passenger newPassenger = new Passenger();
+        newPassenger.setName("Sohana Islam Khan");
+        newPassenger.setAge(28);
+        newPassenger.setSex("FEMALE");
+        newPassenger.setActive(true);
+        newPassenger.setDob(new Date(Instant.now().plus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
+        //Create:
+        Object id = dataSource.add(newPassenger);
+        Assert.assertTrue(id != null);
+        //Read One:
+        Passenger read = dataSource.read(id);
+        Assert.assertTrue(read != null);
+        //Read from local:
+        Object[] items = dataSource.readSync(0, dataSource.size());
+        Stream.of(items).forEach(item -> {
+            if (item instanceof Passenger)
+                System.out.println(((Passenger) item).getName());
+        });
+        //Update:
+        newPassenger.setName("Dr. Sohana Islam Khan");
+        dataSource.put(id, newPassenger);
+        //Read again: (will read from local)
+        Passenger readAgain = dataSource.read(id);
+        System.out.println(readAgain.getName());
+        //Delete:
+        System.out.println("Count before delete: " + dataSource.size());
+        dataSource.remove(id);
+        System.out.println("Count after delete: " + dataSource.size());
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        dataSource.close();
+    }
+
+    @Test
+    public void readAllPages() throws MalformedURLException {
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        //Read All Pages Until last page:
+        dataSource.load();
+        Optional<List<Passenger>> opt;
+        do {
+            opt = dataSource.next();
+            System.out.println("Current Page: " + dataSource.currentPage());
+            System.out.println("Local Size: " + dataSource.size());
+        } while (opt.isPresent());
+        //
+        Object[] all = dataSource.readSync(0, dataSource.size());
+        Stream.of(all).forEach(item -> {
+            if (item instanceof Passenger)
+                System.out.println(((Passenger) item).getName());
+        });
+    }
+
+    @Test
+    public void whenCreatesEmptyOptional_thenCorrect() {
+        Optional<String> empty = Optional.empty();
+        Assert.assertFalse(empty.isPresent());
+        //Available on Java-11:
+        //Assert.assertTrue(empty.isEmpty());
+    }
+
+    @Test
+    public void givenOptional_whenIsPresentWorks_thenCorrect() {
+        Optional<String> opt = Optional.of("Baeldung");
+        Assert.assertTrue(opt.isPresent());
+
+        opt = Optional.ofNullable(null);
+        Assert.assertFalse(opt.isPresent());
     }
 
     /////////////////////////////////////////////////////////////////////////////
