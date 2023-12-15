@@ -178,6 +178,8 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
             if(isEnableLogging()) System.out.println(result);
             Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
             baseResponse = new PaginatedResponse(dataMap);
+            //Parse page items and cache in local:
+            parsePageItemAndCacheInMemory(dataMap);
             return baseResponse;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -215,18 +217,23 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
             //Update Next page info:
             baseResponse.updatePage(dataMap);
             baseResponse.updateLinks(dataMap);
-            //Parse next items:
-            List<Value> items = parsePageItems(dataMap);
-            //Add into in-memory store:
-            if (items != null || !items.isEmpty()) {
-                items.forEach(item -> {
-                    Object key = item.getId();
-                    super.put(key, item);
-                });
-            }
+            List<Value> items = parsePageItemAndCacheInMemory(dataMap);
             return Optional.ofNullable(items);
         }
         return Optional.ofNullable(null);
+    }
+
+    private List<Value> parsePageItemAndCacheInMemory(Map<String, Object> dataMap) {
+        //Parse items:
+        List<Value> items = parsePageItems(dataMap);
+        //Add into in-memory store:
+        if (items != null || !items.isEmpty()) {
+            items.forEach(item -> {
+                Object key = item.getId();
+                super.put(key, item);
+            });
+        }
+        return items;
     }
 
     public void next(Consumer<Optional<List<Value>>> consumer) {
