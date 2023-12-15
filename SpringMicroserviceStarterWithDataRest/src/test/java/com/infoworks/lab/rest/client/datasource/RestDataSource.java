@@ -69,6 +69,7 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
     public void close() throws Exception {
         //Do all memory clean-up and terminate running process:
         clear();
+        baseResponse = null;
         //immediate shutdown all enqueued tasks and return
         service.shutdown();
         service = null;
