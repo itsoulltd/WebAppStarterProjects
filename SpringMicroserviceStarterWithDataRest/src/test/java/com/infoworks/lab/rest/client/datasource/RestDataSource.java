@@ -78,9 +78,10 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
     @Override
     public void put(Object key, Value value) throws RuntimeException {
         //Put will do PUT
+        key = key.toString();
         Map<String, Object> putBody = value.marshallingToMap(true);
         HttpEntity<Map> update = new HttpEntity<>(putBody, getHttpHeaders());
-        String updatePath = baseUrl.toString() + "/" + key.toString();
+        String updatePath = baseUrl.toString() + "/" + key;
         String updateResult = exchange(HttpMethod.PUT, update, updatePath);
         if(isEnableLogging()) System.out.println(updateResult);
         if(containsKey(key))
@@ -98,7 +99,7 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
             if(isEnableLogging()) System.out.println(result);
             Value created = (Value) Message.unmarshal(anyClassType, result);
             Object key = created.parseId().orElse(null);
-            if(key != null) super.put(key, value);
+            if(key != null) super.put(key.toString(), value);
             return key;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -108,9 +109,10 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
     @Override
     public Value remove(Object key) throws RuntimeException {
         //Remove will do DELETE
+        key = key.toString();
         Map<String, Object> body = new HashMap();
         HttpEntity<Map> delete = new HttpEntity<>(body, getHttpHeaders());
-        String deletePath = baseUrl.toString() + "/" + key.toString();
+        String deletePath = baseUrl.toString() + "/" + key;
         String deleteResult = exchange(HttpMethod.DELETE, delete, deletePath);
         if(isEnableLogging()) System.out.println(deleteResult);
         //Now remove from local if exist in cache:
@@ -121,6 +123,7 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
     @Override
     public Value read(Object key) throws RuntimeException {
         //First check in Cache:
+        key = key.toString();
         Value any = super.read(key);
         if (any != null) return any;
         //Read will do GET
@@ -128,7 +131,7 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
             HttpHeaders headers = getHttpHeaders();
             Map<String, Object> body = new HashMap();
             HttpEntity<Map> get = new HttpEntity<>(body, headers);
-            String getPath = baseUrl.toString() + "/" + key.toString();
+            String getPath = baseUrl.toString() + "/" + key;
             String getResult = exchange(HttpMethod.GET, get, getPath);
             if(isEnableLogging()) System.out.println(getResult);
             Value value = (Value) Message.unmarshal(anyClassType, getResult);
@@ -231,7 +234,7 @@ public class RestDataSource<Value extends Any> extends SimpleDataSource<Object, 
         if (items != null || !items.isEmpty()) {
             items.forEach(item -> {
                 Object key = item.parseId().orElse(null);
-                if(key != null) super.put(key, item);
+                if(key != null) super.put(key.toString(), item);
             });
         }
         return items;
