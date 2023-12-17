@@ -90,7 +90,7 @@ public class DatasourceClientTest {
         newPassenger.setAge(28);
         newPassenger.setSex("FEMALE");
         newPassenger.setActive(true);
-        newPassenger.setDob(new Date(Instant.now().plus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
+        newPassenger.setDob(new Date(Instant.now().minus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
         //Create:
         Object id = dataSource.add(newPassenger);
         Assert.assertTrue(id != null);
@@ -195,7 +195,7 @@ public class DatasourceClientTest {
         newPassenger.setAge(28);
         newPassenger.setSex("FEMALE");
         newPassenger.setActive(true);
-        newPassenger.setDob(new Date(Instant.now().plus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
+        newPassenger.setDob(new Date(Instant.now().minus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
         //Create:
         Object id = dataSource.add(newPassenger);
         Assert.assertTrue(id != null);
