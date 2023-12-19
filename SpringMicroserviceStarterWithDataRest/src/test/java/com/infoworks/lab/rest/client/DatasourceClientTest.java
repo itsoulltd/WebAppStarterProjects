@@ -1,14 +1,15 @@
 package com.infoworks.lab.rest.client;
 
+import com.infoworks.lab.client.data.rest.Any;
+import com.infoworks.lab.client.data.rest.Links;
+import com.infoworks.lab.client.data.rest.Page;
+import com.infoworks.lab.client.data.rest.PaginatedResponse;
+import com.infoworks.lab.client.spring.DataRestClient;
 import com.infoworks.lab.domain.entities.Gender;
-import com.infoworks.lab.rest.client.datasource.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -35,7 +36,7 @@ public class DatasourceClientTest {
                 .build();
         //
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class
                 , url
                 , template);
 
@@ -57,7 +58,7 @@ public class DatasourceClientTest {
         CountDownLatch latch = new CountDownLatch(1);
         //
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load((response) -> {
             //In-case of exception:
             if (response.getStatus() >= 400) {
@@ -84,7 +85,7 @@ public class DatasourceClientTest {
     @Test
     public void addSingleItem() throws Exception {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
@@ -105,7 +106,7 @@ public class DatasourceClientTest {
     @Test
     public void updateSingleItem() throws Exception {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
@@ -126,7 +127,7 @@ public class DatasourceClientTest {
     @Test
     public void readTest() throws Exception {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load();
         //
         Passenger passenger = dataSource.read(1l);
@@ -139,7 +140,7 @@ public class DatasourceClientTest {
     @Test
     public void sizeTest() throws Exception {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load();
         //
         int size = dataSource.size();
@@ -152,7 +153,7 @@ public class DatasourceClientTest {
     @Test
     public void readNextTest() throws Exception {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
@@ -170,7 +171,7 @@ public class DatasourceClientTest {
         CountDownLatch latch = new CountDownLatch(1);
         //
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
@@ -189,7 +190,7 @@ public class DatasourceClientTest {
     @Test
     public void CRUDTest() throws Exception {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
@@ -230,7 +231,7 @@ public class DatasourceClientTest {
     @Test
     public void readAllPages() throws Exception {
         URL url = new URL("http://localhost:8080/api/data/passengers");
-        RestDataSource<Passenger> dataSource = new RestDataSource(Passenger.class, url);
+        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
         //Read All Pages Until last page:
         dataSource.load();
         Optional<List<Passenger>> opt;
