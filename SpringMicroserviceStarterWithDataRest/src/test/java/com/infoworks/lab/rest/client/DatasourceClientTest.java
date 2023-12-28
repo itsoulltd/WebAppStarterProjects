@@ -6,10 +6,12 @@ import com.infoworks.lab.client.data.rest.Page;
 import com.infoworks.lab.client.data.rest.PaginatedResponse;
 import com.infoworks.lab.client.spring.DataRestClient;
 import com.infoworks.lab.domain.entities.Gender;
+import com.infoworks.lab.rest.models.QueryParam;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.RestTemplate;
+
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -265,6 +267,39 @@ public class DatasourceClientTest {
 
         opt = Optional.ofNullable(null);
         Assert.assertFalse(opt.isPresent());
+    }
+
+    @Test
+    public void searchFindByAgeLimitTest() throws Exception {
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
+        dataSource.load();
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //
+        Optional<List<Passenger>> passengers = dataSource.search("findByAgeLimit"
+                , new QueryParam("min", "18"), new QueryParam("max", "29"));
+        Assert.assertTrue(passengers.isPresent());
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //Close:
+        dataSource.close();
+    }
+
+    @Test
+    public void searchFindByNameTest() throws Exception {
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
+        dataSource.load();
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //
+        Optional<List<Passenger>> passengers = dataSource.search("findByName", new QueryParam("name", "Soha"));
+        Assert.assertTrue(passengers.isPresent());
+        //
+        System.out.println("Is last page: " + dataSource.isLastPage());
+        //Close:
+        dataSource.close();
     }
 
     /////////////////////////////////////////////////////////////////////////////
