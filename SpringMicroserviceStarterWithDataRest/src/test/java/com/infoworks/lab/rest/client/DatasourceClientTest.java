@@ -275,13 +275,9 @@ public class DatasourceClientTest {
         SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
         dataSource.load();
         //
-        System.out.println("Is last page: " + dataSource.isLastPage());
-        //
         Optional<List<Passenger>> passengers = dataSource.search("findByAgeLimit"
                 , new QueryParam("min", "18"), new QueryParam("max", "29"));
         Assert.assertTrue(passengers.isPresent());
-        //
-        System.out.println("Is last page: " + dataSource.isLastPage());
         //Close:
         dataSource.close();
     }
@@ -292,12 +288,23 @@ public class DatasourceClientTest {
         SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
         dataSource.load();
         //
-        System.out.println("Is last page: " + dataSource.isLastPage());
-        //
-        Optional<List<Passenger>> passengers = dataSource.search("findByName", new QueryParam("name", "Soha"));
+        Optional<List<Passenger>> passengers = dataSource.search("/findByName", new QueryParam("name", "Soha"));
         Assert.assertTrue(passengers.isPresent());
+        //Close:
+        dataSource.close();
+    }
+
+    @Test
+    public void searchFunctionIsExistTest() throws Exception {
+        URL url = new URL("http://localhost:8080/api/data/passengers");
+        SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
+        dataSource.load();
         //
-        System.out.println("Is last page: " + dataSource.isLastPage());
+        boolean isExist = dataSource.isSearchActionExist("findByName");
+        Assert.assertTrue(isExist);
+        //
+        isExist = dataSource.isSearchActionExist("findByNameAndOthers");
+        Assert.assertFalse(isExist);
         //Close:
         dataSource.close();
     }

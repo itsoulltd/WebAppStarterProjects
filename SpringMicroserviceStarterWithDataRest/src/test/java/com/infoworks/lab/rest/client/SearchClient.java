@@ -29,7 +29,8 @@ public class SearchClient<A extends Any> extends DataRestClient<A> {
     }
 
     public Optional<List<A>> search(String function, QueryParam... params) {
-        if (Objects.isNull(function)) return Optional.ofNullable(null);
+        if (Objects.isNull(function) || function.isEmpty()) return Optional.ofNullable(null);
+        if (function.startsWith("/")) function = function.replaceFirst("/", "");
         PaginatedResponse response = load();
         Object href = response.getLinks().getSearch().get("href");
         if (href != null) {
@@ -38,13 +39,37 @@ public class SearchClient<A extends Any> extends DataRestClient<A> {
             String searchUrl = href + "/" + searchAction;
             String result = exchange(HttpMethod.GET, entity, searchUrl);
             try {
-                Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {
-                }, result);
-                return Optional.ofNullable(parsePageItems(dataMap));
-            } catch (IOException var12) {
-            }
+                Map<String, Object> dataMap =
+                        Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
+                List<A> items = parsePageItems(dataMap);
+                return Optional.ofNullable(items);
+            } catch (IOException e) {}
         }
         return Optional.ofNullable(null);
+    }
+
+    public boolean isSearchActionExist(String function) {
+        boolean outcome = false;
+        if (Objects.isNull(function) || function.isEmpty()) return outcome;
+        if (function.startsWith("/")) function = function.replaceFirst("/", "");
+        PaginatedResponse response = load();
+        Object href = response.getLinks().getSearch().get("href");
+        if (href != null) {
+            HttpEntity<Map> entity = new HttpEntity(null, getHttpHeaders());
+            String searchUrl = href.toString();
+            String result = exchange(HttpMethod.GET, entity, searchUrl);
+            try {
+                Map<String, Object> dataMap =
+                        Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
+                //outcome
+                Object data = dataMap.get("_links");
+                if (data != null && data instanceof Map) {
+                    Map<String, Object> functions = (Map<String, Object>) data;
+                    outcome = functions.containsKey(function);
+                }
+            } catch (IOException e) {}
+        }
+        return outcome;
     }
 
     private String encodedQueryParams(QueryParam... params) {
