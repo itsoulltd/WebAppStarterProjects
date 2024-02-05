@@ -14,6 +14,10 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Configuration
 @EnableMongoRepositories(
         basePackages = {"com.infoworks.lab.domain.repositories"}
@@ -48,6 +52,12 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     @Override
     protected String getDatabaseName() {
         return persistenceUnitName;
+    }
+
+    @Override
+    protected Collection<String> getMappingBasePackages() {
+        return Stream.of("com.infoworks.lab.domain.entities")
+                .collect(Collectors.toList());
     }
 
 }
