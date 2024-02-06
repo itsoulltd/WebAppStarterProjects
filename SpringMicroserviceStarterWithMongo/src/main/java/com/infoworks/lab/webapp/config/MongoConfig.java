@@ -54,6 +54,12 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
         return persistenceUnitName;
     }
 
+    /**
+     * Returns the base packages to scan for MongoDB
+     * mapped @Document classes or an empty collection to not enable -
+     * scanning for entities at startup.
+     * @return
+     */
     @Override
     protected Collection<String> getMappingBasePackages() {
         return Stream.of("com.infoworks.lab.domain.entities")
