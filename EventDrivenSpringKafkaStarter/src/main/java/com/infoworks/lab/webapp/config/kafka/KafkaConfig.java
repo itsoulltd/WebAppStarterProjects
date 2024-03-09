@@ -28,7 +28,7 @@ import java.util.Map;
 
 @Configuration
 @EnableKafka
-@PropertySource("classpath:kafka.properties")
+@PropertySource("classpath:application-kafka.properties")
 public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
