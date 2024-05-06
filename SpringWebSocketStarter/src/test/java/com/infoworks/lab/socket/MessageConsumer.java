@@ -17,7 +17,7 @@ public class MessageConsumer extends com.infoworks.lab.simulator.Runtime {
         try {
             SocketTemplate socket = new SocketTemplate(SocketType.Standard);
             socket.setAuthorizationHeader("TOKEN");
-            socket.setQueryParam("user_name", "user_name");
+            socket.setQueryParam("userID", "user_name");
             socket.setQueryParam("secret", "app_secret");
             socket.connect("ws://localhost:8080/process");
             //
