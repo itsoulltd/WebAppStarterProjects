@@ -53,7 +53,6 @@ public class SocketConfig extends AbstractSessionWebSocketMessageBrokerConfigure
 
     @Override
     public void configureStompEndpoints(StompEndpointRegistry registry) {
-
         //Context of <app-name> comes from application.properties file's "server.servlet.context-path=/appName" property.
         //When we try to connect these end-point we have do as follow: ws://localhost:8080/<app-name>/process OR /listen
         //e.g. We send message to one of these endpoints like ws://localhost:8080/appName/process
