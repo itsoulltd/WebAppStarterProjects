@@ -33,6 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             , "/swagger-resources/configuration/**"
             , "/actuator/health"
             , "/actuator/prometheus"
+            /*Bypass the web-socket endpoints, So that GenericFilter's don't get interpolate with WS-HandshakeInterceptor*/
+            , "/listen", "/process"
     };
 
     @Override
