@@ -1,7 +1,9 @@
 package com.infoworks.lab.webapp.config.socket;
 
 import com.infoworks.lab.webapp.config.socket.interceptor.ByPassAuthorizationInterceptor;
+import com.infoworks.lab.webapp.config.socket.interceptor.WSocketAuthorizationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -46,6 +48,9 @@ public class SocketConfig extends AbstractSessionWebSocketMessageBrokerConfigure
         //
     }
 
+    @Value("${app.disable.security}")
+    private boolean disableSecurity;
+
     @Override
     public void configureStompEndpoints(StompEndpointRegistry registry) {
 
@@ -54,12 +59,16 @@ public class SocketConfig extends AbstractSessionWebSocketMessageBrokerConfigure
         //e.g. We send message to one of these endpoints like ws://localhost:8080/appName/process
         //If server.servlet.context-path is not set then we don't have to pass <app-name>
         registry.addEndpoint("/listen","/process")
-                .addInterceptors(new ByPassAuthorizationInterceptor()) //new WSocketAuthorizationInterceptor()
+                .addInterceptors(disableSecurity
+                        ? new ByPassAuthorizationInterceptor()
+                        : new WSocketAuthorizationInterceptor())
                 .setAllowedOrigins("*");
 
         //Enable SockJS fall back configuration.
         registry.addEndpoint("/listen","/process")
-                .addInterceptors(new ByPassAuthorizationInterceptor()) //new WSocketAuthorizationInterceptor()
+                .addInterceptors(disableSecurity
+                        ? new ByPassAuthorizationInterceptor()
+                        : new WSocketAuthorizationInterceptor())
                 .setAllowedOrigins("*")
                 .withSockJS();
     }
