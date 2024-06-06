@@ -3,7 +3,6 @@ package com.infoworks.lab.domain.entities;
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
 import com.it.soul.lab.sql.SQLExecutor;
 import com.it.soul.lab.sql.entity.Entity;
-import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
 import com.it.soul.lab.sql.query.models.Property;
@@ -40,12 +39,7 @@ public class Passenger extends Entity {
 
 	private boolean active;
 
-	@Ignore
-	private static int _autoIncrement = -1;
-
-	public Passenger() {
-	    this.id = ++_autoIncrement;
-    }
+	public Passenger() { /**/ }
 
     public Passenger(@NotNull(message = "Name must not be null") String name
             , Gender sex
