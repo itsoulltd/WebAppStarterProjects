@@ -1,5 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.lab.domain.entities.Username;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -8,17 +9,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Configuration
+@EnableMongoAuditing
 @EnableMongoRepositories(
         basePackages = {"com.infoworks.lab.domain.repositories"}
 )
@@ -64,6 +73,16 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     protected Collection<String> getMappingBasePackages() {
         return Stream.of("com.infoworks.lab.domain.entities")
                 .collect(Collectors.toList());
+    }
+
+    @Bean
+    public AuditorAware<Username> auditor() {
+        return () -> Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .filter(Authentication::isAuthenticated)
+                .map(Authentication::getPrincipal)
+                .map(UserDetails.class::cast)
+                .map(u -> new Username(u.getUsername()));
     }
 
 }

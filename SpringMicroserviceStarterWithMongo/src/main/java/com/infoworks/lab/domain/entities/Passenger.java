@@ -2,7 +2,6 @@ package com.infoworks.lab.domain.entities;
 
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
 import com.it.soul.lab.sql.SQLExecutor;
-import com.it.soul.lab.sql.entity.Entity;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
 import com.it.soul.lab.sql.query.models.Property;
@@ -17,11 +16,11 @@ import java.util.Objects;
 
 @Document(collection = "Passenger")
 @TableName(value = "Passenger")
-public class Passenger extends Entity {
+public class Passenger extends Auditable<Integer, Long> {
 
 	@PrimaryKey(name="id")
 	@Id
-	private Integer id = 0;
+	private Integer id;
 
     @NotNull(message = "name must not be null.")
     private String name;
