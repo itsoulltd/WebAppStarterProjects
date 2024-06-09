@@ -8,7 +8,6 @@ import com.it.soul.lab.data.base.DataSource;
 import com.it.soul.lab.sql.QueryExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -87,7 +86,7 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Passenger>> search(@RequestBody SearchQuery query) throws Exception {
+    public List<Passenger> search(@RequestBody SearchQuery query) throws Exception {
         //
         int limit = query.getSize();
         if (limit <= 0) limit = 10;
@@ -99,7 +98,7 @@ public class PassengerController implements RestRepository<Passenger, String> {
         passengers = (passengers != null && passengers.size() > 0)
                 ? passengers.subList(0, limit)
                 : new ArrayList<>();
-        return ResponseEntity.ok(passengers);
+        return passengers;
     }
 
 }
