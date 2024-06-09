@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Entity(name = "Passenger")
 @TableName(value = "Passenger")
-public class Passenger extends com.it.soul.lab.sql.entity.Entity {
+public class Passenger extends Auditable<Integer, Long> {
 
 	@Id @PrimaryKey(name="id", auto=true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
