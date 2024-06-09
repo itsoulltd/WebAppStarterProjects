@@ -72,7 +72,7 @@ public class SearchClient<A extends Any> extends DataRestClient<A> {
         return outcome;
     }
 
-    private String encodedQueryParams(QueryParam... params) {
+    public String encodedQueryParams(QueryParam... params) {
         StringBuilder buffer = new StringBuilder("?");
         for (QueryParam query : params) {
             if (query.getValue() == null || query.getValue().isEmpty()) continue;
