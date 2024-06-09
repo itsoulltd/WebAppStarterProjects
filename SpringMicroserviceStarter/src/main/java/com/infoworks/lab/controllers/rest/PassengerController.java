@@ -86,13 +86,16 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @PostMapping("/search")
-    public List<Passenger> search(@RequestBody SearchQuery query) throws Exception {
+    public List<Passenger> search(@RequestBody SearchQuery query) {
         //
         int limit = query.getSize();
         if (limit <= 0) limit = 10;
-        List<Passenger> passengers = Passenger.read(Passenger.class
-                , executor
-                , query.getPredicate());
+        List<Passenger> passengers = null;
+        try {
+            passengers = Passenger.read(Passenger.class
+                    , executor
+                    , query.getPredicate());
+        } catch (Exception e) {}
         //
         limit = passengers.size() > limit ? limit : passengers.size();
         passengers = (passengers != null && passengers.size() > 0)
