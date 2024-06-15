@@ -79,7 +79,11 @@ services:
         - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
         - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
         - KAFKA_CLUSTERS_0_READONLY=false
+        - AUTH_TYPE="LOGIN_FORM"
+        - SPRING_SECURITY_USER_NAME=admin
+        - SPRING_SECURITY_USER_PASSWORD=pass
       depends_on:
+        - zookeeper
         - kafka
       networks:
         - web-app-net
