@@ -9,6 +9,8 @@ networks:
 volumes:
    mysql-db-storage:
    redis-inmemory-storage:
+   zookeeper-storage:
+   kafka-storage:
 
 services:
    mysql-db:
@@ -38,6 +40,8 @@ services:
         - 2181:2181
       environment:
         - ALLOW_ANONYMOUS_LOGIN=yes
+      volumes:
+        - zookeeper-storage:/bitnami
       networks:
         - web-app-net
 
@@ -58,7 +62,8 @@ services:
         - KAFKA_LISTENERS=CLIENT://:9092,EXTERNAL://0.0.0.0:9093
         - KAFKA_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
         - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
-        #
+      volumes:
+        - kafka-storage:/bitnami
       depends_on:
         - zookeeper
       networks:
