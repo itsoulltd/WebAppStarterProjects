@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -24,6 +27,16 @@ public class StartupConfig implements CommandLineRunner {
 
     public StartupConfig(CQLExecutor executor) {
         this.executor = executor;
+    }
+
+    @EventListener
+    public void handleContextStartedListener(ContextRefreshedEvent event){
+        System.out.println("ContextStarted....");
+    }
+
+    @EventListener
+    public void handleContextStoppedListener(ContextClosedEvent event){
+        System.out.println("ContextStopped....");
     }
 
     @Override
