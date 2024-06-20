@@ -65,20 +65,22 @@ public class PassengerService extends MemCache<Passenger> {
     @Override
     public Passenger[] readSync(int offset, int pageSize) {
         if (offset < 0) offset = 0;
+        //TODO (CAUTION): fetch client.getKeys() in Batch (in-future) to avoid memory-dumb.
         RKeys keys = client.getKeys();
         List<String> targetMaskedKeys = keys.getKeysStream()
                 .filter(key -> key.startsWith(maskPrefix()))
                 .collect(Collectors.toList());
         targetMaskedKeys.sort(String::compareTo);
-        //Where:
+        //Pagination logic:
         List<Passenger> results = new ArrayList<>();
         List<String> subMaskedKeys;
         if (targetMaskedKeys.size() > (offset + pageSize)) {
-             subMaskedKeys = targetMaskedKeys.subList(offset, offset + pageSize);
+             subMaskedKeys = targetMaskedKeys.subList(offset, (offset + pageSize));
         } else {
             if (offset > targetMaskedKeys.size()) offset = 0;
             subMaskedKeys = targetMaskedKeys.subList(offset, targetMaskedKeys.size());
         }
+        //Where logic:
         for (String maskedKey : subMaskedKeys) {
             results.add(super.read(maskedKey));
         }
