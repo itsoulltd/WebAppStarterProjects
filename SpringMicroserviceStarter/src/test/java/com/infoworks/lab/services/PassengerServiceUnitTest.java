@@ -29,7 +29,7 @@ public class PassengerServiceUnitTest {
     @Test
     public void happyPathTest(){
         //Defining Mock Object:
-        Passenger aPassenger = new Passenger("Towhid", Gender.MALE, 36);
+        //Passenger aPassenger = new Passenger("Towhid", Gender.MALE, 36);
         //when(repository.save(any(Passenger.class))).thenReturn(aPassenger);
         //
     }

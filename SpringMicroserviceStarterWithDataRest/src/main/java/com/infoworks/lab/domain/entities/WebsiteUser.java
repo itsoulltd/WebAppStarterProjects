@@ -13,7 +13,7 @@ import javax.persistence.Id;
 public class WebsiteUser extends Auditable<Long, Long> {
 
     @Id @PrimaryKey(name="id", auto=true)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String email;

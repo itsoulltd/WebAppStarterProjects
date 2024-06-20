@@ -1,13 +1,14 @@
 package com.infoworks.lab.domain.entities;
 
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
-import com.it.soul.lab.sql.SQLExecutor;
 import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
-import com.it.soul.lab.sql.query.models.Property;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
@@ -19,10 +20,8 @@ import java.util.Objects;
 public class Passenger extends Auditable<Integer, Long> {
 	
 	@PrimaryKey(name="id", auto=true)
-	@Id
-	@Column(length = 100)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id = 0;
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
 
     @NotNull(message = "name must not be null.")
     private String name;
@@ -119,11 +118,6 @@ public class Passenger extends Auditable<Integer, Long> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
-	}
-
-	public Property getPropertyTest(String key, SQLExecutor exe, boolean skipPrimary) {
-		return getProperty(key, exe, skipPrimary);
-
 	}
 
 }
