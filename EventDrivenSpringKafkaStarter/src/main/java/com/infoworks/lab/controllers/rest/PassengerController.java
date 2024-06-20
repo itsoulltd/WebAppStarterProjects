@@ -4,7 +4,6 @@ import com.infoworks.lab.cache.MemCache;
 import com.infoworks.lab.domain.entities.Passenger;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.rest.repository.RestRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/passenger")
 public class PassengerController implements RestRepository<Passenger, String> {
 
-    @Autowired
     private MemCache<Passenger> dataSource;
+
+    public PassengerController(MemCache<Passenger> dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @GetMapping("/rowCount")
     public ItemCount rowCount(){
