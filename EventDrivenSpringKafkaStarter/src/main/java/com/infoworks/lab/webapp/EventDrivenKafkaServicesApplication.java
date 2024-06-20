@@ -9,7 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.infoworks.lab.controllers"
         , "com.infoworks.lab.webapp.config"
-        , "com.infoworks.lab.domain"})
+        , "com.infoworks.lab.domain"
+        , "com.infoworks.lab.services"})
 public class EventDrivenKafkaServicesApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

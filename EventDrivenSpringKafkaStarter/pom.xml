@@ -20,8 +20,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jersey2.version>2.27</jersey2.version>
-        <jsqleditor.version>1.1.4.8-RELEASE</jsqleditor.version>
-        <WebComponentKit.version>v1.13.1-RELEASE</WebComponentKit.version>
+        <jsqleditor.version>1.1.5.6-RELEASE</jsqleditor.version>
+        <WebComponentKit.version>v1.14.6-RELEASE</WebComponentKit.version>
     </properties>
 
     <repositories>
