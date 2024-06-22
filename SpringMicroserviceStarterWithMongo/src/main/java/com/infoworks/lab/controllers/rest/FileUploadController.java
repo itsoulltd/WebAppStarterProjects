@@ -29,7 +29,7 @@ public class FileUploadController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/rowCount")
+    @GetMapping("/count")
     public ItemCount getRowCount(){
         ItemCount count = new ItemCount();
         count.setCount(Integer.valueOf(storageService.size()).longValue());
