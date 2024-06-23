@@ -1,6 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.domain.entities.User;
 import com.it.soul.lab.cql.CQLExecutor;
 import com.it.soul.lab.cql.query.AlterAction;
 import com.it.soul.lab.sql.query.models.Property;
@@ -43,9 +43,9 @@ public class StartupConfig implements CommandLineRunner {
     public void run(String... args) throws Exception {
         //Initialize Cassandra Tables from their entities:
         if (dropOnStart) {
-            dropsTables(executor, Passenger.class);
+            dropsTables(executor, User.class);
         }
-        createTables(executor, Passenger.class);
+        createTables(executor, User.class);
         //e.g. How to alter an existing Entity Property:
         //executeAlter(executor, Passenger.class, AlterAction.ADD, new Property("<new-property-name>", "<property-datatype-as-value>"));
         //executeAlter(executor, Passenger.class, AlterAction.DROP, new Property("<property-to-drop>"));

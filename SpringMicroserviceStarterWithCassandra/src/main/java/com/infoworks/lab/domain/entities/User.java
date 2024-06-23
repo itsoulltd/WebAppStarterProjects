@@ -2,14 +2,11 @@ package com.infoworks.lab.domain.entities;
 
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
 import com.it.soul.lab.cql.entity.CQLEntity;
-import com.it.soul.lab.cql.entity.ClusteringKey;
 import com.it.soul.lab.cql.entity.EnableTimeToLive;
 import com.it.soul.lab.sql.SQLExecutor;
 import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
-import com.it.soul.lab.sql.query.models.DataType;
-import com.it.soul.lab.sql.query.models.Operator;
 import com.it.soul.lab.sql.query.models.Property;
 
 import javax.validation.constraints.Min;
@@ -19,9 +16,9 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-@TableName(value = "Passenger")
+@TableName(value = "User")
 @EnableTimeToLive(300L) //TimeToLive 5*60 sec = 5 min
-public class Passenger extends CQLEntity {
+public class User extends CQLEntity {
 
 	@PrimaryKey(name="uuid")
 	private String uuid;
@@ -44,11 +41,11 @@ public class Passenger extends CQLEntity {
 	@Ignore
 	private long version = Long.MAX_VALUE;
 
-	public Passenger() {
+	public User() {
 	    this.uuid = UUID.randomUUID().toString();
     }
 
-    public Passenger(@NotNull(message = "Name must not be null") String name
+    public User(@NotNull(message = "Name must not be null") String name
             , Gender sex
             , @Min(value = 18, message = "Min Value is 18.") int age) {
         this();
@@ -121,8 +118,8 @@ public class Passenger extends CQLEntity {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Passenger passenger = (Passenger) o;
-		return Objects.equals(uuid, passenger.uuid);
+		User user = (User) o;
+		return Objects.equals(uuid, user.uuid);
 	}
 
 	@Override

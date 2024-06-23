@@ -1,10 +1,10 @@
 package com.infoworks.lab.controllers.rest;
 
-import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.rest.models.SearchQuery;
 import com.infoworks.lab.rest.repository.RestRepository;
-import com.infoworks.lab.services.PassengerService;
+import com.infoworks.lab.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -14,13 +14,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/passenger")
-public class PassengerController implements RestRepository<Passenger, String> {
+@RequestMapping("/user")
+public class UserController implements RestRepository<User, String> {
 
-    private PassengerService service;
+    private UserService service;
 
     @Autowired
-    public PassengerController(PassengerService service) {
+    public UserController(UserService service) {
         this.service = service;
     }
 
@@ -32,42 +32,42 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @GetMapping
-    public List<Passenger> fetch(
+    public List<User> fetch(
             @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit
             , @RequestParam(value = "page", defaultValue = "0", required = false) Integer page){
         //
         if (limit < 0) limit = 10;
         if (page < 0) page = 0;
-        List<Passenger> passengers = Arrays.asList(service.readSync(page, limit));
-        return passengers;
+        List<User> users = Arrays.asList(service.readSync(page, limit));
+        return users;
     }
 
     @PostMapping("/search")
-    public List<Passenger> query(@RequestBody SearchQuery query){
+    public List<User> query(@RequestBody SearchQuery query){
         //
-        List<Passenger> passengers = service.search(query);
-        return passengers;
+        List<User> users = service.search(query);
+        return users;
     }
 
     @PostMapping
-    public Passenger insert(@Valid @RequestBody Passenger passenger){
+    public User insert(@Valid @RequestBody User user){
         //
-        service.put(passenger.getUuid(), passenger);
-        return passenger;
+        service.put(user.getUuid(), user);
+        return user;
     }
 
     @PutMapping
-    public Passenger update(@Valid @RequestBody Passenger passenger
+    public User update(@Valid @RequestBody User user
             , @ApiIgnore @RequestParam(value = "name", required = false) String name){
         //
-        service.replace(passenger.getUuid(), passenger);
-        return passenger;
+        service.replace(user.getUuid(), user);
+        return user;
     }
 
     @DeleteMapping
     public boolean delete(@RequestParam("uuid") String uuid){
         //
-        Passenger deleted = service.remove(uuid);
+        User deleted = service.remove(uuid);
         return deleted != null;
     }
 
@@ -77,8 +77,8 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @Override
-    public Class<Passenger> getEntityType() {
-        return Passenger.class;
+    public Class<User> getEntityType() {
+        return User.class;
     }
 
 }
