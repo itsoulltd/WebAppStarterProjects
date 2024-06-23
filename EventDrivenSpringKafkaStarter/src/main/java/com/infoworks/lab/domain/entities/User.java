@@ -12,8 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@TableName(value = "Passenger")
-public class Passenger extends Entity {
+@TableName(value = "User")
+public class User extends Entity {
 
 	@PrimaryKey(name="id", auto=true)
 	private Integer id;
@@ -37,11 +37,11 @@ public class Passenger extends Entity {
 	@Ignore
 	private static int _autoIncrement = -1;
 
-	public Passenger() {
+	public User() {
 		this.id = ++_autoIncrement;
 	}
 
-	public Passenger(@NotNull(message = "Name must not be null") String name
+	public User(@NotNull(message = "Name must not be null") String name
 			, Gender sex
 			, @Min(value = 18, message = "Min Value is 18.") int age) {
 		this();
@@ -106,8 +106,8 @@ public class Passenger extends Entity {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Passenger passenger = (Passenger) o;
-		return Objects.equals(id, passenger.id);
+		User user = (User) o;
+		return Objects.equals(id, user.id);
 	}
 
 	@Override
