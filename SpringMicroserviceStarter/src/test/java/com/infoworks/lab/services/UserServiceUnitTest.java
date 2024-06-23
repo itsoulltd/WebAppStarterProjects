@@ -27,8 +27,8 @@ public class UserServiceUnitTest {
     @Test
     public void happyPathTest(){
         //Defining Mock Object:
-        //Passenger aPassenger = new Passenger("Towhid", Gender.MALE, 36);
-        //when(repository.save(any(Passenger.class))).thenReturn(aPassenger);
+        //User aUser = new User("Towhid", Gender.MALE, 36);
+        //when(repository.save(any(User.class))).thenReturn(aUser);
         //
     }
 }

@@ -51,7 +51,7 @@ public class UserControllerUnitTest {
     @Test
     public void rowCountGetTest() throws Exception {
         //Call controller to make the save:
-        MvcResult result = mockMvc.perform(get("/passenger/rowCount")
+        MvcResult result = mockMvc.perform(get("/user/rowCount")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 //.andDo(print())

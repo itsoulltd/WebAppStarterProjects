@@ -55,7 +55,7 @@ public class UserControllerIntegrationTest {
         //
         int size = Long.valueOf(controller.rowCount().getCount()).intValue();
         List<User> items = controller.fetch(size, 0);
-        items.stream().forEach(passenger -> System.out.println(passenger.getName()));
+        items.stream().forEach(user -> System.out.println(user.getName()));
     }
 
 }
