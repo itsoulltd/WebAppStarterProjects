@@ -1,10 +1,10 @@
 package com.infoworks.lab.controllers.rest;
 
+import com.infoworks.lab.cache.MemCache;
 import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.rest.repository.RestRepository;
-import com.it.soul.lab.data.simple.SimpleDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -16,10 +16,9 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController implements RestRepository<User, String> {
 
-    private SimpleDataSource<String, User> dataSource;
+    private MemCache<User> dataSource;
 
-    @Autowired
-    public UserController(SimpleDataSource<String, User> dataSource) {
+    public UserController(@Qualifier("userService") MemCache dataSource) {
         this.dataSource = dataSource;
     }
 

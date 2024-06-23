@@ -1,8 +1,10 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.lab.cache.MemCache;
+import com.infoworks.lab.datasources.LettuceDataSource;
+import com.infoworks.lab.datasources.RedisDataSource;
 import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.util.services.iResourceService;
-import com.it.soul.lab.data.simple.SimpleDataSource;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -27,11 +29,6 @@ public class BeanConfig {
         return "Hi Spring Hello";
     }
 
-    @Bean("userDatasource")
-    public SimpleDataSource<String, User> getUserDatasource(){
-        return new SimpleDataSource<>();
-    }
-
     @Bean
     public RedisClient getRedisClient(){
         String redisHost = env.getProperty("app.redis.host") != null ? env.getProperty("app.redis.host") : "localhost";
@@ -43,6 +40,12 @@ public class BeanConfig {
                 .build();
         RedisClient client = RedisClient.create(uri);
         return client;
+    }
+
+    @Bean("userCache")
+    MemCache<User> getUserCache(RedisClient client){
+        RedisDataSource dataSource = new LettuceDataSource(client);
+        return new MemCache<>(dataSource, User.class);
     }
 
     @Bean
