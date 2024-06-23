@@ -1,7 +1,7 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.domain.entities.Gender;
-import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.webapp.WebApplicationTest;
 import com.infoworks.lab.webapp.config.BeanConfig;
@@ -18,11 +18,11 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {WebApplicationTest.class
-        , PassengerController.class, BeanConfig.class, TestJPAConfig.class})
+        , UserController.class, BeanConfig.class, TestJPAConfig.class})
 @TestPropertySource(locations = {"classpath:application.properties"
         , "classpath:application-test.properties"
         , "classpath:application-mysql.properties"})
-public class PassengerControllerIntegrationTest {
+public class UserControllerIntegrationTest {
 
     @Before
     public void before() {
@@ -30,7 +30,7 @@ public class PassengerControllerIntegrationTest {
     }
 
     @Autowired
-    private PassengerController controller;
+    private UserController controller;
 
     @Test
     public void loadTest() {
@@ -40,7 +40,7 @@ public class PassengerControllerIntegrationTest {
     @Test
     public void count(){
         //
-        controller.insert(new Passenger("Sayed The Coder", Gender.MALE, 24));
+        controller.insert(new User("Sayed The Coder", Gender.MALE, 24));
         //
         ItemCount count = controller.rowCount();
         System.out.println(count.getCount());
@@ -49,12 +49,12 @@ public class PassengerControllerIntegrationTest {
     @Test
     public void query(){
         //
-        controller.insert(new Passenger("Sayed The Coder", Gender.MALE, 24));
-        controller.insert(new Passenger("Evan The Pankha Coder", Gender.MALE, 24));
-        controller.insert(new Passenger("Razib The Pagla", Gender.MALE, 26));
+        controller.insert(new User("Sayed The Coder", Gender.MALE, 24));
+        controller.insert(new User("Evan The Pankha Coder", Gender.MALE, 24));
+        controller.insert(new User("Razib The Pagla", Gender.MALE, 26));
         //
         int size = Long.valueOf(controller.rowCount().getCount()).intValue();
-        List<Passenger> items = controller.fetch(size, 0);
+        List<User> items = controller.fetch(size, 0);
         items.stream().forEach(passenger -> System.out.println(passenger.getName()));
     }
 

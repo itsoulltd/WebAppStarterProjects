@@ -1,6 +1,6 @@
 package com.infoworks.lab.controllers.rest;
 
-import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.rest.models.SearchQuery;
 import com.infoworks.lab.rest.repository.RestRepository;
@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/passenger")
-public class PassengerController implements RestRepository<Passenger, String> {
+@RequestMapping("/user")
+public class UserController implements RestRepository<User, String> {
 
     /**
      * Example of inject @Scope beans.
@@ -28,10 +28,10 @@ public class PassengerController implements RestRepository<Passenger, String> {
     @Resource(name = "executor")
     private QueryExecutor executor;
 
-    private DataSource<String, Passenger> dataSource;
+    private DataSource<String, User> dataSource;
 
     @Autowired
-    public PassengerController(@Qualifier("passengerService") DataSource<String, Passenger> dataSource) {
+    public UserController(@Qualifier("userService") DataSource<String, User> dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -43,35 +43,35 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @GetMapping
-    public List<Passenger> fetch(
+    public List<User> fetch(
             @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit
             , @RequestParam(value = "page", defaultValue = "0", required = false) Integer page){
         //
         if (limit < 0) limit = 10;
         if (page < 0) page = 0;
-        List<Passenger> passengers = Arrays.asList(dataSource.readSync(page, limit));
-        return passengers;
+        List<User> users = Arrays.asList(dataSource.readSync(page, limit));
+        return users;
     }
 
     @PostMapping
-    public Passenger insert(@Valid @RequestBody Passenger passenger){
+    public User insert(@Valid @RequestBody User user){
         //
-        dataSource.put(passenger.getName(), passenger);
-        return passenger;
+        dataSource.put(user.getName(), user);
+        return user;
     }
 
     @PutMapping
-    public Passenger update(@Valid @RequestBody Passenger passenger
+    public User update(@Valid @RequestBody User user
             , @ApiIgnore @RequestParam(value = "name", required = false) String name){
         //
-        dataSource.replace(passenger.getName(), passenger);
-        return passenger;
+        dataSource.replace(user.getName(), user);
+        return user;
     }
 
     @DeleteMapping
     public boolean delete(@RequestParam("name") String name){
         //
-        Passenger deleted = dataSource.remove(name);
+        User deleted = dataSource.remove(name);
         return deleted != null;
     }
 
@@ -81,27 +81,27 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @Override
-    public Class<Passenger> getEntityType() {
-        return Passenger.class;
+    public Class<User> getEntityType() {
+        return User.class;
     }
 
     @PostMapping("/search")
-    public List<Passenger> search(@RequestBody SearchQuery query) {
+    public List<User> search(@RequestBody SearchQuery query) {
         //
         int limit = query.getSize();
         if (limit <= 0) limit = 10;
-        List<Passenger> passengers = null;
+        List<User> users = null;
         try {
-            passengers = Passenger.read(Passenger.class
+            users = User.read(User.class
                     , executor
                     , query.getPredicate());
         } catch (Exception e) {}
         //
-        limit = passengers.size() > limit ? limit : passengers.size();
-        passengers = (passengers != null && passengers.size() > 0)
-                ? passengers.subList(0, limit)
+        limit = users.size() > limit ? limit : users.size();
+        users = (users != null && users.size() > 0)
+                ? users.subList(0, limit)
                 : new ArrayList<>();
-        return passengers;
+        return users;
     }
 
 }

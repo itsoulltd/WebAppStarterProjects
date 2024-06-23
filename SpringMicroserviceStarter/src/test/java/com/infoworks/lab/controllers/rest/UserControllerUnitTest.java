@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @TestPropertySource(locations = {"classpath:application.properties"
         , "classpath:application-test.properties"
         , "classpath:application-h2db.properties"})
-public class PassengerControllerUnitTest {
+public class UserControllerUnitTest {
 
     @Before
     public void setup(){
@@ -41,7 +41,7 @@ public class PassengerControllerUnitTest {
     ObjectMapper mapper;
 
     @InjectMocks
-    PassengerController controller;
+    UserController controller;
 
     @Test
     public void loadTest() {
