@@ -3,7 +3,7 @@ package com.infoworks.lab.webapp.config;
 import com.infoworks.lab.cache.MemCache;
 import com.infoworks.lab.datasources.RedisDataSource;
 import com.infoworks.lab.datasources.RedissonDataSource;
-import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.util.services.iResourceService;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -42,10 +42,10 @@ public class BeanConfig {
         return Redisson.create(conf);
     }
 
-    @Bean("passengerCache")
-    MemCache<Passenger> getPassengerCache(RedissonClient client){
+    @Bean("userCache")
+    MemCache<User> getUserCache(RedissonClient client){
         RedisDataSource dataSource = new RedissonDataSource(client);
-        return new MemCache<>(dataSource, Passenger.class);
+        return new MemCache<>(dataSource, User.class);
     }
 
     @Bean
