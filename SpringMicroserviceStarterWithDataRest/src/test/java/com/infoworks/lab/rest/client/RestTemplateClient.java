@@ -40,7 +40,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void DataRestApisForPassengersType1() {
+    public void DataRestApisForUsersType1() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -51,8 +51,8 @@ public class RestTemplateClient {
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        //http://localhost:8080/api/data/passengers
-        ResponseEntity<String> rs = template.exchange("/passengers"
+        //http://localhost:8080/api/data/users
+        ResponseEntity<String> rs = template.exchange("/users"
                 , HttpMethod.GET
                 , entity
                 , String.class);
@@ -61,7 +61,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void DataRestApisForPassengersType2() {
+    public void DataRestApisForUsersType2() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -72,7 +72,7 @@ public class RestTemplateClient {
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        String rootURL = "http://localhost:8080/api/data/passengers";
+        String rootURL = "http://localhost:8080/api/data/users";
         ResponseEntity<String> rs = template.exchange(rootURL
                 , HttpMethod.GET
                 , entity
@@ -82,10 +82,10 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void DataRestApisForPassengersType3() {
+    public void DataRestApisForUsersType3() {
         //
         RestTemplate template = new RestTemplateBuilder()
-                .rootUri("http://localhost:8080/api/data/passengers")
+                .rootUri("http://localhost:8080/api/data/users")
                 .setConnectTimeout(Duration.ofMillis(5000))
                 .setReadTimeout(Duration.ofMillis(7000))
                 .build();
@@ -93,7 +93,7 @@ public class RestTemplateClient {
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        //http://localhost:8080/api/data/passengers
+        //http://localhost:8080/api/data/users
         //FIX: Will throw exception if pass empty string in url:
         ResponseEntity<String> rs = template.exchange("/"
                 , HttpMethod.GET
@@ -104,7 +104,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void DataRestForPassengersByPaging() {
+    public void DataRestForUsersByPaging() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -115,8 +115,8 @@ public class RestTemplateClient {
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        //http://localhost:8080/api/data/passengers?page=0&size=5
-        String path = "/passengers?page={page}&size={size}";
+        //http://localhost:8080/api/data/users?page=0&size=5
+        String path = "/users?page={page}&size={size}";
         int page = 0, size = 5;
         ResponseEntity<String> rs = template.exchange(path
                 , HttpMethod.GET
@@ -127,7 +127,7 @@ public class RestTemplateClient {
     }
 
     //@Test
-    public void createPassenger() {
+    public void createUser() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -143,7 +143,7 @@ public class RestTemplateClient {
         postBody.put("age", "25");
         postBody.put("active", "true");
         HttpEntity<Map> create = new HttpEntity<>(postBody, headers);
-        ResponseEntity<String> createResponse = template.exchange("/passengers"
+        ResponseEntity<String> createResponse = template.exchange("/users"
                 , HttpMethod.POST
                 , create
                 , String.class);
@@ -152,7 +152,7 @@ public class RestTemplateClient {
     }
 
     //@Test
-    public void updatePassenger() {
+    public void updateUser() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -167,7 +167,7 @@ public class RestTemplateClient {
         putBody.put("sex", "MALE");
         putBody.put("age", "29");
         HttpEntity<Map> update = new HttpEntity<>(putBody, headers);
-        ResponseEntity<String> updateResponse = template.exchange("/passengers/355"
+        ResponseEntity<String> updateResponse = template.exchange("/users/355"
                 , HttpMethod.PUT
                 , update
                 , String.class);
@@ -176,7 +176,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void getPassenger() {
+    public void getUser() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -188,7 +188,7 @@ public class RestTemplateClient {
         //GET
         Map<String, Object> body = new HashMap();
         HttpEntity<Map> get = new HttpEntity<>(body, headers);
-        ResponseEntity<String> getResponse = template.exchange("/passengers/1"
+        ResponseEntity<String> getResponse = template.exchange("/users/1"
                 , HttpMethod.GET
                 , get
                 , String.class);
@@ -197,7 +197,7 @@ public class RestTemplateClient {
     }
 
     //@Test
-    public void deletePassenger() {
+    public void deleteUser() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -209,7 +209,7 @@ public class RestTemplateClient {
         //DELETE
         Map<String, Object> body = new HashMap();
         HttpEntity<Map> delete = new HttpEntity<>(body, headers);
-        ResponseEntity<String> deleteResponse = template.exchange("/passengers/355"
+        ResponseEntity<String> deleteResponse = template.exchange("/users/355"
                 , HttpMethod.DELETE
                 , delete
                 , String.class);
@@ -218,7 +218,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void CRUDPassenger() throws IOException {
+    public void CRUDUser() throws IOException {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -234,7 +234,7 @@ public class RestTemplateClient {
         postBody.put("age", "25");
         postBody.put("active", "true");
         HttpEntity<Map> create = new HttpEntity<>(postBody, headers);
-        ResponseEntity<String> createResponse = template.exchange("/passengers"
+        ResponseEntity<String> createResponse = template.exchange("/users"
                 , HttpMethod.POST
                 , create
                 , String.class);
@@ -245,8 +245,8 @@ public class RestTemplateClient {
         Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
         System.out.println("");
         Map link = (Map) dataMap.get("_links");
-        Map passengers = (Map) link.get("self");
-        String href = passengers.get("href").toString();
+        Map users = (Map) link.get("self");
+        String href = users.get("href").toString();
 
         //PUT
         Map<String, Object> putBody = new HashMap();
@@ -274,7 +274,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void SearchApisInPassenger() {
+    public void SearchApisInUser() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -285,8 +285,8 @@ public class RestTemplateClient {
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        //http://localhost:8080/api/data/passengers/search
-        ResponseEntity<String> rs = template.exchange("/passengers/search"
+        //http://localhost:8080/api/data/users/search
+        ResponseEntity<String> rs = template.exchange("/users/search"
                 , HttpMethod.GET
                 , entity
                 , String.class);
@@ -295,7 +295,7 @@ public class RestTemplateClient {
     }
 
     @Test
-    public void SearchPassengerByAgaLimit() {
+    public void SearchUserByAgaLimit() {
         //
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri("http://localhost:8080/api/data")
@@ -306,8 +306,8 @@ public class RestTemplateClient {
         HttpHeaders headers = new HttpHeaders();
         Map body = new HashMap();
         HttpEntity<Map> entity = new HttpEntity<>(body, headers);
-        //http://localhost:8080/api/data/passengers/search/findByAgeLimit?min=18&max=20
-        String path = "/passengers/search/findByAgeLimit?min={min}&max={max}";
+        //http://localhost:8080/api/data/users/search/findByAgeLimit?min=18&max=20
+        String path = "/users/search/findByAgeLimit?min={min}&max={max}";
         int min = 18, max = 20;
         ResponseEntity<String> rs = template.exchange(path
                 , HttpMethod.GET

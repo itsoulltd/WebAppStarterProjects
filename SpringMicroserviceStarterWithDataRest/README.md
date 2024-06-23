@@ -10,8 +10,8 @@
           "href" : "http://localhost:8080/api/data/users{?page,size,sort}",
           "templated" : true
         },
-        "passengers" : {
-          "href" : "http://localhost:8080/api/data/passengers{?page,size,sort}",
+        "users" : {
+          "href" : "http://localhost:8080/api/data/users{?page,size,sort}",
           "templated" : true
         },
         "profile" : {
@@ -19,12 +19,12 @@
         }
       }
     }
-##### Accessing http://localhost:8080/api/data/passengers/ will show the list of passengers with page=0 & size=20
-    ~>$ curl --location 'http://localhost:8080/api/data/passengers?page=0&size=20'
+##### Accessing http://localhost:8080/api/data/users/ will show the list of users with page=0 & size=20
+    ~>$ curl --location 'http://localhost:8080/api/data/users?page=0&size=20'
     == Result:
     {
       "_embedded" : {
-        "passengers" : [ {
+        "users" : [ {
           "name" : "towhid",
           "sex" : "MALE",
           "age" : 20,
@@ -32,33 +32,33 @@
           "active" : true,
           "_links" : {
             "self" : {
-              "href" : "http://localhost:8080/api/data/passengers/1"
+              "href" : "http://localhost:8080/api/data/users/1"
             },
-            "passenger" : {
-              "href" : "http://localhost:8080/api/data/passengers/1"
+            "user" : {
+              "href" : "http://localhost:8080/api/data/users/1"
             }
           }
         }, ... ]
       },
       "_links" : {
         "first" : {
-          "href" : "http://localhost:8080/api/data/passengers?page=0&size=20"
+          "href" : "http://localhost:8080/api/data/users?page=0&size=20"
         },
         "self" : {
-          "href" : "http://localhost:8080/api/data/passengers{?page,size,sort}",
+          "href" : "http://localhost:8080/api/data/users{?page,size,sort}",
           "templated" : true
         },
         "next" : {
-          "href" : "http://localhost:8080/api/data/passengers?page=1&size=20"
+          "href" : "http://localhost:8080/api/data/users?page=1&size=20"
         },
         "last" : {
-          "href" : "http://localhost:8080/api/data/passengers?page=2&size=20"
+          "href" : "http://localhost:8080/api/data/users?page=2&size=20"
         },
         "profile" : {
-          "href" : "http://localhost:8080/api/data/profile/passengers"
+          "href" : "http://localhost:8080/api/data/profile/users"
         },
         "search" : {
-          "href" : "http://localhost:8080/api/data/passengers/search"
+          "href" : "http://localhost:8080/api/data/users/search"
         }
       },
       "page" : {
@@ -69,8 +69,8 @@
       }
     }
 ##### We can also do Post/Put/Delete using this api:
-    Let’s use curl to add a passenger using POST:
-    ~>$ curl --location 'http://localhost:8080/api/data/passengers' \
+    Let’s use curl to add a user using POST:
+    ~>$ curl --location 'http://localhost:8080/api/data/users' \
         --header 'Content-Type: application/json' \
         --data '{
             "name": "Test",
@@ -87,16 +87,16 @@
         "active": true,
         "_links": {
             "self": {
-                "href": "http://localhost:8080/api/data/passengers/1"
+                "href": "http://localhost:8080/api/data/users/1"
             },
-            "passenger": {
-                "href": "http://localhost:8080/api/data/passengers/1"
+            "user": {
+                "href": "http://localhost:8080/api/data/users/1"
             }
         }
     }
-##### We can now access this passenger by ID at http://localhost:8080/api/data/passengers/1
-    Lets browse passengers using id=1
-    ~>$ curl --location 'http://localhost:8080/api/data/passengers/1'
+##### We can now access this user by ID at http://localhost:8080/api/data/users/1
+    Lets browse users using id=1
+    ~>$ curl --location 'http://localhost:8080/api/data/users/1'
     == Result:
     {
         "name": "Test",
@@ -106,21 +106,21 @@
         "active": true,
         "_links": {
             "self": {
-                "href": "http://localhost:8080/api/data/passengers/1"
+                "href": "http://localhost:8080/api/data/users/1"
             },
-            "passenger": {
-                "href": "http://localhost:8080/api/data/passengers/1"
+            "user": {
+                "href": "http://localhost:8080/api/data/users/1"
             }
         }
     }
-##### We can search passenger by Name (since there is findByName method in @Repository interface).
-##### e.g. http://localhost:8080/api/data/passengers/search/findByName?name=Test
-    Lets search Test passenger using curl:
-    ~>$ curl --location 'http://localhost:8080/api/data/passengers/search/findByName?name=Test'
+##### We can search user by Name (since there is findByName method in @Repository interface).
+##### e.g. http://localhost:8080/api/data/users/search/findByName?name=Test
+    Lets search Test user using curl:
+    ~>$ curl --location 'http://localhost:8080/api/data/users/search/findByName?name=Test'
     == Result:
     {
       "_embedded" : {
-        "passengers" : [ {
+        "users" : [ {
           "name" : "Test",
           "sex" : "MALE",
           "age" : 20,
@@ -128,23 +128,23 @@
           "active" : true,
           "_links" : {
             "self" : {
-              "href" : "http://localhost:8080/api/data/passengers/1"
+              "href" : "http://localhost:8080/api/data/users/1"
             },
-            "passenger" : {
-              "href" : "http://localhost:8080/api/data/passengers/1"
+            "user" : {
+              "href" : "http://localhost:8080/api/data/users/1"
             }
           }
         } ]
       },
       "_links" : {
         "self" : {
-          "href" : "http://localhost:8080/api/data/passengers/search/findByName?name=Test"
+          "href" : "http://localhost:8080/api/data/users/search/findByName?name=Test"
         }
       }
     }
-##### Now we like to update Test passenger using PUT:
-    Lets update Test passenger with id=1
-    ~>$ curl --location --request PUT 'http://localhost:8080/api/data/passengers/1' \
+##### Now we like to update Test user using PUT:
+    Lets update Test user with id=1
+    ~>$ curl --location --request PUT 'http://localhost:8080/api/data/users/1' \
         --header 'Content-Type: application/json' \
         --data '{
             "name": "Test Updated",
@@ -159,42 +159,42 @@
       "active" : false,
       "_links" : {
         "self" : {
-          "href" : "http://localhost:8080/api/data/passengers/1"
+          "href" : "http://localhost:8080/api/data/users/1"
         },
-        "passenger" : {
-          "href" : "http://localhost:8080/api/data/passengers/1"
+        "user" : {
+          "href" : "http://localhost:8080/api/data/users/1"
         }
       }
     }
-##### Now Lets delete Test passenger with DELETE:
-    Lets Delete Passenger using curl where id=1
-    ~>$ curl --location --request DELETE 'http://localhost:8080/api/data/passengers/1'
+##### Now Lets delete Test user with DELETE:
+    Lets Delete User using curl where id=1
+    ~>$ curl --location --request DELETE 'http://localhost:8080/api/data/users/1'
     == Result:
     http status: 204 No Content [Server successfully process the request, but no content returns.] 
-##### We can checkout the search api exist in Passenger data-rest api:
-    ~>$ curl --location 'http://localhost:8080/api/data/passengers/search'
+##### We can checkout the search api exist in User data-rest api:
+    ~>$ curl --location 'http://localhost:8080/api/data/users/search'
     == Result: 
     {
         "_links": {
             "findByAgeLimit": {
-                "href": "http://localhost:8080/api/data/passengers/search/findByAgeLimit{?min,max}",
+                "href": "http://localhost:8080/api/data/users/search/findByAgeLimit{?min,max}",
                 "templated": true
             },
             "findByName": {
-                "href": "http://localhost:8080/api/data/passengers/search/findByName{?name}",
+                "href": "http://localhost:8080/api/data/users/search/findByName{?name}",
                 "templated": true
             },
             "self": {
-                "href": "http://localhost:8080/api/data/passengers/search"
+                "href": "http://localhost:8080/api/data/users/search"
             }
         }
     }
 ##### Let's search using: findByAgeLimit?min=20&max=30
-    ~>$ curl --location 'http://localhost:8080/api/data/passengers/search/findByAgeLimit?min=27&max=29'
+    ~>$ curl --location 'http://localhost:8080/api/data/users/search/findByAgeLimit?min=27&max=29'
     == Result:
     {
         "_embedded": {
-            "passengers": [
+            "users": [
                 {
                     "name": "Test Updated",
                     "sex": "NONE",
@@ -203,10 +203,10 @@
                     "active": false,
                     "_links": {
                         "self": {
-                            "href": "http://localhost:8080/api/data/passengers/323"
+                            "href": "http://localhost:8080/api/data/users/323"
                         },
-                        "passenger": {
-                            "href": "http://localhost:8080/api/data/passengers/323"
+                        "user": {
+                            "href": "http://localhost:8080/api/data/users/323"
                         }
                     }
                 }
@@ -214,7 +214,7 @@
         },
         "_links": {
             "self": {
-                "href": "http://localhost:8080/api/data/passengers/search/findByAgeLimit?min=27&max=29"
+                "href": "http://localhost:8080/api/data/users/search/findByAgeLimit?min=27&max=29"
             }
         }
     }

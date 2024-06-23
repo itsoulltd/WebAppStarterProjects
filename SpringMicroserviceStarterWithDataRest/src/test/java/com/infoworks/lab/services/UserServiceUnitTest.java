@@ -1,8 +1,6 @@
 package com.infoworks.lab.services;
 
-import com.infoworks.lab.domain.entities.Gender;
-import com.infoworks.lab.domain.entities.Passenger;
-import com.infoworks.lab.domain.repositories.PassengerRepository;
+import com.infoworks.lab.domain.repositories.UserRepository;
 import com.infoworks.lab.webapp.config.TestJPAH2Config;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {TestJPAH2Config.class})
-public class PassengerServiceUnitTest {
+public class UserServiceUnitTest {
 
     @Before
     public void setup(){
@@ -24,13 +22,13 @@ public class PassengerServiceUnitTest {
     }
 
     @Mock
-    PassengerRepository repository;
+    UserRepository repository;
 
     @Test
     public void happyPathTest(){
         //Defining Mock Object:
-        //Passenger aPassenger = new Passenger("Towhid", Gender.MALE, 36);
-        //when(repository.save(any(Passenger.class))).thenReturn(aPassenger);
+        //User aUser = new User("Towhid", Gender.MALE, 36);
+        //when(repository.save(any(User.class))).thenReturn(aUser);
         //
     }
 }

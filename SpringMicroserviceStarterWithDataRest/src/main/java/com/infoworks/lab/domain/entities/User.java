@@ -15,9 +15,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity(name = "Passenger")
-@TableName(value = "Passenger")
-public class Passenger extends Auditable<Integer, Long> {
+@Entity(name = "User")
+@TableName(value = "User")
+public class User extends Auditable<Integer, Long> {
 
 	@PrimaryKey(name="id", auto=true)
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,11 +42,11 @@ public class Passenger extends Auditable<Integer, Long> {
 	@Ignore
 	private static int _autoIncrement = -1;
 
-	public Passenger() {
+	public User() {
 	    this.id = ++_autoIncrement;
     }
 
-    public Passenger(@NotNull(message = "Name must not be null") String name
+    public User(@NotNull(message = "Name must not be null") String name
             , Gender sex
             , @Min(value = 18, message = "Min Value is 18.") int age) {
         this();
@@ -111,8 +111,8 @@ public class Passenger extends Auditable<Integer, Long> {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Passenger passenger = (Passenger) o;
-		return Objects.equals(id, passenger.id);
+		User user = (User) o;
+		return Objects.equals(id, user.id);
 	}
 
 	@Override

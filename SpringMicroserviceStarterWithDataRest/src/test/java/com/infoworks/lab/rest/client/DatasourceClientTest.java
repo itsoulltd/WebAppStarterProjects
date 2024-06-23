@@ -6,6 +6,7 @@ import com.infoworks.lab.client.data.rest.Page;
 import com.infoworks.lab.client.data.rest.PaginatedResponse;
 import com.infoworks.lab.client.spring.DataRestClient;
 import com.infoworks.lab.domain.entities.Gender;
+import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.QueryParam;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,13 +33,13 @@ public class DatasourceClientTest {
     public void doLoadTest() throws Exception {
         //
         RestTemplate template = new RestTemplateBuilder()
-                .rootUri("http://localhost:8080/api/data/passengers")
+                .rootUri("http://localhost:8080/api/data/users")
                 .setConnectTimeout(Duration.ofMillis(5000))
                 .setReadTimeout(Duration.ofMillis(7000))
                 .build();
         //
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class
                 , url
                 , template);
 
@@ -59,8 +60,8 @@ public class DatasourceClientTest {
     public void doAsyncLoadTest() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         //
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load((response) -> {
             //In-case of exception:
             if (response.getStatus() >= 400) {
@@ -86,20 +87,20 @@ public class DatasourceClientTest {
 
     @Test
     public void addSingleItem() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
         //
-        Passenger newPassenger = new Passenger();
-        newPassenger.setName("Sohana Islam Khan");
-        newPassenger.setAge(28);
-        newPassenger.setSex("FEMALE");
-        newPassenger.setActive(true);
-        newPassenger.setDob(new Date(Instant.now().minus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
+        User newUser = new User();
+        newUser.setName("Sohana Islam Khan");
+        newUser.setAge(28);
+        newUser.setSex("FEMALE");
+        newUser.setActive(true);
+        newUser.setDob(new Date(Instant.now().minus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
         //Create:
-        Object id = dataSource.add(newPassenger);
+        Object id = dataSource.add(newUser);
         Assert.assertTrue(id != null);
         //Close:
         dataSource.close();
@@ -107,20 +108,20 @@ public class DatasourceClientTest {
 
     @Test
     public void updateSingleItem() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
         //
-        Object[] passengers = dataSource.readSync(0, dataSource.size());
-        Assert.assertTrue(passengers.length > 0);
+        Object[] users = dataSource.readSync(0, dataSource.size());
+        Assert.assertTrue(users.length > 0);
         //
-        Passenger passenger = (Passenger) passengers[0];
-        passenger.setName("Dr. Sohana Khan");
+        User user = (User) users[0];
+        user.setName("Dr. Sohana Khan");
         //Update:
-        Object id = passenger.parseId().orElse(null);
-        if(id != null) dataSource.put(id, passenger);
+        Object id = user.parseId().orElse(null);
+        if(id != null) dataSource.put(id, user);
         Assert.assertTrue(id != null);
         //Close:
         dataSource.close();
@@ -128,21 +129,21 @@ public class DatasourceClientTest {
 
     @Test
     public void readTest() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
-        Passenger passenger = dataSource.read(1l);
-        Assert.assertTrue(passenger != null);
-        System.out.println(passenger.getName());
+        User user = dataSource.read(1l);
+        Assert.assertTrue(user != null);
+        System.out.println(user.getName());
         //Close:
         dataSource.close();
     }
 
     @Test
     public void sizeTest() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
         int size = dataSource.size();
@@ -154,14 +155,14 @@ public class DatasourceClientTest {
 
     @Test
     public void readNextTest() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
         //
-        Optional<List<Passenger>> passengers = dataSource.next();
-        Assert.assertTrue(passengers.isPresent());
+        Optional<List<User>> users = dataSource.next();
+        Assert.assertTrue(users.isPresent());
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
         //Close:
@@ -172,14 +173,14 @@ public class DatasourceClientTest {
     public void readAsyncNextTest() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         //
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
         //
-        dataSource.next((passengers) -> {
-            Assert.assertTrue(passengers.isPresent());
+        dataSource.next((users) -> {
+            Assert.assertTrue(users.isPresent());
             latch.countDown();
         });
         latch.await();
@@ -191,35 +192,35 @@ public class DatasourceClientTest {
 
     @Test
     public void CRUDTest() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
         System.out.println("Is last page: " + dataSource.isLastPage());
         //
-        Passenger newPassenger = new Passenger();
-        newPassenger.setName("Sohana Islam Khan");
-        newPassenger.setAge(28);
-        newPassenger.setSex("FEMALE");
-        newPassenger.setActive(true);
-        newPassenger.setDob(new Date(Instant.now().minus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
+        User newUser = new User();
+        newUser.setName("Sohana Islam Khan");
+        newUser.setAge(28);
+        newUser.setSex("FEMALE");
+        newUser.setActive(true);
+        newUser.setDob(new Date(Instant.now().minus(28 * 365, ChronoUnit.DAYS).toEpochMilli()));
         //Create:
-        Object id = dataSource.add(newPassenger);
+        Object id = dataSource.add(newUser);
         Assert.assertTrue(id != null);
         //Read One:
-        Passenger read = dataSource.read(id);
+        User read = dataSource.read(id);
         Assert.assertTrue(read != null);
         //Read from local:
         Object[] items = dataSource.readSync(0, dataSource.size());
         Stream.of(items).forEach(item -> {
-            if (item instanceof Passenger)
-                System.out.println(((Passenger) item).getName());
+            if (item instanceof User)
+                System.out.println(((User) item).getName());
         });
         //Update:
-        newPassenger.setName("Dr. Sohana Islam Khan");
-        dataSource.put(id, newPassenger);
+        newUser.setName("Dr. Sohana Islam Khan");
+        dataSource.put(id, newUser);
         //Read again: (will read from local)
-        Passenger readAgain = dataSource.read(id);
+        User readAgain = dataSource.read(id);
         System.out.println(readAgain.getName());
         //Delete:
         System.out.println("Count before delete: " + dataSource.size());
@@ -232,11 +233,11 @@ public class DatasourceClientTest {
 
     @Test
     public void readAllPages() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        DataRestClient<Passenger> dataSource = new DataRestClient(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         //Read All Pages Until last page:
         dataSource.load();
-        Optional<List<Passenger>> opt;
+        Optional<List<User>> opt;
         do {
             opt = dataSource.next();
             System.out.println("Current Page: " + dataSource.currentPage());
@@ -245,8 +246,8 @@ public class DatasourceClientTest {
         //
         Object[] all = dataSource.readSync(0, dataSource.size());
         Stream.of(all).forEach(item -> {
-            if (item instanceof Passenger)
-                System.out.println(((Passenger) item).getName());
+            if (item instanceof User)
+                System.out.println(((User) item).getName());
         });
         //Close:
         dataSource.close();
@@ -271,33 +272,33 @@ public class DatasourceClientTest {
 
     @Test
     public void searchFindByAgeLimitTest() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        SearchClient<User> dataSource = new SearchClient<>(User.class, url);
         dataSource.load();
         //
-        Optional<List<Passenger>> passengers = dataSource.search("findByAgeLimit"
+        Optional<List<User>> users = dataSource.search("findByAgeLimit"
                 , new QueryParam("min", "18"), new QueryParam("max", "29"));
-        Assert.assertTrue(passengers.isPresent());
+        Assert.assertTrue(users.isPresent());
         //Close:
         dataSource.close();
     }
 
     @Test
     public void searchFindByNameTest() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        SearchClient<User> dataSource = new SearchClient<>(User.class, url);
         dataSource.load();
         //
-        Optional<List<Passenger>> passengers = dataSource.search("/findByName", new QueryParam("name", "Soha"));
-        Assert.assertTrue(passengers.isPresent());
+        Optional<List<User>> users = dataSource.search("/findByName", new QueryParam("name", "Soha"));
+        Assert.assertTrue(users.isPresent());
         //Close:
         dataSource.close();
     }
 
     @Test
     public void searchFunctionIsExistTest() throws Exception {
-        URL url = new URL("http://localhost:8080/api/data/passengers");
-        SearchClient<Passenger> dataSource = new SearchClient<>(Passenger.class, url);
+        URL url = new URL("http://localhost:8080/api/data/users");
+        SearchClient<User> dataSource = new SearchClient<>(User.class, url);
         dataSource.load();
         //
         boolean isExist = dataSource.isSearchActionExist("findByName");
@@ -311,14 +312,14 @@ public class DatasourceClientTest {
 
     /////////////////////////////////////////////////////////////////////////////
 
-    public static class Passenger extends Any<Long> {
+    public static class User extends Any<Long> {
         private String name;
         private String sex = Gender.NONE.name();
         private int age = 18;
         private Date dob = new java.sql.Date(new Date().getTime());
         private boolean active;
 
-        public Passenger() {}
+        public User() {}
 
         public String getName() {
             return name;
