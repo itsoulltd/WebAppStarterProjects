@@ -1,11 +1,9 @@
 package com.infoworks.lab.domain.entities;
 
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
-import com.it.soul.lab.sql.SQLExecutor;
 import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
-import com.it.soul.lab.sql.query.models.Property;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -14,9 +12,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity(name = "Passenger")
-@TableName(value = "Passenger")
-public class Passenger extends com.it.soul.lab.sql.entity.Entity {
+@Entity(name = "User")
+@TableName(value = "User")
+public class User extends com.it.soul.lab.sql.entity.Entity {
 	
 	@PrimaryKey(name="id", auto=true)
 	@Id
@@ -43,11 +41,11 @@ public class Passenger extends com.it.soul.lab.sql.entity.Entity {
 	@Ignore
 	private static int _autoIncrement = -1;
 
-	public Passenger() {
+	public User() {
 	    this.id = ++_autoIncrement;
     }
 
-    public Passenger(@NotNull(message = "Name must not be null") String name
+    public User(@NotNull(message = "Name must not be null") String name
             , Gender sex
             , @Min(value = 18, message = "Min Value is 18.") int age) {
         this();
@@ -112,18 +110,13 @@ public class Passenger extends com.it.soul.lab.sql.entity.Entity {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Passenger passenger = (Passenger) o;
-		return Objects.equals(id, passenger.id);
+		User user = (User) o;
+		return Objects.equals(id, user.id);
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
-	}
-
-	public Property getPropertyTest(String key, SQLExecutor exe, boolean skipPrimary) {
-		return getProperty(key, exe, skipPrimary);
-
 	}
 
 }

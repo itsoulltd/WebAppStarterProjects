@@ -1,6 +1,6 @@
 package com.infoworks.lab.controllers.rest;
 
-import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.rest.repository.RestRepository;
 import com.it.soul.lab.data.simple.SimpleDataSource;
@@ -13,13 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/passenger")
-public class PassengerController implements RestRepository<Passenger, String> {
+@RequestMapping("/user")
+public class UserController implements RestRepository<User, String> {
 
-    private SimpleDataSource<String, Passenger> dataSource;
+    private SimpleDataSource<String, User> dataSource;
 
     @Autowired
-    public PassengerController(SimpleDataSource<String, Passenger> dataSource) {
+    public UserController(SimpleDataSource<String, User> dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -31,35 +31,35 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @GetMapping
-    public List<Passenger> fetch(
+    public List<User> fetch(
             @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit
             , @RequestParam(value = "page", defaultValue = "0", required = false) Integer page){
         //
         if (limit < 0) limit = 10;
         if (page < 0) page = 0;
-        List<Passenger> passengers = Arrays.asList(dataSource.readSync(page, limit));
-        return passengers;
+        List<User> users = Arrays.asList(dataSource.readSync(page, limit));
+        return users;
     }
 
     @PostMapping
-    public Passenger insert(@Valid @RequestBody Passenger passenger){
+    public User insert(@Valid @RequestBody User user){
         //
-        dataSource.put(passenger.getName(), passenger);
-        return passenger;
+        dataSource.put(user.getName(), user);
+        return user;
     }
 
     @PutMapping
-    public Passenger update(@Valid @RequestBody Passenger passenger
+    public User update(@Valid @RequestBody User user
             , @ApiIgnore @RequestParam(value = "name", required = false) String name){
         //
-        dataSource.replace(passenger.getName(), passenger);
-        return passenger;
+        dataSource.replace(user.getName(), user);
+        return user;
     }
 
     @DeleteMapping
     public boolean delete(@RequestParam("name") String name){
         //
-        Passenger deleted = dataSource.remove(name);
+        User deleted = dataSource.remove(name);
         return deleted != null;
     }
 
@@ -69,8 +69,8 @@ public class PassengerController implements RestRepository<Passenger, String> {
     }
 
     @Override
-    public Class<Passenger> getEntityType() {
-        return Passenger.class;
+    public Class<User> getEntityType() {
+        return User.class;
     }
 
 }

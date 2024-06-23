@@ -1,6 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.domain.entities.Passenger;
+import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.util.services.iResourceService;
 import com.it.soul.lab.data.simple.SimpleDataSource;
 import io.lettuce.core.RedisClient;
@@ -27,8 +27,8 @@ public class BeanConfig {
         return "Hi Spring Hello";
     }
 
-    @Bean("passengerDatasource")
-    public SimpleDataSource<String, Passenger> getPassengerDatasource(){
+    @Bean("userDatasource")
+    public SimpleDataSource<String, User> getUserDatasource(){
         return new SimpleDataSource<>();
     }
 
