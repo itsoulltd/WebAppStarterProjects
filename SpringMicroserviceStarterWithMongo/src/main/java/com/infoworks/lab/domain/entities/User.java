@@ -14,9 +14,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@Document(collection = "Passenger")
-@TableName(value = "Passenger")
-public class Passenger extends Auditable<Integer, Long> {
+@Document(collection = "User")
+@TableName(value = "User")
+public class User extends Auditable<Integer, Long> {
 
 	@PrimaryKey(name="id")
 	@Id
@@ -38,9 +38,9 @@ public class Passenger extends Auditable<Integer, Long> {
 
 	private boolean active;
 
-	public Passenger() { /**/ }
+	public User() { /**/ }
 
-    public Passenger(@NotNull(message = "Name must not be null") String name
+    public User(@NotNull(message = "Name must not be null") String name
             , Gender sex
             , @Min(value = 18, message = "Min Value is 18.") int age) {
         this();
@@ -105,8 +105,8 @@ public class Passenger extends Auditable<Integer, Long> {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Passenger passenger = (Passenger) o;
-		return Objects.equals(id, passenger.id);
+		User user = (User) o;
+		return Objects.equals(id, user.id);
 	}
 
 	@Override
