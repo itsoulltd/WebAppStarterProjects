@@ -53,9 +53,9 @@ public class FileUploadController {
     }
 
     @GetMapping("/download")
-    public ResponseEntity<Resource> downloadContent(@RequestParam("fileName") String fileName) throws IOException {
+    public ResponseEntity<Resource> downloadContent(@RequestParam("uuid") String uuid) throws IOException {
         //
-        InputStream ios = storageService.read(fileName);
+        InputStream ios = storageService.read(uuid);
         if (ios == null) return ResponseEntity.notFound().build();
         //
         int contentLength = ios.available();
@@ -65,7 +65,7 @@ public class FileUploadController {
         ios.close();
         //
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", fileName));
+        header.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", uuid));
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
         header.add("Pragma", "no-cache");
         header.add("Expires", "0");
@@ -78,8 +78,8 @@ public class FileUploadController {
     }
 
     @DeleteMapping
-    public Boolean delete(@RequestParam("filename") String name){
-        InputStream stream = storageService.remove(name);
+    public Boolean delete(@RequestParam("uuid") String uuid){
+        InputStream stream = storageService.remove(uuid);
         return stream != null;
     }
 

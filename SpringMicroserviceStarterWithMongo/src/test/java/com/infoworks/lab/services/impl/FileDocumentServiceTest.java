@@ -30,7 +30,7 @@ import java.util.UUID;
 //@ActiveProfiles and @TestPropertySource both work independently.
 //@ActiveProfiles(profiles = {"mongo-local"})
 //@TestPropertySource("classpath:application-mongo-local.properties")
-public class FileDocumentServiceIntegrationTest {
+public class FileDocumentServiceTest {
 
     @Before
     public void setUp() throws Exception {

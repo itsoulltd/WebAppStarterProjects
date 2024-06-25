@@ -85,7 +85,7 @@ public class FileDocumentController {
         return document != null;
     }
 
-    @PostMapping("/upload/image")
+    @PostMapping("/upload")
     public ResponseEntity<Map> uploadContent(
             @RequestParam("content") MultipartFile content,
             RedirectAttributes redirectAttributes) throws IOException {
@@ -117,7 +117,7 @@ public class FileDocumentController {
         return ResponseEntity.badRequest().body(data);
     }
 
-    @PostMapping("/upload/image/base64")
+    @PostMapping("/upload/base64")
     public ResponseEntity<Map> uploadStringContent(@RequestBody SearchQuery content) throws IOException {
         //
         FileDocument document = new FileDocument();
@@ -140,7 +140,7 @@ public class FileDocumentController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/download/image") @SuppressWarnings("Duplicates")
+    @GetMapping("/download") @SuppressWarnings("Duplicates")
     public ResponseEntity<Resource> downloadContent(@RequestParam("uuid") String uuid) throws IOException {
         //
         FileDocument document = docService.read(uuid);
