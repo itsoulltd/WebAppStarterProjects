@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/files")
+@RequestMapping("/files/v1")
 public class FileUploadController {
 
     private iFileStorageService<InputStream> storageService;

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/gfdocuments")
+@RequestMapping("/gridfs/v1")
 public class GridFDocumentController {
 
     private iDocumentService<GridFileDocument> docService;
@@ -45,8 +45,9 @@ public class GridFDocumentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Map>> query(@RequestParam("limit") Integer limit
-            , @RequestParam("offset") Integer offset){
+    public ResponseEntity<List<Map>> query(
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit
+            , @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset){
         List<GridFileDocument> documents = Arrays.asList(docService.readSync(offset, limit));
         List<Map> metas = documents
                 .stream()

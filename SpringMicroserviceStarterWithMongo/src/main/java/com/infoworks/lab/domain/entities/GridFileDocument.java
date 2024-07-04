@@ -1,6 +1,5 @@
 package com.infoworks.lab.domain.entities;
 
-import com.it.soul.lab.sql.entity.Entity;
 import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 @Document(collection = "GridFileDocument")
 @TableName(value = "GridFileDocument")
-public class GridFileDocument extends Entity {
+public class GridFileDocument extends Auditable<String, Long> {
 
     @Id
     @PrimaryKey(name = "uuid")

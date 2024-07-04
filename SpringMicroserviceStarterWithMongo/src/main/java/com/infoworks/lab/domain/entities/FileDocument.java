@@ -1,6 +1,5 @@
 package com.infoworks.lab.domain.entities;
 
-import com.it.soul.lab.sql.entity.Entity;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
 import org.springframework.data.annotation.Id;
@@ -12,7 +11,7 @@ import java.util.UUID;
 
 @Document(collection = "FileDocument")
 @TableName(value = "FileDocument")
-public class FileDocument extends Entity {
+public class FileDocument extends Auditable<String, Long> {
 
     @Id
     @PrimaryKey(name = "uuid")

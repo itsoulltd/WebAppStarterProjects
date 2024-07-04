@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/documents")
+@RequestMapping("/fs/v1")
 public class FileDocumentController {
 
     private iDocumentService<FileDocument> docService;
@@ -45,8 +45,9 @@ public class FileDocumentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Map>> query(@RequestParam("limit") Integer limit
-            , @RequestParam("offset") Integer offset){
+    public ResponseEntity<List<Map>> query(
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit
+            , @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset){
         List<FileDocument> documents = Arrays.asList(docService.readSync(offset, limit));
         return convertFileDocumentIntoMap(documents);
     }
