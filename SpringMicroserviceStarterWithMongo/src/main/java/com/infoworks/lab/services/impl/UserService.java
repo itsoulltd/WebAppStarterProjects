@@ -1,6 +1,7 @@
 package com.infoworks.lab.services.impl;
 
 import com.infoworks.lab.domain.entities.User;
+import com.infoworks.lab.domain.mongo.events.UserEventListener;
 import com.infoworks.lab.domain.repositories.UserRepository;
 import com.infoworks.lab.services.GeneratorService;
 import com.it.soul.lab.data.simple.SimpleDataSource;
@@ -47,7 +48,7 @@ public class UserService extends SimpleDataSource<String, User> {
 
     @Override
     public String add(User user) throws RuntimeException {
-        long key = genService.getNext("persona_seq");
+        long key = genService.getNext(UserEventListener.SEQUENCE_KEY);
         user.setId(Long.valueOf(key).intValue());
         repository.save(user);
         return Long.toString(key);
