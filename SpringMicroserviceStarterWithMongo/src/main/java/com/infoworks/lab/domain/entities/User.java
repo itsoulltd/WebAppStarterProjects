@@ -1,14 +1,17 @@
 package com.infoworks.lab.domain.entities;
 
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
+import com.infoworks.lab.rest.validation.Email.EmailPattern;
 import com.it.soul.lab.sql.SQLExecutor;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
 import com.it.soul.lab.sql.query.models.Property;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,12 +28,16 @@ public class User extends Auditable<Integer, Long> {
     @NotNull(message = "name must not be null.")
     private String name;
 
+    @NotEmpty
+    @EmailPattern(message = "Invalid Email Address!")
+    @Indexed(unique = true)
+    private String email = "";
+
     @IsValidGender
     private String sex = Gender.NONE.name();
 
     @Min(value = 18, message = "age min Value is 18.")
 	private int age = 18;
-
 
 	//@NotNull(message = "dob Must Not Null")
 	//@Past(message = "Date Of Birth Must Be Greater Then Now")
@@ -99,6 +106,14 @@ public class User extends Auditable<Integer, Long> {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
