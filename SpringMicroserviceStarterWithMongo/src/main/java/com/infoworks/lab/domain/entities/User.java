@@ -17,8 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@Document(collection = "User")
 @TableName(value = "User")
+@Document(collection = "User")
 public class User extends Auditable<Integer, Long> {
 
 	@PrimaryKey(name="id")

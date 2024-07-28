@@ -1,26 +1,22 @@
 package com.infoworks.lab.domain.entities;
 
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
+import com.it.soul.lab.sql.entity.Entity;
 import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
 
-import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity(name = "User")
 @TableName(value = "User")
-public class User extends com.it.soul.lab.sql.entity.Entity {
+public class User extends Entity {
 	
 	@PrimaryKey(name="id", auto=true)
-	@Id
-	@Column(length = 100)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id = 0;
+	private Integer id;
 
     @NotNull(message = "name must not be null.")
     private String name;

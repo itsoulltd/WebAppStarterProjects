@@ -11,15 +11,15 @@ import org.springframework.context.annotation.ComponentScan;
         , "com.infoworks.lab.services"
         , "com.infoworks.lab.webapp.config"
         , "com.infoworks.lab.domain"})
-public class DataServicesApplication extends SpringBootServletInitializer {
+public class DataRestApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(DataServicesApplication.class, args);
+        SpringApplication.run(DataRestApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(DataServicesApplication.class);
+        return application.sources(DataRestApplication.class);
     }
 
 }
