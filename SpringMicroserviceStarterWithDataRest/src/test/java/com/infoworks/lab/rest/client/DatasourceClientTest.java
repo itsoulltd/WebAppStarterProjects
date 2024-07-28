@@ -90,11 +90,12 @@ public class DatasourceClientTest {
         DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
-        System.out.println("Is last page: " + dataSource.isLastPage());
+        int size = dataSource.size();
+        System.out.println("Page Size: " + size);
         //
         User newUser = new User();
         newUser.setName("Sohana Islam Khan");
-        newUser.setEmail("sohana@gmail.com");
+        newUser.setEmail("sohana_" + (size + 1) + "@gmail.com");
         newUser.setAge(28);
         newUser.setSex("FEMALE");
         newUser.setActive(true);
@@ -196,11 +197,12 @@ public class DatasourceClientTest {
         DataRestClient<User> dataSource = new DataRestClient(User.class, url);
         dataSource.load();
         //
-        System.out.println("Is last page: " + dataSource.isLastPage());
+        int size = dataSource.size();
+        System.out.println("Page Size: " + size);
         //
         User newUser = new User();
         newUser.setName("Sohana Islam Khan");
-        newUser.setEmail("sohana@gmail.com");
+        newUser.setEmail("sohana_" + (size + 1) + "@gmail.com");
         newUser.setAge(28);
         newUser.setSex("FEMALE");
         newUser.setActive(true);
