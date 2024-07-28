@@ -7,7 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
-@RepositoryRestResource(collectionResourceRel = "users", path = "users")
+@RepositoryRestResource(collectionResourceRel = "siteusers", path = "siteusers")
 public interface WebsiteUserRepository extends JpaRepository<WebsiteUser, Long> {
     List<WebsiteUser> findByName(@Param("name") String name);
 }
