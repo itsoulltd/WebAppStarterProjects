@@ -1,23 +1,23 @@
 package com.infoworks.lab.domain.entities;
 
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
+import com.infoworks.lab.rest.validation.Email.EmailPattern;
 import com.it.soul.lab.sql.entity.Ignore;
 import com.it.soul.lab.sql.entity.PrimaryKey;
 import com.it.soul.lab.sql.entity.TableName;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity(name = "User")
 @TableName(value = "User")
-public class User extends Auditable<Integer, Long> {
+@Entity(name = "User")
+@Table(name="User", indexes = {@Index(name = "idx_email",columnList = "email")})
+public class User extends Auditable<Long> {
 
 	@PrimaryKey(name="id", auto=true)
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,12 +26,16 @@ public class User extends Auditable<Integer, Long> {
     @NotNull(message = "name must not be null.")
     private String name;
 
+    @NotEmpty
+    @EmailPattern(message = "Invalid Email Address!")
+    @Column(length = 250, unique = true, nullable = false)
+    private String email = "";
+
     @IsValidGender
     private String sex = Gender.NONE.name();
 
     @Min(value = 18, message = "age min Value is 18.")
 	private int age = 18;
-
 
 	//@NotNull(message = "dob Must Not Null")
 	//@Past(message = "Date Of Birth Must Be Greater Then Now")
@@ -105,6 +109,14 @@ public class User extends Auditable<Integer, Long> {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

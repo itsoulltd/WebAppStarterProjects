@@ -8,9 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name = "SiteUser")
 @TableName(value = "SiteUser")
-public class WebsiteUser extends Auditable<Long, Long> {
+@Entity(name = "SiteUser")
+public class WebsiteUser extends Auditable<Long> {
 
     @Id @PrimaryKey(name="id", auto=true)
     @GeneratedValue(strategy = GenerationType.AUTO)

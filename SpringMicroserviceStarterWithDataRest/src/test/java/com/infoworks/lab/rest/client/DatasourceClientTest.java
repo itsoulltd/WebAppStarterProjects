@@ -1,10 +1,11 @@
 package com.infoworks.lab.rest.client;
 
+import com.infoworks.lab.client.data.rest.Any;
 import com.infoworks.lab.client.data.rest.Links;
 import com.infoworks.lab.client.data.rest.Page;
 import com.infoworks.lab.client.data.rest.PaginatedResponse;
 import com.infoworks.lab.client.spring.DataRestClient;
-import com.infoworks.lab.domain.entities.User;
+import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.rest.models.QueryParam;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,11 +13,15 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
@@ -89,6 +94,7 @@ public class DatasourceClientTest {
         //
         User newUser = new User();
         newUser.setName("Sohana Islam Khan");
+        newUser.setEmail("sohana@gmail.com");
         newUser.setAge(28);
         newUser.setSex("FEMALE");
         newUser.setActive(true);
@@ -194,6 +200,7 @@ public class DatasourceClientTest {
         //
         User newUser = new User();
         newUser.setName("Sohana Islam Khan");
+        newUser.setEmail("sohana@gmail.com");
         newUser.setAge(28);
         newUser.setSex("FEMALE");
         newUser.setActive(true);
@@ -305,6 +312,91 @@ public class DatasourceClientTest {
     }
 
     /////////////////////////////////////////////////////////////////////////////
+
+    public static class User extends Any<Integer> {
+        private Integer id;
+        private String name;
+        private String email;
+        private String sex = Gender.NONE.name();
+        private int age = 18;
+        private Date dob = new java.sql.Date(new Date().getTime());
+        private boolean active;
+
+        public User() {}
+
+        @Override
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getSex() {
+            return sex;
+        }
+
+        public void setSex(String sex) {
+            this.sex = sex;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public Date getDob() {
+            return dob;
+        }
+
+        public void setDob(Date dob) {
+            this.dob = dob;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        @Override
+        public void unmarshallingFromMap(Map<String, Object> data, boolean inherit) {
+            Object dob = data.get("dob");
+            if (dob != null) {
+                try {
+                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                    Date parsed = formatter.parse(dob.toString());
+                    data.put("dob", parsed);
+                } catch (ParseException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            super.unmarshallingFromMap(data, inherit);
+        }
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
 }

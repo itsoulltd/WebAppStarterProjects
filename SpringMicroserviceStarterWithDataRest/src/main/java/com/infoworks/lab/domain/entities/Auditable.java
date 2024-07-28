@@ -1,7 +1,7 @@
 package com.infoworks.lab.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.infoworks.lab.client.data.rest.Any;
+import com.it.soul.lab.sql.entity.Entity;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Auditable<ID, VERSION> extends Any<ID> implements Externalizable {
+public class Auditable<VERSION> extends Entity implements Externalizable {
 
     @CreatedDate @Column(name = "created_date")
     LocalDateTime createdDate;
@@ -54,10 +54,5 @@ public class Auditable<ID, VERSION> extends Any<ID> implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         Map<String, Object> data = (Map<String, Object>) in.readObject();
         unmarshallingFromMap(data, true);
-    }
-
-    @Override @JsonIgnore
-    public Map<String, Object> get_links() {
-        return super.get_links();
     }
 }
