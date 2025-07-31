@@ -94,6 +94,11 @@
             <version>1.19.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- -->
         <!-- Jersey 2.27 -->
         <!-- We are only interested in rest service consume. -->
