@@ -26,12 +26,7 @@ import java.nio.file.Paths;
 public class MongoTestTemplate {
 
     private String applicationName;
-    private String schema;
-    private String host;
-    private String port;
     private String url;
-    private String username;
-    private String password;
     private String persistenceUnitName;
 
     private MongodExecutable mongodExecutable;
@@ -47,12 +42,14 @@ public class MongoTestTemplate {
         path = Paths.get("src","test","resources","application-mongo.properties");
         absolutePath = path.toAbsolutePath().toString();
         iProperties mongo = iProperties.create(absolutePath, null);
-        schema = mongo.read("mongo.db.url.schema");
-        host = mongo.read("mongo.db.host");
-        port = mongo.read("mongo.db.port");
-        url = String.format("%s%s:%s", schema, host, port);
-        username = mongo.read("mongo.db.username");
-        password = mongo.read("mongo.db.password");
+        String schema = mongo.read("mongo.db.url.schema");
+        String host = mongo.read("mongo.db.host");
+        String port = mongo.read("mongo.db.port");
+        String dbName = mongo.read("mongo.db.name");
+        String dbQuery = mongo.read("mongo.db.url.query");
+        String username = mongo.read("mongo.db.username");
+        String password = mongo.read("mongo.db.password");
+        url = String.format("%s%s:%s@%s:%s/%s%s", schema, username, password, host, port, dbName, dbQuery);
         persistenceUnitName = mongo.read("mongo.db.name");
         //
         IMongodConfig mongodbConfig = new MongodConfigBuilder()
@@ -65,7 +62,9 @@ public class MongoTestTemplate {
             mongodExecutable.start();
             MongoClient client = MongoClients.create(url);
             mongoTemplate = new MongoTemplate(client, persistenceUnitName);
-        } finally {
+            System.out.println("setUp: mongo-startup well!");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
             if (mongodExecutable != null) {
                 mongodExecutable.stop();
             }
@@ -76,6 +75,7 @@ public class MongoTestTemplate {
     public void tearDown() throws Exception {
         if (mongodExecutable != null) {
             mongodExecutable.stop();
+            System.out.println("tearDown: mongo-gracefully stopped!");
         }
     }
 
