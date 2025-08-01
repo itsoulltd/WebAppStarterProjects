@@ -49,7 +49,8 @@ public class MongoTestTemplate {
         String dbQuery = mongo.read("mongo.db.url.query");
         String username = mongo.read("mongo.db.username");
         String password = mongo.read("mongo.db.password");
-        url = String.format("%s%s:%s@%s:%s/%s%s", schema, username, password, host, port, dbName, dbQuery);
+        //url = String.format("%s%s:%s@%s:%s/%s%s", schema, username, password, host, port, dbName, dbQuery);
+        url = String.format("%s%s:%s/%s",schema, host, port, dbName);
         persistenceUnitName = mongo.read("mongo.db.name");
         //
         IMongodConfig mongodbConfig = new MongodConfigBuilder()
