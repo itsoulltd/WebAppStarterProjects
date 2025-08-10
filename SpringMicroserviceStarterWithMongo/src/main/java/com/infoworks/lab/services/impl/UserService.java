@@ -5,7 +5,6 @@ import com.infoworks.lab.domain.mongo.events.UserEventListener;
 import com.infoworks.lab.domain.repositories.UserRepository;
 import com.infoworks.lab.services.GeneratorService;
 import com.it.soul.lab.data.simple.SimpleDataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class UserService extends SimpleDataSource<String, User> {
     private GeneratorService genService;
 
     public UserService(UserRepository repository
-            , @Qualifier("seqGenService") GeneratorService genService) {
+            , GeneratorService genService) {
         this.repository = repository;
         this.genService = genService;
     }

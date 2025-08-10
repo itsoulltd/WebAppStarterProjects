@@ -17,14 +17,19 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.BasicMongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.mongodb.repository.support.MappingMongoEntityInformation;
+import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 //@DataMongoTest
 //@RunWith(SpringRunner.class)
@@ -119,6 +124,25 @@ public class UserServiceTest {
         User user1 = userService.read("Tic Toc");
         Assert.assertNotNull(user1);
         System.out.println(user1.getEmail());
+    }
+}
+
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+class UserRepositoryProxy extends SimpleMongoRepository<User, Integer> implements UserRepository {
+
+    private MongoOperations mongoOperations;
+
+    public UserRepositoryProxy(MongoEntityInformation<User, Integer> metadata, MongoOperations mongoOperations) {
+        super(metadata, mongoOperations);
+        this.mongoOperations = mongoOperations;
+    }
+
+    @Override
+    public List<User> findByName(String name) {
+        List<User> result = mongoOperations.find(
+                Query.query(Criteria.where("name").is(name))
+                , User.class);
+        return result;
     }
 }
 
