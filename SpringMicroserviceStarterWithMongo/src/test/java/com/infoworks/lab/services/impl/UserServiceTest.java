@@ -117,13 +117,35 @@ public class UserServiceTest {
         user.setEmail("tic@gmail.com");
         user.setSex("MALE");
         user.setAge(20);
-        //
-        String key = userService.add(user);
-        Assert.assertNotNull(key);
-        //
+        //Add
+        String _id = userService.add(user);
+        Assert.assertNotNull(_id);
+        //Read
         User user1 = userService.read("Tic Toc");
         Assert.assertNotNull(user1);
         System.out.println(user1.getEmail());
+    }
+
+    @Test
+    public void updateTest() {
+        User user = new User();
+        user.setName("Tic Toc");
+        user.setEmail("tic@gmail.com");
+        user.setSex("MALE");
+        user.setAge(20);
+        //Add
+        String _id = userService.add(user);
+        Assert.assertNotNull(_id);
+        //Read
+        String searchKey = "Tic Toc";
+        User user1 = userService.read(searchKey);
+        Assert.assertNotNull(user1);
+        System.out.println("Before Gender: " + user1.getSex());
+        //Update
+        user1.setSex("FEMALE");
+        User updated = userService.replace(searchKey, user1);
+        Assert.assertEquals(user1.getSex(), updated.getSex());
+        System.out.println("After Gender: " + updated.getSex());
     }
 }
 
