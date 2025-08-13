@@ -6,79 +6,9 @@ networks:
        #driver: overlay
        driver: bridge
 
-volumes:
-   mysql-db-storage:
-   redis-inmemory-storage:
+#volumes:
 
 services:
-   mysql-db:
-      image: mysql:8.0.13
-      environment:
-          MYSQL_DATABASE: testDB
-          MYSQL_ROOT_PASSWORD: root@123
-      ports:
-          - 3306:3306
-      networks:
-          - web-app-net
-      volumes:
-          - mysql-db-storage:/var/lib/mysql
-
-   redis:
-      image: redis:latest
-      ports:
-         - 6379:6379
-      networks:
-         - web-app-net
-      volumes:
-         - redis-inmemory-storage:/data
-
-   zookeeper:
-      image: bitnami/zookeeper:latest
-      ports:
-        - 2181:2181
-      environment:
-        - ALLOW_ANONYMOUS_LOGIN=yes
-      networks:
-        - web-app-net
-
-   kafka:
-      image: bitnami/kafka:latest
-      ports:
-        - 9092:9092
-        - 9093:9093
-      environment:
-        - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-        - ALLOW_PLAINTEXT_LISTENER=yes
-        - KAFKA_ENABLE_KRAFT=no #From kafka-v3.3.2 replace ZooKeeper with KRaft consensus protocol.
-        #Place Device-Current IP Or EC2-Private-IP
-        #To connect from an external machine, change localhost to your host's external IP/hostname,
-        #EXTERNAL://localhost:9093, If we need to access the kafka from our host-machine for debug purpose.
-        #EXTERNAL://<ec2-private-ip>:9093, In case of aws-ec2 instance, we have to broadcast on the ec2's private ip, other wise can't be listen from other ec2 instance.
-        - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
-        - KAFKA_LISTENERS=CLIENT://:9092,EXTERNAL://0.0.0.0:9093
-        - KAFKA_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
-        - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
-        #
-      depends_on:
-        - zookeeper
-      networks:
-        - web-app-net
-
-   kafka-ui:
-      image: provectuslabs/kafka-ui
-      ports:
-        - 8081:8080
-      restart: on-failure
-      environment:
-        - KAFKA_CLUSTERS_0_NAME=local
-        - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-        - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
-        - KAFKA_CLUSTERS_0_READONLY=false
-      depends_on:
-        - kafka
-      networks:
-        - web-app-net
-
    webapp:
       image: event-driven-microservice-starter:1.0
       build:
@@ -101,10 +31,6 @@ services:
          app.home.logs: /home/logs
       ports:
          - 8080:8080
-      depends_on:
-         - mysql-db
-         - redis
-         - kafka
       restart: on-failure
       networks:
          - web-app-net
