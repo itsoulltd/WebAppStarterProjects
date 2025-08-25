@@ -7,6 +7,9 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +23,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -30,6 +34,8 @@ import java.util.Map;
 @EnableKafka
 @PropertySource("classpath:application-kafka.properties")
 public class KafkaConfig {
+
+    private static Logger LOG = LoggerFactory.getLogger(KafkaConfig.class);
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -77,15 +83,32 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory(
+            @Qualifier("kafkaTextTemplate") KafkaTemplate<String, String> template) {
+        //
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(getConsumerTextFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-        //based on partition config:
+
+        //Based on partition config:
         //factory.setConcurrency(5);
-        //filtering example
+
+        //Filtering example:
         //In this listener, all the messages matching the filter will be discarded.
         //factory.setRecordFilterStrategy(consumerRecord -> consumerRecord.value().contains("loc:"));
+
+        //Configuring DLT using SeekToCurrentErrorHandler (preferred-way < v.2.3):
+        factory.setErrorHandler(new SeekToCurrentErrorHandler((record, exp) -> {
+            try {
+                int partition = record.partition();
+                String dltTopic = record.topic() + ".DLT";
+                template.send(dltTopic, (String) record.key(), (String) record.value());
+                if(exp != null) LOG.error(exp.getMessage(), exp);
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }, 3)); //Retry 3 times
+
         return factory;
     }
 
@@ -118,15 +141,32 @@ public class KafkaConfig {
     //Add this to @KafkaListener(topics = {"${topic.xyz}"}, containerFactory = "messageListenerContainerFactory")
     //when using with consumerListener.
     @Bean("messageListenerContainerFactory")
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Message>> kafkaMessageListenerContainerFactory(){
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Message>> kafkaMessageListenerContainerFactory(
+            @Qualifier("kafkaMessageTemplate") KafkaTemplate<String, Message> template){
+        //
         ConcurrentKafkaListenerContainerFactory<String, Message> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(getConsumerMessageFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-        //based on partition config:
+
+        //Based on partition config:
         //factory.setConcurrency(5);
-        //filtering example
+
+        //Filtering example
         //In this listener, all the messages matching the filter will be discarded.
         //factory.setRecordFilterStrategy(consumerRecord -> consumerRecord.value().contains("loc:"));
+
+        //Configuring DLT using SeekToCurrentErrorHandler (preferred-way < v.2.3):
+        factory.setErrorHandler(new SeekToCurrentErrorHandler((record, exp) -> {
+            try {
+                int partition = record.partition();
+                String dltTopic = record.topic() + ".DLT";
+                template.send(dltTopic, (String) record.key(), (Message) record.value());
+                if(exp != null) LOG.error(exp.getMessage(), exp);
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }, 3)); //Retry 3 times
+
         return factory;
     }
 

@@ -3,10 +3,10 @@ package com.infoworks.lab.domain.beans.queue;
 import com.infoworks.lab.beans.queue.AbstractTaskQueueManager;
 import com.infoworks.lab.beans.tasks.definition.QueuedTaskLifecycleListener;
 import com.infoworks.lab.beans.tasks.definition.Task;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -33,9 +33,9 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
     }
 
     @KafkaListener(topics = {"${topic.execute}"}, concurrency = "5")
-    public void startListener(@Payload String message, Acknowledgment ack) {
+    public void startListener(ConsumerRecord<String, String> record, Acknowledgment ack) {
         // retrieve the message content
-        String text = message;
+        String text = record.value();
         logger.log(Level.INFO, "EXE-QUEUE: Message received {0} ", text);
         if (handleTextOnStart(text)){
             ack.acknowledge();
@@ -43,9 +43,9 @@ public class TaskQueueManager extends AbstractTaskQueueManager {
     }
 
     @KafkaListener(topics = {"${topic.abort}"}, concurrency = "3")
-    public void abortListener(@Payload String message, Acknowledgment ack) {
+    public void abortListener(ConsumerRecord<String, String> record, Acknowledgment ack) {
         // retrieve the message content
-        String text = message;
+        String text = record.value();
         logger.log(Level.INFO, "ABORT-QUEUE: Message received {0} ", text);
         if (handleTextOnStop(text)){
             ack.acknowledge();
