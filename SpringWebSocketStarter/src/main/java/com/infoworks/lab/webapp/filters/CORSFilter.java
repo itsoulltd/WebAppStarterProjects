@@ -1,4 +1,4 @@
-package com.infoworks.lab.webapp.config;
+package com.infoworks.lab.webapp.filters;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.GenericFilterBean;
