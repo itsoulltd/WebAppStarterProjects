@@ -11,7 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.infoworks.lab.controllers"
         , "com.infoworks.lab.services"
         , "com.infoworks.lab.domain"
-        , "com.infoworks.lab.webapp.config"})
+        , "com.infoworks.lab.webapp.config"
+        , "com.infoworks.lab.webapp.filters"})
 public class AuthAppServicesApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

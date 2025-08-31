@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.infoworks.lab.controllers"
         , "com.infoworks.lab.webapp.config"
+        , "com.infoworks.lab.webapp.filters"
         , "com.infoworks.lab.domain"
         , "com.infoworks.lab.services"})
 public class EventDrivenAppServicesApplication extends SpringBootServletInitializer {
