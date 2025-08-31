@@ -1,8 +1,9 @@
-package com.infoworks.lab.webapp.config;
+package com.infoworks.lab.webapp.filters;
 
 import com.infoworks.lab.jjwt.JWTPayload;
 import com.infoworks.lab.jjwt.JWTValidator;
 import com.infoworks.lab.jjwt.TokenValidator;
+import com.infoworks.lab.webapp.config.JWTokenValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,4 @@
-package com.infoworks.lab.webapp.config;
+package com.infoworks.lab.webapp.filters;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
