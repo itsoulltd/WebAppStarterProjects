@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Entity
 @Table(name="Users"
         , indexes = {@Index(name = "idx_username",columnList = "username")})
-public class User extends Auditable implements UserDetails {
+public class User extends Auditable<Long, Long> implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
