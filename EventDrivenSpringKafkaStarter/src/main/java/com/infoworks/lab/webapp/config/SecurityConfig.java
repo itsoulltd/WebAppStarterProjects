@@ -1,5 +1,7 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.lab.webapp.filters.AuthorizationFilter;
+import com.infoworks.lab.webapp.filters.ByPassAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
