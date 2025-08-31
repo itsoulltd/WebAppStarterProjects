@@ -1,6 +1,7 @@
 package com.infoworks.lab.webapp.config;
 
 import com.infoworks.lab.domain.repositories.UserRepository;
+import com.infoworks.lab.webapp.filters.AuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

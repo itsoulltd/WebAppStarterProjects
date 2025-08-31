@@ -9,7 +9,7 @@ import com.infoworks.lab.jwtoken.definition.TokenProvider;
 import com.infoworks.lab.jwtoken.services.JWTokenProvider;
 import com.infoworks.lab.rest.models.Response;
 import com.infoworks.lab.services.UserService;
-import com.infoworks.lab.webapp.config.AuthorizationFilter;
+import com.infoworks.lab.webapp.filters.AuthorizationFilter;
 import com.infoworks.lab.webapp.config.JWTokenValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
