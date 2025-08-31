@@ -61,7 +61,7 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable()
-                .requiresChannel().anyRequest().requiresSecure()
+                .requiresChannel().anyRequest().requiresSecure() //enables Https
                 .and()
                 .authorizeRequests()
                 .antMatchers(URL_WHITELIST).permitAll()
