@@ -48,8 +48,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests().antMatchers(URL_WHITELIST).permitAll()
                 .and()
-                //.authorizeRequests().anyRequest().authenticated() //enable to restrict all
-                .authorizeRequests().antMatchers("/**").permitAll() //enable to open all
+                .authorizeRequests().anyRequest().authenticated() //enable to restrict all
+                //.authorizeRequests().antMatchers("/**").permitAll() //enable to open all
                 .and()
                 .addFilterBefore(
                         (disableSecurity ? new ByPassAuthorizationFilter() : new AuthorizationFilter())
