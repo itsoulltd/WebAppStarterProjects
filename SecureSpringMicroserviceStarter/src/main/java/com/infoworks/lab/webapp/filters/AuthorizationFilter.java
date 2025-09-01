@@ -39,8 +39,7 @@ public class AuthorizationFilter extends GenericFilterBean {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         LOG.info("RequestURI: " + request.getRequestURI().toLowerCase());
         if(header == null || !header.startsWith(TOKEN_PREFIX.trim())) {
-            //chain.doFilter(request,response);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            chain.doFilter(request,response);
             return;
         }
         Authentication authenticationToken = getAuthentication(request);
