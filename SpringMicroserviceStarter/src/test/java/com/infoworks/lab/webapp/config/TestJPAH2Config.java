@@ -1,10 +1,12 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.lab.jsql.ExecutorType;
+import com.infoworks.lab.jsql.JsqlConfig;
+import com.it.soul.lab.sql.SQLExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -38,6 +40,18 @@ public class TestJPAH2Config {
 
     @Autowired
     private Environment env;
+
+    @Bean
+    JsqlConfig getJsqlConfig(DataSource dataSource){
+        return new JsqlConfig(dataSource);
+    }
+
+    @Bean @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    SQLExecutor executor(JsqlConfig config) throws Exception {
+        SQLExecutor exe = (SQLExecutor) config.create(ExecutorType.SQL, env.getProperty("app.db.name"));
+        System.out.println("Created DB Connections.");
+        return exe;
+    }
 
     @Bean
     public DataSource dataSource() {

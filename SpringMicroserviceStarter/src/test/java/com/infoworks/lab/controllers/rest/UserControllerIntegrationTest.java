@@ -5,7 +5,7 @@ import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.webapp.WebApplicationTest;
 import com.infoworks.lab.webapp.config.BeanConfig;
-import com.infoworks.lab.webapp.config.TestJPAConfig;
+import com.infoworks.lab.webapp.config.TestJPAH2Config;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {WebApplicationTest.class
-        , UserController.class, BeanConfig.class, TestJPAConfig.class})
-@TestPropertySource(locations = {"classpath:application.properties"
-        , "classpath:application-test.properties"
-        , "classpath:application-mysql.properties"})
+@SpringBootTest(classes = {WebApplicationTest.class, BeanConfig.class, TestJPAH2Config.class, UserController.class})
+@TestPropertySource(locations = {"classpath:application.properties", "classpath:application-test.properties"})
 public class UserControllerIntegrationTest {
 
     @Before
@@ -39,16 +36,13 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void count(){
-        //
         controller.insert(new User("Sayed The Coder", Gender.MALE, 24));
-        //
         ItemCount count = controller.rowCount();
         System.out.println(count.getCount());
     }
 
     @Test
     public void query(){
-        //
         controller.insert(new User("Sayed The Coder", Gender.MALE, 24));
         controller.insert(new User("Evan The Pankha Coder", Gender.MALE, 24));
         controller.insert(new User("Razib The Pagla", Gender.MALE, 26));
