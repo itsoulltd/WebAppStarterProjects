@@ -52,13 +52,19 @@ public class User extends Auditable<Integer, Long> {
     }
 
     public User(@NotNull(message = "Name must not be null") String name
-            , Gender sex
-            , @Min(value = 18, message = "Min Value is 18.") int age) {
+            , Gender sex, @Min(value = 18, message = "Min Value is 18.") int age) {
         this();
 	    this.name = name;
         this.sex = sex.name();
         this.age = age;
         updateDOB(age, false);
+    }
+
+    public User(@NotNull(message = "Name must not be null") String name
+            , @NotEmpty(message = "Email must not be null") String email
+            , Gender sex, @Min(value = 18, message = "Min Value is 18.") int age) {
+        this(name, sex, age);
+        this.email = email;
     }
 
     private void updateDOB(@Min(value = 18, message = "Min Value is 18.") int age, boolean isPositive) {
