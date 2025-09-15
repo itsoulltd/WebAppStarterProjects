@@ -24,6 +24,8 @@ public class SwaggerConfig {
     @Value("${server.servlet.context-path}")
     private String servletContext;
 
+    private static final String SECURITY_SCHEME_NAME = "bearerAuth";
+
     @Bean
     public OpenAPI openAPI() {
         OpenAPI apiDoc = new OpenAPI()
@@ -31,12 +33,15 @@ public class SwaggerConfig {
                         .title("My REST API")
                         .version("1.0")
                         .description("Some custom description of API."))
+                .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new Components()
-                        .addSecuritySchemes("bearerAuth", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")))
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+                        .addSecuritySchemes(SECURITY_SCHEME_NAME
+                                , new SecurityScheme()
+                                        .name(SECURITY_SCHEME_NAME)
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                                        .in(SecurityScheme.In.HEADER)));
 
         //To force HTTPS: e.g. "https://myapp.com/api/"
         apiDoc = apiDoc.servers(
