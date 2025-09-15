@@ -9,8 +9,9 @@ import com.infoworks.lab.jwtoken.definition.TokenProvider;
 import com.infoworks.lab.jwtoken.services.JWTokenProvider;
 import com.infoworks.lab.rest.models.Response;
 import com.infoworks.lab.services.UserService;
-import com.infoworks.lab.webapp.filters.AuthorizationFilter;
 import com.infoworks.lab.webapp.config.JWTokenValidator;
+import com.infoworks.lab.webapp.filters.AuthorizationFilter;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class AuthController {
 
     @GetMapping("/isValidToken")
     public ResponseEntity<String> isValid(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token
-                    , @ApiIgnore @AuthenticationPrincipal UserDetails principal){
+                    , @Parameter(hidden = true) @AuthenticationPrincipal UserDetails principal){
         Response response = new Response().setStatus(HttpStatus.OK.value())
                 .setMessage("Hello IsValidToken");
         return ResponseEntity.ok(response.toString());
@@ -64,7 +64,7 @@ public class AuthController {
 
     @GetMapping("/refreshToken")
     public ResponseEntity<String> refreshToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token
-            , @ApiIgnore @AuthenticationPrincipal UserDetails principal){
+            , @Parameter(hidden = true) @AuthenticationPrincipal UserDetails principal){
         Response response = new Response().setStatus(HttpStatus.OK.value())
                 .setMessage("Hello RefreshToken");
         return ResponseEntity.ok(response.toString());
@@ -73,7 +73,7 @@ public class AuthController {
     @PostMapping("/new/account")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ADMIN')")
     public ResponseEntity<String> newAccount(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token
-            , @ApiIgnore @AuthenticationPrincipal UserDetails principal
+            , @Parameter(hidden = true) @AuthenticationPrincipal UserDetails principal
             , @Valid @RequestBody NewAccountRequest account){
         Response response = new Response().setStatus(HttpStatus.OK.value())
                 .setMessage("Hello NewAccount");
@@ -127,7 +127,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token
-            , @ApiIgnore @AuthenticationPrincipal UserDetails principal){
+            , @Parameter(hidden = true) @AuthenticationPrincipal UserDetails principal){
         Response response = new Response().setStatus(HttpStatus.OK.value())
                 .setMessage("Hello Logout");
         return ResponseEntity.ok(response.toString());

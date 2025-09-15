@@ -55,6 +55,8 @@ public class SecurityConfig {
             , "/actuator/health"
             , "/actuator/prometheus"
             , "/h2-console/**"
+            , "/v3/api-docs/**"
+            , "/swagger-ui/**"
     };
 
     @Bean

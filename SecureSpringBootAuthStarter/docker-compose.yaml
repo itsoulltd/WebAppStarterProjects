@@ -28,6 +28,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      server.app.domain: localhost        #Or myapp.com
+      server.port.http: 8080
       app.ssl.key-store: cert.p12
       app.ssl.key-store-password: password
       app.db.name: authDB
@@ -37,7 +39,6 @@ services:
       app.db.password: root@123
       spring.profiles.active: mysql
       management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
-      server.port.http: 8080
       app.home.logs: /home/logs
     ports:
       - 8443:8443
