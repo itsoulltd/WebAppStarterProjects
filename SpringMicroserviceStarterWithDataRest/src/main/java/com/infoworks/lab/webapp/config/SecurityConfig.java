@@ -39,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             , "/actuator/health"
             , "/actuator/prometheus"
             , "/h2-console/**"
+            , "/v3/api-docs/**"
+            , "/swagger-ui/**"
     };
 
     @Value("${spring.datasource.driver-class-name}") String activeDriverClass;
