@@ -36,7 +36,6 @@ public class SwaggerConfig {
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")))
-
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
 
         //To force HTTPS: e.g. "https://myapp.com/api/"
