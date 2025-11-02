@@ -46,7 +46,7 @@ services:
         - web-app-net
 
    kafka:
-      image: bitnami/kafka:3.4.0  #kafka:3.4.0 is the last working version with zookeeper.
+      image: docker.io/bitnamilegacy/kafka:3.4.0  #kafka:3.4.0 is the last working version with zookeeper.
       ports:
         - 9092:9092
         - 9093:9093
