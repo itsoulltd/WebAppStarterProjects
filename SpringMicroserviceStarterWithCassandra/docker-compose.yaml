@@ -27,8 +27,8 @@ services:
       READ_ONLY: false
       CASSANDRA_HOST: cassandra-db
       CASSANDRA_PORT: 9042
-      #CASSANDRA_USERNAME: cassandra
-      #CASSANDRA_PASSWORD: cassandra
+      CASSANDRA_USERNAME: cassandra
+      CASSANDRA_PASSWORD: cassandra
     networks:
       - web-app-net
 
