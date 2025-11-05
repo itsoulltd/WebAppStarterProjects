@@ -35,7 +35,7 @@ services:
          - redis-inmemory-storage:/data
 
    zookeeper:
-      image: bitnami/zookeeper:latest
+      image: docker.io/bitnamilegacy/zookeeper:latest
       ports:
         - 2181:2181
       environment:
