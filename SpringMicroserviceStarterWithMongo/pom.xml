@@ -42,12 +42,18 @@
             <version>8.5.35</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+        <!-- Following driver version support until MongoDB-v7.0.25 -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.10</version>
+            <version>3.12.14</version>
         </dependency>
+        <!-- Following driver version work from MongoDB-v8.0.x -->
+        <!--<dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>[4.10.2, )</version>
+        </dependency>-->
         <!-- Spring Framework Dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
