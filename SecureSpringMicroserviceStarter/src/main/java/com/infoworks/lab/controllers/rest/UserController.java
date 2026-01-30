@@ -4,10 +4,10 @@ import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.rest.models.ItemCount;
 import com.infoworks.lab.rest.repository.RestRepository;
 import com.it.soul.lab.data.base.DataSource;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class UserController implements RestRepository<User, String> {
 
     @PutMapping
     public User update(@Valid @RequestBody User user
-            , @ApiIgnore @RequestParam(value = "name", required = false) String name){
+            , @Parameter(hidden = true) @RequestParam(value = "name", required = false) String name){
         //
         dataSource.replace(user.getName(), user);
         return user;
