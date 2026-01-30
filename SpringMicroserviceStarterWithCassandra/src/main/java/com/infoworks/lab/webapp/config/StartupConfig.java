@@ -25,6 +25,15 @@ public class StartupConfig implements CommandLineRunner {
     @Value("${cassandra.db.drop.table.onstart}")
     private boolean dropOnStart;
 
+    @Value("${server.app.domain}")
+    private String serverDomain;
+
+    @Value("${server.port}")
+    private String serverPort;
+
+    @Value("${server.servlet.context-path}")
+    private String servletContext;
+
     public StartupConfig(CQLExecutor executor) {
         this.executor = executor;
     }
@@ -41,6 +50,7 @@ public class StartupConfig implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println(String.format("http://%s:%s%s/swagger-ui/index.html", serverDomain, serverPort, servletContext));
         //Initialize Cassandra Tables from their entities:
         if (dropOnStart) {
             dropsTables(executor, User.class);

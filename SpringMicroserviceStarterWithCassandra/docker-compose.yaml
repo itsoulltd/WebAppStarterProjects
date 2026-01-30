@@ -38,6 +38,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      server.app.domain: localhost       #Or myapp.com
       cassandra.db.keyspace: cassandradb
       cassandra.db.host: cassandra-db
       cassandra.db.port: 9042

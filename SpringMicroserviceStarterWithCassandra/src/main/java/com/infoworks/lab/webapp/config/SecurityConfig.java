@@ -37,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             , "/swagger-resources/configuration/**"
             , "/actuator/health"
             , "/actuator/prometheus"
+            , "/v3/api-docs/**"
+            , "/swagger-ui/**"
     };
 
     @Override
@@ -47,8 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 //.requiresChannel().anyRequest().requiresSecure() //enable for Https
                 //.and()
-                //.authorizeRequests().anyRequest().authenticated() //enable to restrict all
-                .authorizeRequests().antMatchers("/**").permitAll() //enable to open all
+                .authorizeRequests().anyRequest().authenticated() //enable to restrict all
+                //.authorizeRequests().antMatchers("/**").permitAll() //enable to open all
                 .and()
                 .addFilterBefore(
                         (disableSecurity ? new ByPassAuthorizationFilter() : new AuthorizationFilter())
