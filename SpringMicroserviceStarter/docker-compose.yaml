@@ -28,6 +28,7 @@ services:
          context: .
          dockerfile: Dockerfile
       environment:
+         server.app.domain: localhost       #Or myapp.com
          app.db.name: testDB
          app.db.host: mysql-db
          app.db.port: 3306
