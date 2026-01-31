@@ -8,18 +8,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     @Value("${app.disable.security}")
     private boolean disableSecurity;
@@ -45,16 +44,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${spring.datasource.driver-class-name}") String activeDriverClass;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable()
-                //.requiresChannel().anyRequest().requiresSecure() //enable for Https
-                //.and()
-                //.authorizeRequests().anyRequest().authenticated() //enable to restrict all
-                .authorizeRequests().antMatchers("/**").permitAll() //enable to open all
+                .authorizeRequests().antMatchers(URL_WHITELIST).permitAll()
+                .and()
+                .authorizeRequests().anyRequest().authenticated() //enable to restrict all
+                //.authorizeRequests().antMatchers("/**").permitAll() //enable to open all
                 .and()
                 .addFilterBefore(
                         (disableSecurity ? new ByPassAuthorizationFilter() : new AuthorizationFilter())
@@ -63,11 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         if (activeDriverClass.equalsIgnoreCase(DriverClass.H2_EMBEDDED.toString())){
             http.headers().frameOptions().disable();
         }
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(URL_WHITELIST);
+        return http.build();
     }
 
 }
