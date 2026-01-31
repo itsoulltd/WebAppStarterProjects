@@ -75,7 +75,7 @@ public class MessagingController {
         //Simple try with SimpSessionID:
         final String ssID = sessionID;
 
-        //Start a long running job
+        //Start a long-running job
         exeService.submit(() -> {
             System.out.println("Job Started for " + ssID);
             try {
