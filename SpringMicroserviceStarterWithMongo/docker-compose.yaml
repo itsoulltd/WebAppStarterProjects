@@ -49,6 +49,7 @@ services:
        context: .
        dockerfile: Dockerfile
      environment:
+       server.app.domain: localhost       #Or myapp.com
        mongo.db.name: testDB
        mongo.db.host: mongo-db
        mongo.db.port: 27017
