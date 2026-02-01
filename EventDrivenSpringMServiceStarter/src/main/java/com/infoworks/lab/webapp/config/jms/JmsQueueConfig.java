@@ -9,7 +9,7 @@ import org.springframework.core.env.Environment;
 import javax.jms.Queue;
 
 @Configuration
-@PropertySource("classpath:jms.properties")
+@PropertySource("classpath:application-jms.properties")
 public class JmsQueueConfig {
 
     public Environment env;

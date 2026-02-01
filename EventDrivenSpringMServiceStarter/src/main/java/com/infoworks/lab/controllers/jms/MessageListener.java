@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-@PropertySource("classpath:jms.properties")
+@PropertySource("classpath:application-jms.properties")
 public class MessageListener {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
