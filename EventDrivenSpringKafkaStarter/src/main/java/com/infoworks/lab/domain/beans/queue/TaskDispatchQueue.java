@@ -1,22 +1,26 @@
 package com.infoworks.lab.domain.beans.queue;
 
-import com.infoworks.lab.beans.queue.AbstractTaskQueue;
-import com.infoworks.lab.beans.queue.JmsMessage;
-import com.infoworks.lab.beans.tasks.definition.Task;
-import com.infoworks.lab.beans.tasks.definition.TaskQueue;
-import com.infoworks.lab.rest.models.Message;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infoworks.objects.Message;
+import com.infoworks.tasks.Task;
+import com.infoworks.tasks.queue.TaskQueue;
+import com.infoworks.utils.jmsq.AbstractJmsQueue;
+import com.infoworks.utils.jmsq.JmsMessage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component("taskDispatchQueue")
-public class TaskDispatchQueue extends AbstractTaskQueue {
+public class TaskDispatchQueue extends AbstractJmsQueue {
 
     private KafkaTemplate<String, String> kafkaTemplate;
+    private ObjectMapper objectMapper;
 
-    public TaskDispatchQueue(@Qualifier("kafkaTextTemplate") KafkaTemplate kafkaTemplate) {
+    public TaskDispatchQueue(@Qualifier("kafkaTextTemplate") KafkaTemplate kafkaTemplate
+            , ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Value("${topic.execute}")
@@ -44,6 +48,16 @@ public class TaskDispatchQueue extends AbstractTaskQueue {
     public TaskQueue cancel(Task task) {
         //TODO:
         return this;
+    }
+
+    @Override
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    @Override
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
 }

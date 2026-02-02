@@ -1,6 +1,6 @@
 package com.infoworks.lab.webapp.config.kafka;
 
-import com.infoworks.lab.rest.models.Message;
+import com.infoworks.objects.Message;
 import kafka.utils.ZKStringSerializer$;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

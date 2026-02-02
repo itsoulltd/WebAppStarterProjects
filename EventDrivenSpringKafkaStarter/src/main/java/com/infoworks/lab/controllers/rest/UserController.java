@@ -1,9 +1,9 @@
 package com.infoworks.lab.controllers.rest;
 
-import com.infoworks.lab.cache.MemCache;
+import com.infoworks.data.cache.MemCache;
 import com.infoworks.lab.domain.entities.User;
-import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.rest.repository.RestRepository;
+import com.infoworks.lab.domain.models.ItemCount;
+import com.infoworks.lab.domain.repositories.RestRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -26,6 +26,7 @@ public class UserController implements RestRepository<User, String> {
     public ItemCount rowCount(){
         ItemCount count = new ItemCount();
         count.setCount(Integer.valueOf(dataSource.size()).longValue());
+        count.setStatus(200);
         return count;
     }
 

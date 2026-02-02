@@ -1,7 +1,6 @@
 package com.infoworks.lab.services;
 
-import com.infoworks.lab.cache.MemCache;
-import com.infoworks.lab.datasources.RedissonDataSource;
+import com.infoworks.data.cache.MemCache;
 import com.infoworks.lab.domain.entities.User;
 import org.redisson.api.RKeys;
 import org.redisson.api.RedissonClient;

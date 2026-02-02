@@ -1,7 +1,7 @@
 package com.infoworks.lab.domain.beans.tasks.mocks;
 
-import com.infoworks.lab.beans.tasks.nuts.AbstractTask;
-import com.infoworks.lab.rest.models.Message;
+import com.infoworks.objects.Message;
+import com.infoworks.tasks.AbstractTask;
 
 import java.util.Random;
 import java.util.logging.Logger;
