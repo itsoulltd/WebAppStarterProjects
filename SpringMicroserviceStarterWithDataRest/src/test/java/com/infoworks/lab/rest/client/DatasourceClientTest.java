@@ -1,12 +1,11 @@
 package com.infoworks.lab.rest.client;
 
-import com.infoworks.lab.client.data.rest.Any;
-import com.infoworks.lab.client.data.rest.Links;
-import com.infoworks.lab.client.data.rest.Page;
-import com.infoworks.lab.client.data.rest.PaginatedResponse;
-import com.infoworks.lab.client.spring.DataRestClient;
 import com.infoworks.lab.domain.entities.Gender;
-import com.infoworks.lab.rest.models.QueryParam;
+import com.infoworks.orm.Property;
+import com.infoworks.utils.rest.data.model.Any;
+import com.infoworks.utils.rest.data.model.Links;
+import com.infoworks.utils.rest.data.model.Page;
+import com.infoworks.utils.rest.data.model.PaginatedResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -280,7 +279,7 @@ public class DatasourceClientTest {
         dataSource.load();
         //
         Optional<List<User>> users = dataSource.search("findByAgeLimit"
-                , new QueryParam("min", "18"), new QueryParam("max", "29"));
+                , new Property("min", "18"), new Property("max", "29"));
         Assert.assertTrue(users.isPresent());
         //Close:
         dataSource.close();
@@ -292,7 +291,7 @@ public class DatasourceClientTest {
         SearchClient<User> dataSource = new SearchClient<>(User.class, url);
         dataSource.load();
         //
-        Optional<List<User>> users = dataSource.search("/findByName", new QueryParam("name", "Soha"));
+        Optional<List<User>> users = dataSource.search("/findByName", new Property("name", "Soha"));
         Assert.assertTrue(users.isPresent());
         //Close:
         dataSource.close();
@@ -384,7 +383,7 @@ public class DatasourceClientTest {
         }
 
         @Override
-        public void unmarshallingFromMap(Map<String, Object> data, boolean inherit) {
+        public void unmarshalling(Map<String, Object> data, boolean inherit) {
             Object dob = data.get("dob");
             if (dob != null) {
                 try {
@@ -395,7 +394,7 @@ public class DatasourceClientTest {
                     System.out.println(e.getMessage());
                 }
             }
-            super.unmarshallingFromMap(data, inherit);
+            super.unmarshalling(data, inherit);
         }
     }
 

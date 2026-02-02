@@ -1,8 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.jsql.ExecutorType;
-import com.infoworks.lab.jsql.JsqlConfig;
-import com.it.soul.lab.sql.SQLExecutor;
+import com.infoworks.sql.executor.SQLExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -44,14 +42,9 @@ public class TestJPAConfig {
     @Value("${app.db.name}")
     String persistenceUnitName;
 
-    @Bean
-    JsqlConfig getJsqlConfig(DataSource dataSource){
-        return new JsqlConfig(dataSource);
-    }
-
     @Bean @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
-    SQLExecutor executor(JsqlConfig config) throws Exception {
-        SQLExecutor exe = (SQLExecutor) config.create(ExecutorType.SQL, env.getProperty("app.db.name"));
+    SQLExecutor executor(DataSource dataSource) throws Exception {
+        SQLExecutor exe = new SQLExecutor(dataSource.getConnection());
         System.out.println("Created DB Connections.");
         return exe;
     }

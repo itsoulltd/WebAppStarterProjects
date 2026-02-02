@@ -1,14 +1,15 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.jjwt.JWTHeader;
-import com.infoworks.lab.jjwt.JWTPayload;
-import com.infoworks.lab.jjwt.JWTValidator;
-import com.infoworks.lab.jwtoken.definition.TokenProvider;
-import com.infoworks.lab.jwtoken.services.JWTokenProvider;
+import com.infoworks.utils.jwt.TokenProvider;
+import com.infoworks.utils.jwt.impl.JWebToken;
+import com.infoworks.utils.jwt.models.JWTHeader;
+import com.infoworks.utils.jwt.models.JWTPayload;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class JWTokenValidatorTest {
 
@@ -17,17 +18,14 @@ public class JWTokenValidatorTest {
         JWTPayload payload = new JWTPayload().setSub("userName")
                 .setIss("userName")
                 .setIat(new Date().getTime())
-                .setExp(TokenProvider.defaultTokenTimeToLive().getTimeInMillis())
+                .setExp(TokenProvider.timeToLive(Duration.ofHours(1), TimeUnit.HOURS).getTimeInMillis())
                 .addData("/new/account","false")
                 .addData("/isValidToken","true");
         //
-        TokenProvider token = new JWTokenProvider("SecretKeyToGenJWTs")
-                .setPayload(payload)
-                .setHeader(new JWTHeader().setTyp("round").setKid("112223344"));
+        TokenProvider token = new JWebToken();
+        String tokenKey = token.generateToken("SecretKeyToGenJWTs", new JWTHeader().setTyp("round").setKid("112223344"), payload);
         //
-        String tokenKey = token.generateToken(TokenProvider.defaultTokenTimeToLive());
-        //
-        JWTValidator validator = new JWTokenValidator(null);
+        TokenProvider validator = new JWTokenValidator(null);
         boolean isTrue = validator.isValid(tokenKey, "SecretKeyToGenJWTs");
         Assert.assertTrue(isTrue);
     }
@@ -36,7 +34,7 @@ public class JWTokenValidatorTest {
     public void testStatic(){
         String tokenKey = "eyJraWQiOiJGUjRjT29IRURCIiwidHlwIjoicm91bmQiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MTQyMjY4MDYwNjUsIm5iZiI6MCwiZXhwIjoxNjE0MjMwNDA2MDY2LCJpc3MiOiJ0b3doaWQiLCJzdWIiOiJ0b3doaWQiLCJkYXRhIjp7Ii9pc1ZhbGlkVG9rZW4iOiJ0cnVlIiwiL25ldy9hY2NvdW50IjoiZmFsc2UifX0.xBhg59ndI1WB_xJ9llhyFDWJsq73ddBdyP_oHlD8rR3jyblaA35TR7IsYkIwb163M_tui_SEwX52JSIPgYtbnA";
         //
-        JWTValidator validator = new JWTokenValidator(null);
+        TokenProvider validator = new JWTokenValidator(null);
         boolean isTrue = validator.isValid(tokenKey, "SecretKeyToGenJWTs");
         Assert.assertTrue(isTrue);
     }

@@ -1,10 +1,9 @@
 package com.infoworks.lab.rest.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.infoworks.lab.rest.models.Message;
+import com.infoworks.objects.MessageParser;
 import org.junit.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.client.RootUriTemplateHandler;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -242,7 +241,7 @@ public class RestTemplateClient {
         System.out.println("POST: \n" + result);
 
         //Parse:
-        Map<String, Object> dataMap = Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
+        Map<String, Object> dataMap = MessageParser.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
         System.out.println("");
         Map link = (Map) dataMap.get("_links");
         Map users = (Map) link.get("self");

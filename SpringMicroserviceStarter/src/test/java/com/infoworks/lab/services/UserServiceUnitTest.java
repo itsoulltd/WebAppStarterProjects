@@ -49,7 +49,7 @@ public class UserServiceUnitTest {
         User newUser = service.read("Sayed The Awesome Coder");
         assertNotNull(newUser);
         assertNotNull(newUser.getId());
-        System.out.println(newUser.marshallingToMap(true));
+        System.out.println(newUser.marshalling(true));
     }
 
     @Test

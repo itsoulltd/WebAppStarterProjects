@@ -1,11 +1,10 @@
 package com.infoworks.lab.rest.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.infoworks.lab.client.data.rest.Any;
-import com.infoworks.lab.client.data.rest.PaginatedResponse;
-import com.infoworks.lab.client.spring.DataRestClient;
-import com.infoworks.lab.rest.models.Message;
-import com.infoworks.lab.rest.models.QueryParam;
+import com.infoworks.objects.MessageParser;
+import com.infoworks.orm.Property;
+import com.infoworks.utils.rest.data.model.Any;
+import com.infoworks.utils.rest.data.model.PaginatedResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 
@@ -28,7 +27,7 @@ public class SearchClient<A extends Any> extends DataRestClient<A> {
         super(type, baseUrl);
     }
 
-    public Optional<List<A>> search(String function, QueryParam... params) {
+    public Optional<List<A>> search(String function, Property... params) {
         if (Objects.isNull(function) || function.isEmpty()) return Optional.ofNullable(null);
         if (function.startsWith("/")) function = function.replaceFirst("/", "");
         PaginatedResponse response = load();
@@ -40,7 +39,7 @@ public class SearchClient<A extends Any> extends DataRestClient<A> {
             String result = exchange(HttpMethod.GET, entity, searchUrl);
             try {
                 Map<String, Object> dataMap =
-                        Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
+                        MessageParser.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
                 List<A> items = parsePageItems(dataMap);
                 return Optional.ofNullable(items);
             } catch (IOException e) {}
@@ -60,7 +59,7 @@ public class SearchClient<A extends Any> extends DataRestClient<A> {
             String result = exchange(HttpMethod.GET, entity, searchUrl);
             try {
                 Map<String, Object> dataMap =
-                        Message.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
+                        MessageParser.unmarshal(new TypeReference<Map<String, Object>>() {}, result);
                 //outcome
                 Object data = dataMap.get("_links");
                 if (data != null && data instanceof Map) {
@@ -72,14 +71,14 @@ public class SearchClient<A extends Any> extends DataRestClient<A> {
         return outcome;
     }
 
-    public String encodedQueryParams(QueryParam... params) {
+    public String encodedQueryParams(Property... params) {
         StringBuilder buffer = new StringBuilder("?");
-        for (QueryParam query : params) {
-            if (query.getValue() == null || query.getValue().isEmpty()) continue;
+        for (Property query : params) {
+            if (query.getValue() == null || query.getValue().toString().isEmpty()) continue;
             try {
                 buffer.append(query.getKey()
                         + "="
-                        + URLEncoder.encode(query.getValue(), "UTF-8")
+                        + URLEncoder.encode(query.getValue().toString(), "UTF-8")
                         + "&");
             } catch (UnsupportedEncodingException e) {
             }
