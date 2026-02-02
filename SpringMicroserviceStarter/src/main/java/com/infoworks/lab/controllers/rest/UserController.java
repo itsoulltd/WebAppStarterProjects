@@ -1,11 +1,11 @@
 package com.infoworks.lab.controllers.rest;
 
+import com.infoworks.data.base.iDataSource;
 import com.infoworks.lab.domain.entities.User;
-import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.rest.models.SearchQuery;
-import com.infoworks.lab.rest.repository.RestRepository;
-import com.it.soul.lab.data.base.DataSource;
-import com.it.soul.lab.sql.QueryExecutor;
+import com.infoworks.lab.domain.models.ItemCount;
+import com.infoworks.lab.domain.repositories.RestRepository;
+import com.infoworks.sql.executor.QueryExecutor;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,10 +28,10 @@ public class UserController implements RestRepository<User, String> {
     @Resource(name = "executor")
     private QueryExecutor executor;
 
-    private DataSource<String, User> dataSource;
+    private iDataSource<String, User> dataSource;
 
     @Autowired
-    public UserController(@Qualifier("userService") DataSource<String, User> dataSource) {
+    public UserController(@Qualifier("userService") iDataSource<String, User> dataSource) {
         this.dataSource = dataSource;
     }
 

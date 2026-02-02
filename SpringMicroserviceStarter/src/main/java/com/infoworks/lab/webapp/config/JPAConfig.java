@@ -1,9 +1,7 @@
 package com.infoworks.lab.webapp.config;
 
 import com.infoworks.lab.domain.entities.Username;
-import com.infoworks.lab.jsql.ExecutorType;
-import com.infoworks.lab.jsql.JsqlConfig;
-import com.it.soul.lab.sql.SQLExecutor;
+import com.infoworks.sql.executor.SQLExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +44,6 @@ public class JPAConfig {
         this.env = env;
     }
 
-    @Bean
-    JsqlConfig getJsqlConfig(DataSource dataSource){
-        return new JsqlConfig(dataSource);
-    }
-
     @Bean("AppDBNameKey")
     String appDBNameKey(){
         return env.getProperty("app.db.name");
@@ -59,8 +52,8 @@ public class JPAConfig {
     @Bean
     @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     //Since SQLExecutor is a WebApplicationContext.SCOPE_REQUEST Variable, it will automatically close connection when garbage-collected.
-    public SQLExecutor executor(JsqlConfig config) throws Exception {
-        SQLExecutor exe = (SQLExecutor) config.create(ExecutorType.SQL, env.getProperty("app.db.name"));
+    public SQLExecutor executor(DataSource dataSource) throws Exception {
+        SQLExecutor exe = new SQLExecutor(dataSource.getConnection());
         LOG.info("Executor-Connection Has been Created.");
         return exe;
     }

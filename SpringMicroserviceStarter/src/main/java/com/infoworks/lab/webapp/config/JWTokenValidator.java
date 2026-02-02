@@ -1,8 +1,8 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.jjwt.JWTHeader;
-import com.infoworks.lab.jjwt.JWTValidator;
-import com.infoworks.lab.jjwt.TokenValidator;
+import com.infoworks.utils.jwt.TokenProvider;
+import com.infoworks.utils.jwt.impl.JWebToken;
+import com.infoworks.utils.jwt.models.JWTHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode=ScopedProxyMode.TARGET_CLASS)
-public class JWTokenValidator extends JWTValidator {
+public class JWTokenValidator extends JWebToken {
 
     private HttpServletRequest request;
 
@@ -49,25 +49,23 @@ public class JWTokenValidator extends JWTValidator {
     }
 
     @Override
-    protected String getSecret(JWTHeader header, String... args) throws Exception {
+    protected String getSecret(JWTHeader header, String... args) {
         String secret = getSecretKeyMap().get(header.getKid());
         return secret != null ? secret : super.getSecret(header, args);
     }
 
-    @Override
     public String getUserID(String token, String... args) {
         if (token == null || token.isEmpty()){
-            token = TokenValidator.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
+            token = TokenProvider.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
         }
-        return super.getUserID(token, args);
+        return token;
     }
 
-    @Override
     public String getIssuer(String token, String... args) {
         if (token == null || token.isEmpty()){
-            token = TokenValidator.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
+            token = TokenProvider.parseToken(getHeaderValue(HttpHeaders.AUTHORIZATION), "Bearer ");
         }
-        return super.getIssuer(token, args);
+        return token;
     }
 
 }

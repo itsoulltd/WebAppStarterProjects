@@ -2,7 +2,7 @@ package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.domain.entities.Gender;
 import com.infoworks.lab.domain.entities.User;
-import com.infoworks.lab.rest.models.ItemCount;
+import com.infoworks.lab.domain.models.ItemCount;
 import com.infoworks.lab.webapp.WebApplicationTest;
 import com.infoworks.lab.webapp.config.BeanConfig;
 import com.infoworks.lab.webapp.config.TestJPAH2Config;
