@@ -1,15 +1,12 @@
 package com.infoworks.lab.domain.entities;
 
+import com.infoworks.entity.PrimaryKey;
+import com.infoworks.entity.TableName;
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
-import com.infoworks.lab.rest.validation.Email.EmailPattern;
-import com.it.soul.lab.sql.entity.Ignore;
-import com.it.soul.lab.sql.entity.PrimaryKey;
-import com.it.soul.lab.sql.entity.TableName;
+import com.infoworks.objects.Ignore;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -27,9 +24,15 @@ public class User extends Auditable<Integer, Long> {
     private String name;
 
     @NotEmpty
-    @EmailPattern(message = "Invalid Email Address!")
+    @Email(message = "Please enter valid Email address!")
     @Column(length = 250, unique = true, nullable = false)
     private String email = "";
+
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    private String password;
+
+    @Pattern(regexp = "\\+?[0-9\\-\\s]{7,20}", message = "Invalid phone number")
+    private String contact;
 
     @IsValidGender
     private String sex = Gender.NONE.name();
@@ -37,9 +40,8 @@ public class User extends Auditable<Integer, Long> {
     @Min(value = 18, message = "age min Value is 18.")
 	private int age = 18;
 
-
 	//@NotNull(message = "dob Must Not Null")
-	//@Past(message = "Date Of Birth Must Be Greater Then Now")
+	//@Past(message = "Date Of Birth must be greater-then now!")
     private Date dob = new java.sql.Date(new Date().getTime());
 
 	private boolean active;
@@ -52,13 +54,19 @@ public class User extends Auditable<Integer, Long> {
     }
 
     public User(@NotNull(message = "Name must not be null") String name
-            , Gender sex
-            , @Min(value = 18, message = "Min Value is 18.") int age) {
+            , Gender sex, @Min(value = 18, message = "Min Value is 18.") int age) {
         this();
 	    this.name = name;
         this.sex = sex.name();
         this.age = age;
         updateDOB(age, false);
+    }
+
+    public User(@NotNull(message = "Name must not be null") String name
+            , @NotEmpty(message = "Email must not be null") String email
+            , Gender sex, @Min(value = 18, message = "Min Value is 18.") int age) {
+        this(name, sex, age);
+        this.email = email;
     }
 
     private void updateDOB(@Min(value = 18, message = "Min Value is 18.") int age, boolean isPositive) {
@@ -118,6 +126,22 @@ public class User extends Auditable<Integer, Long> {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     @Override

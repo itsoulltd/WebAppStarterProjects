@@ -1,15 +1,19 @@
 package com.infoworks.lab.controllers.rest;
 
+import com.infoworks.data.base.iDataSource;
 import com.infoworks.lab.domain.entities.User;
-import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.rest.repository.RestRepository;
-import com.it.soul.lab.data.base.DataSource;
+import com.infoworks.lab.domain.models.ItemCount;
+import com.infoworks.lab.domain.repositories.RestRepository;
+import com.infoworks.sql.executor.QueryExecutor;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,10 +21,17 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController implements RestRepository<User, String> {
 
-    private DataSource<String, User> dataSource;
+    /**
+     * Example of inject @Scope beans.
+     * e.g. @RequestScope bean SQLExecutor to do JDBC-Calls to database.
+     */
+    @Resource(name = "executor")
+    private QueryExecutor executor;
+
+    private iDataSource<String, User> dataSource;
 
     @Autowired
-    public UserController(@Qualifier("userService") DataSource<String, User> dataSource) {
+    public UserController(@Qualifier("userService") iDataSource<String, User> dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -72,6 +83,25 @@ public class UserController implements RestRepository<User, String> {
     @Override
     public Class<User> getEntityType() {
         return User.class;
+    }
+
+    @PostMapping("/search")
+    public List<User> search(@RequestBody SearchQuery query) {
+        //
+        int limit = query.getSize();
+        if (limit <= 0) limit = 10;
+        List<User> users = null;
+        try {
+            users = User.read(User.class
+                    , executor
+                    , query.getPredicate());
+        } catch (Exception e) {}
+        //
+        limit = users.size() > limit ? limit : users.size();
+        users = (users != null && users.size() > 0)
+                ? users.subList(0, limit)
+                : new ArrayList<>();
+        return users;
     }
 
 }

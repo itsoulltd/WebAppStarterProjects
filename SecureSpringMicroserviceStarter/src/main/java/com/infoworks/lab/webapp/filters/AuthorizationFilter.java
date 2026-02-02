@@ -1,9 +1,8 @@
 package com.infoworks.lab.webapp.filters;
 
-import com.infoworks.lab.jjwt.JWTPayload;
-import com.infoworks.lab.jjwt.JWTValidator;
-import com.infoworks.lab.jjwt.TokenValidator;
 import com.infoworks.lab.webapp.config.JWTokenValidator;
+import com.infoworks.utils.jwt.TokenProvider;
+import com.infoworks.utils.jwt.models.JWTPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -56,10 +55,10 @@ public class AuthorizationFilter extends GenericFilterBean {
         if(token != null){
             token = token.replace(TOKEN_PREFIX.trim(),"").trim();
             try {
-                JWTValidator validator = new JWTokenValidator(request);
+                TokenProvider validator = new JWTokenValidator(request);
                 boolean isTrue = validator.isValid(token);
                 if(isTrue) {
-                    JWTPayload payload = TokenValidator.parsePayload(token, JWTPayload.class);
+                    JWTPayload payload = TokenProvider.parsePayload(token, JWTPayload.class);
                     Object authoritiesClaim = (payload.getData() == null)
                             ? null
                             : payload.getData().get(AUTHORITIES_KEY);
