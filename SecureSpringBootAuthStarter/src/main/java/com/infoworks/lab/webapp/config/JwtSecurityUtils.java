@@ -1,8 +1,8 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.jjwt.JWTPayload;
-import com.infoworks.lab.jjwt.TokenValidator;
-import com.it.soul.lab.sql.query.models.Property;
+import com.infoworks.orm.Property;
+import com.infoworks.utils.jwt.TokenProvider;
+import com.infoworks.utils.jwt.models.JWTPayload;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -15,7 +15,7 @@ public final class JwtSecurityUtils {
         Optional<Object> optToken = Optional.ofNullable(tokenObj);
         if (optToken.isPresent()) {
             String token = optToken.get().toString();
-            JWTPayload payload = TokenValidator.parsePayload(token, JWTPayload.class);
+            JWTPayload payload = TokenProvider.parsePayload(token, JWTPayload.class);
             String userHasRoles = payload.getData().get(roleKey.getKey());
             if (userHasRoles == null || userHasRoles.isEmpty()) return false;
             final String userHasRolesUP = userHasRoles.toUpperCase();

@@ -1,6 +1,6 @@
 package com.infoworks.lab.webapp.config;
 
-import com.infoworks.lab.util.services.iResourceService;
+import com.infoworks.utils.services.iResources;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfig {
 
     @Bean
-    public iResourceService getResourceService(){
-        return iResourceService.create();
+    public iResources getResourceService(){
+        return iResources.create();
     }
 
 }

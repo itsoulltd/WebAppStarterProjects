@@ -1,15 +1,14 @@
 package com.infoworks.lab.services;
 
+import com.infoworks.data.impl.SimpleDataSource;
 import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.domain.repositories.UserRepository;
-import com.it.soul.lab.data.simple.SimpleDataSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
-@Service
+@Service("userService")
 public class UserService extends SimpleDataSource<String, User> {
 
     private UserRepository repository;
@@ -45,7 +44,7 @@ public class UserService extends SimpleDataSource<String, User> {
         User existing = read(key);
         if (existing != null && user != null) {
             user.setUsername(existing.getUsername());
-            existing.unmarshallingFromMap(user.marshallingToMap(true), true);
+            existing.unmarshalling(user.marshalling(true), true);
             repository.save(existing);
         }
         return existing;

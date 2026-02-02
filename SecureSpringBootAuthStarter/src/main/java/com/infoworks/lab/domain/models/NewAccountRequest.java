@@ -1,9 +1,9 @@
 package com.infoworks.lab.domain.models;
 
-import com.infoworks.lab.rest.models.Message;
-import com.infoworks.lab.rest.validation.Email.EmailPattern;
-import com.infoworks.lab.rest.validation.Password.PasswordRule;
+import com.infoworks.lab.domain.validations.Password.PasswordRule;
+import com.infoworks.objects.Message;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 public class NewAccountRequest extends Message {
@@ -11,11 +11,11 @@ public class NewAccountRequest extends Message {
     @NotEmpty(message = "Username must not null or empty!")
     private String username;
 
-    @PasswordRule(mixLengthRule = 3, maxLengthRule = 8)
+    @PasswordRule(minLengthRule = 3, maxLengthRule = 8)
     @NotEmpty(message = "Password must not null or empty!")
     private String password;
 
-    @EmailPattern(nullable = true, message = "invalid email address")
+    @Email(message = "Invalid email address")
     private String email;
 
     private String mobile;

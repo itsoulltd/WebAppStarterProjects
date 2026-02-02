@@ -3,14 +3,14 @@ package com.infoworks.lab.controllers.rest;
 import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.domain.models.LoginRequest;
 import com.infoworks.lab.domain.models.NewAccountRequest;
-import com.infoworks.lab.jjwt.JWTHeader;
-import com.infoworks.lab.jjwt.JWTPayload;
-import com.infoworks.lab.jwtoken.definition.TokenProvider;
-import com.infoworks.lab.jwtoken.services.JWTokenProvider;
-import com.infoworks.lab.rest.models.Response;
 import com.infoworks.lab.services.UserService;
 import com.infoworks.lab.webapp.config.JWTokenValidator;
 import com.infoworks.lab.webapp.filters.AuthorizationFilter;
+import com.infoworks.objects.Response;
+import com.infoworks.utils.jwt.TokenProvider;
+import com.infoworks.utils.jwt.impl.JWebToken;
+import com.infoworks.utils.jwt.models.JWTHeader;
+import com.infoworks.utils.jwt.models.JWTPayload;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +24,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/v1")
@@ -110,16 +112,14 @@ public class AuthController {
         JWTPayload payload = new JWTPayload().setSub(request.getUsername())
                 .setIss(request.getUsername())
                 .setIat(new Date().getTime())
-                .setExp(TokenProvider.defaultTokenTimeToLive().getTimeInMillis())
+                .setExp(TokenProvider.timeToLive(Duration.ofHours(1), TimeUnit.HOURS).getTimeInMillis())
                 .addData(AuthorizationFilter.AUTHORITIES_KEY, userRole)
                 .addData("/new/account","false")
                 .addData("/isValidToken","true");
         //
-        TokenProvider token = new JWTokenProvider(secret)
-                .setHeader(header)
-                .setPayload(payload);
+        TokenProvider token = new JWebToken();
         //
-        String tokenKey = token.generateToken(TokenProvider.defaultTokenTimeToLive());
+        String tokenKey = token.generateToken(secret, header, payload);
         LOG.info(tokenKey);
         response.setMessage(tokenKey);
         return ResponseEntity.ok(response.toString());
