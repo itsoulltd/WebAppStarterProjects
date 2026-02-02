@@ -1,10 +1,11 @@
 package com.infoworks.lab.domain.beans.queue;
 
-import com.infoworks.lab.beans.queue.AbstractTaskQueue;
-import com.infoworks.lab.beans.queue.JmsMessage;
-import com.infoworks.lab.beans.tasks.definition.Task;
-import com.infoworks.lab.beans.tasks.definition.TaskQueue;
-import com.infoworks.lab.rest.models.Message;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infoworks.objects.Message;
+import com.infoworks.tasks.Task;
+import com.infoworks.tasks.queue.TaskQueue;
+import com.infoworks.utils.jmsq.AbstractJmsQueue;
+import com.infoworks.utils.jmsq.JmsMessage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -12,18 +13,21 @@ import org.springframework.stereotype.Component;
 import javax.jms.Queue;
 
 @Component("taskDispatchQueue")
-public class TaskDispatchQueue extends AbstractTaskQueue {
+public class TaskDispatchQueue extends AbstractJmsQueue {
 
     private Queue exeQueue;
     private Queue abortQueue;
     private JmsTemplate jmsTemplate;
+    private ObjectMapper objectMapper;
 
     public TaskDispatchQueue(@Qualifier("exeQueue") Queue exeQueue
             , @Qualifier("abortQueue") Queue abortQueue
-            , JmsTemplate jmsTemplate) {
+            , JmsTemplate jmsTemplate
+            , ObjectMapper objectMapper) {
         this.exeQueue = exeQueue;
         this.abortQueue = abortQueue;
         this.jmsTemplate = jmsTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -47,4 +51,13 @@ public class TaskDispatchQueue extends AbstractTaskQueue {
         return this;
     }
 
+    @Override
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    @Override
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 }

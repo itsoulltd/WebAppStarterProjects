@@ -1,10 +1,10 @@
 package com.infoworks.lab.domain.entities;
 
+import com.infoworks.entity.PrimaryKey;
+import com.infoworks.entity.TableName;
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
-import com.it.soul.lab.sql.entity.Entity;
-import com.it.soul.lab.sql.entity.Ignore;
-import com.it.soul.lab.sql.entity.PrimaryKey;
-import com.it.soul.lab.sql.entity.TableName;
+import com.infoworks.objects.Ignore;
+import com.infoworks.objects.Message;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @TableName(value = "User")
-public class User extends Entity {
+public class User extends Message {
 
 	@PrimaryKey(name="id", auto=true)
 	private Integer id;
@@ -29,7 +29,7 @@ public class User extends Entity {
 
 
 	//@NotNull(message = "dob Must Not Null")
-	//@Past(message = "Date Of Birth Must Be Greater Then Now")
+	//@Past(message = "Date Of Birth must be greater-then now")
 	private Date dob = new java.sql.Date(new Date().getTime());
 
 	private boolean active;

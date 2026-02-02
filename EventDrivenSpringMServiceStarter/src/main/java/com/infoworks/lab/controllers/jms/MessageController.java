@@ -1,10 +1,10 @@
 package com.infoworks.lab.controllers.jms;
 
-import com.infoworks.lab.beans.tasks.definition.Task;
-import com.infoworks.lab.beans.tasks.definition.TaskQueue;
 import com.infoworks.lab.domain.beans.tasks.mocks.AbortTask;
 import com.infoworks.lab.domain.beans.tasks.mocks.ConsolePrintTask;
-import com.infoworks.lab.rest.models.Message;
+import com.infoworks.objects.Message;
+import com.infoworks.tasks.Task;
+import com.infoworks.tasks.queue.TaskQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;

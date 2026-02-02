@@ -1,8 +1,8 @@
 package com.infoworks.lab.domain.beans.queue;
 
-import com.infoworks.lab.beans.queue.AbstractTaskQueueManager;
-import com.infoworks.lab.beans.tasks.definition.QueuedTaskLifecycleListener;
-import com.infoworks.lab.beans.tasks.definition.Task;
+import com.infoworks.tasks.Task;
+import com.infoworks.tasks.queue.QueuedTaskStateListener;
+import com.infoworks.utils.jmsq.AbstractJmsQueueManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -15,11 +15,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-public class TaskQueueManager extends AbstractTaskQueueManager {
+public class TaskQueueManager extends AbstractJmsQueueManager {
 
     private static final Logger logger = Logger.getLogger("TaskQueueManager");
 
-    public TaskQueueManager(@Qualifier("taskDispatchQueue") QueuedTaskLifecycleListener listener) {
+    public TaskQueueManager(@Qualifier("taskDispatchQueue") QueuedTaskStateListener listener) {
         super(listener);
     }
 
