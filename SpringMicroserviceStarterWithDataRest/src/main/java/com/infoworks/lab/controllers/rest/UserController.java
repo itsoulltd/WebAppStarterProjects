@@ -1,9 +1,9 @@
 package com.infoworks.lab.controllers.rest;
 
+import com.infoworks.data.base.iDataSource;
 import com.infoworks.lab.domain.entities.User;
-import com.infoworks.lab.rest.models.SearchQuery;
-import com.it.soul.lab.data.base.DataSource;
-import com.it.soul.lab.sql.QueryExecutor;
+import com.infoworks.sql.executor.QueryExecutor;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +26,10 @@ public class UserController {
     @Resource(name = "executor")
     private QueryExecutor executor;
 
-    private DataSource<String, User> dataSource;
+    private iDataSource<String, User> dataSource;
 
     @Autowired
-    public UserController(@Qualifier("userService") DataSource<String, User> dataSource) {
+    public UserController(@Qualifier("userService") iDataSource<String, User> dataSource) {
         this.dataSource = dataSource;
     }
 

@@ -1,8 +1,8 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.connect.JDBCDriverClass;
 import com.infoworks.lab.webapp.filters.AuthorizationFilter;
 import com.infoworks.lab.webapp.filters.ByPassAuthorizationFilter;
-import com.it.soul.lab.connect.DriverClass;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,7 +58,7 @@ public class SecurityConfig {
                         (disableSecurity ? new ByPassAuthorizationFilter() : new AuthorizationFilter())
                         , BasicAuthenticationFilter.class);
         //Disable for H2 DB:
-        if (activeDriverClass.equalsIgnoreCase(DriverClass.H2_EMBEDDED.toString())){
+        if (activeDriverClass.equalsIgnoreCase(JDBCDriverClass.H2_EMBEDDED.toString())){
             http.headers().frameOptions().disable();
         }
         return http.build();

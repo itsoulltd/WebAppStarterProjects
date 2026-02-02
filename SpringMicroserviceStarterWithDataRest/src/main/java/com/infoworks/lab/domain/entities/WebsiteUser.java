@@ -1,7 +1,7 @@
 package com.infoworks.lab.domain.entities;
 
-import com.it.soul.lab.sql.entity.PrimaryKey;
-import com.it.soul.lab.sql.entity.TableName;
+import com.infoworks.entity.PrimaryKey;
+import com.infoworks.entity.TableName;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

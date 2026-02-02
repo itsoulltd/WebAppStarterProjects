@@ -1,7 +1,7 @@
 package com.infoworks.lab.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.it.soul.lab.sql.entity.Entity;
+import com.infoworks.entity.Entity;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -47,12 +47,12 @@ public class Auditable<VERSION> extends Entity implements Externalizable {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(marshallingToMap(true));
+        out.writeObject(marshalling(true));
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         Map<String, Object> data = (Map<String, Object>) in.readObject();
-        unmarshallingFromMap(data, true);
+        unmarshalling(data, true);
     }
 }

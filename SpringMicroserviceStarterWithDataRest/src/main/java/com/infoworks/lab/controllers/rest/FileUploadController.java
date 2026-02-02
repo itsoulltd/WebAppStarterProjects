@@ -1,8 +1,8 @@
 package com.infoworks.lab.controllers.rest;
 
-import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.rest.models.SearchQuery;
+import com.infoworks.lab.domain.models.ItemCount;
 import com.infoworks.lab.services.iFileStorageService;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
