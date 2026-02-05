@@ -2,11 +2,11 @@ package com.infoworks.lab.services.impl;
 
 import com.infoworks.lab.domain.entities.FileDocument;
 import com.infoworks.lab.domain.repositories.FileDocumentRepository;
-import com.infoworks.lab.rest.models.SearchQuery;
-import com.infoworks.lab.rest.models.pagination.Pagination;
-import com.infoworks.lab.rest.models.pagination.SortOrder;
-import com.infoworks.lab.util.services.iResourceService;
 import com.infoworks.lab.webapp.config.MongoConfig;
+import com.infoworks.sql.query.pagination.Pagination;
+import com.infoworks.sql.query.pagination.SearchQuery;
+import com.infoworks.sql.query.pagination.SortOrder;
+import com.infoworks.utils.services.iResources;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 2;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         //
         Map<Long, List<FileDocument>> data = service.searchInBatchGroup(searchQuery);
         Assert.assertTrue("", data.size() >= 0);
@@ -60,7 +60,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 3;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         //
         Map<Long, List<FileDocument>> data = service.searchInBatchGroup(searchQuery);
         Assert.assertTrue("", data.size() >= 0);
@@ -72,7 +72,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 4;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         //
         Map<Long, List<FileDocument>> data = service.searchInBatchGroup(searchQuery);
         Assert.assertTrue("", data.size() >= 0);
@@ -84,7 +84,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 5;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         //searchQuery.add("name").isEqualTo("dso");
         searchQuery.add("contentType").isEqualTo("image/jpeg");
         //
@@ -97,7 +97,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 5;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         searchQuery.add("timestamp").isEqualTo("1649778638175");
         //
         List<FileDocument> data = service.search(searchQuery);
@@ -111,7 +111,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 5;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         searchQuery.add("timestamp").isGreaterThenOrEqual("1649778638175");
         //
         List<FileDocument> data = service.search(searchQuery);
@@ -125,7 +125,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 5;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         searchQuery.add("timestamp").isLessThenOrEqual("q1649778638175w");
         //
         List<FileDocument> data = service.search(searchQuery);
@@ -138,7 +138,7 @@ public class FileDocumentServiceTest {
         FileDocumentService service = new FileDocumentService(repository, template);
         //
         int batchSize = 3;
-        SearchQuery searchQuery = Pagination.createQuery(SearchQuery.class, batchSize, SortOrder.ASC);
+        SearchQuery searchQuery = Pagination.of(SearchQuery.class, 0, batchSize, SortOrder.ASC);
         //searchQuery.add("name").isEqualTo("dso");
         searchQuery.add("contentType").isEqualTo("image/png");
         //
@@ -150,12 +150,12 @@ public class FileDocumentServiceTest {
     @Test
     public void mongoImageFileCrudTest() throws IOException {
         //Read Image from src/test/resources
-        iResourceService manager = iResourceService.create();
+        iResources manager = iResources.create();
         File imfFile = new File("data/processed.jpeg");
         InputStream ios = manager.createStream(imfFile);
         //Convert stream into base-64-string
         BufferedImage bufferedImage = manager.readAsImage(ios, BufferedImage.TYPE_INT_RGB);
-        String base64Image = manager.readImageAsBase64(bufferedImage, iResourceService.Format.PNG);
+        String base64Image = manager.readImageAsBase64(bufferedImage, iResources.Format.PNG);
         Assert.assertNotNull(base64Image);
         //Count Check:
         FileDocumentService service = new FileDocumentService(repository, template);

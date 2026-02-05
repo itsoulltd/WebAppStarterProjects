@@ -3,7 +3,7 @@ package com.infoworks.lab.services.impl;
 import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.domain.repositories.UserRepository;
 import com.infoworks.lab.services.GeneratorService;
-import com.infoworks.lab.util.services.iProperties;
+import com.infoworks.utils.services.iProperties;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import de.flapdoodle.embed.mongo.MongodExecutable;

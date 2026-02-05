@@ -1,6 +1,6 @@
 package com.infoworks.lab.template;
 
-import com.infoworks.lab.util.services.iProperties;
+import com.infoworks.utils.services.iProperties;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import de.flapdoodle.embed.mongo.MongodExecutable;

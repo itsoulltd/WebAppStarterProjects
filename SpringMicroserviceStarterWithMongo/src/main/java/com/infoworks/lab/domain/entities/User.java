@@ -1,15 +1,13 @@
 package com.infoworks.lab.domain.entities;
 
+import com.infoworks.entity.PrimaryKey;
+import com.infoworks.entity.TableName;
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
-import com.infoworks.lab.rest.validation.Email.EmailPattern;
-import com.it.soul.lab.sql.SQLExecutor;
-import com.it.soul.lab.sql.entity.PrimaryKey;
-import com.it.soul.lab.sql.entity.TableName;
-import com.it.soul.lab.sql.query.models.Property;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -29,7 +27,7 @@ public class User extends Auditable<Integer, Long> {
     private String name;
 
     @NotEmpty
-    @EmailPattern(message = "Invalid Email Address!")
+    @Email(message = "Invalid Email Address!")
     @Indexed(unique = true)
     private String email = "";
 
@@ -40,7 +38,7 @@ public class User extends Auditable<Integer, Long> {
 	private int age = 18;
 
 	//@NotNull(message = "dob Must Not Null")
-	//@Past(message = "Date Of Birth Must Be Greater Then Now")
+	//@Past(message = "Date Of Birth must be greater-then now")
     private Date dob = new java.sql.Date(new Date().getTime());
 
 	private boolean active;
@@ -127,11 +125,6 @@ public class User extends Auditable<Integer, Long> {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
-	}
-
-	public Property getPropertyTest(String key, SQLExecutor exe, boolean skipPrimary) {
-		return getProperty(key, exe, skipPrimary);
-
 	}
 
 }

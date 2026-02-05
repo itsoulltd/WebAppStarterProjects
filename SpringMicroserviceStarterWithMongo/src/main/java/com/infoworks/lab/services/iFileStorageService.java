@@ -1,6 +1,6 @@
 package com.infoworks.lab.services;
 
-import com.infoworks.lab.rest.models.SearchQuery;
+import com.infoworks.sql.query.pagination.SearchQuery;
 
 import java.io.File;
 import java.io.IOException;

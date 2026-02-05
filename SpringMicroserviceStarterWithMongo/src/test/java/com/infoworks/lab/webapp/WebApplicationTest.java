@@ -8,6 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = {"com.infoworks.lab.controllers","com.infoworks.lab.services"})
 public class WebApplicationTest {
     @Test
-    public void contextLoads() {
-    }
+    public void contextLoads() {}
 }

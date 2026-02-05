@@ -1,10 +1,10 @@
 package com.infoworks.lab.services.impl;
 
+import com.infoworks.data.impl.SimpleDataSource;
 import com.infoworks.lab.domain.entities.FileDocument;
 import com.infoworks.lab.domain.repositories.FileDocumentRepository;
-import com.infoworks.lab.rest.models.SearchQuery;
 import com.infoworks.lab.services.iDocumentService;
-import com.it.soul.lab.data.simple.SimpleDataSource;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -61,7 +61,7 @@ public class FileDocumentService extends SimpleDataSource<String, FileDocument> 
         FileDocument existing = read(uuid);
         if (existing != null){
             fileDocument.setUuid(existing.getUuid());
-            existing.unmarshallingFromMap(fileDocument.marshallingToMap(true), true);
+            existing.unmarshalling(fileDocument.marshalling(true), true);
             repository.save(existing);
         }
         return existing;

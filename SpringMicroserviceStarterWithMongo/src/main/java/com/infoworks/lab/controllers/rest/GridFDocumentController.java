@@ -1,10 +1,10 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.domain.entities.GridFileDocument;
-import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.rest.models.SearchQuery;
+import com.infoworks.lab.domain.models.ItemCount;
 import com.infoworks.lab.services.iDocumentService;
-import com.infoworks.lab.util.services.iResourceService;
+import com.infoworks.sql.query.pagination.SearchQuery;
+import com.infoworks.utils.services.iResources;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 public class GridFDocumentController {
 
     private iDocumentService<GridFileDocument> docService;
-    private iResourceService resService;
+    private iResources resService;
 
-    public GridFDocumentController(@Qualifier("gridFDocumentService") iDocumentService docService, iResourceService resService) {
+    public GridFDocumentController(@Qualifier("gridFDocumentService") iDocumentService docService, iResources resService) {
         this.docService = docService;
         this.resService = resService;
     }
@@ -109,9 +109,9 @@ public class GridFDocumentController {
         if (base64Str != null && !base64Str.isEmpty() && iDocumentService.isValidBase64String(base64Str)){
             InputStream contentStream;
             if (document.getContentType().toLowerCase().startsWith("image")){
-                iResourceService.Format format = document.getContentType().equalsIgnoreCase("image/jpeg")
-                        ? iResourceService.Format.JPEG
-                        : iResourceService.Format.PNG;
+                iResources.Format format = document.getContentType().equalsIgnoreCase("image/jpeg")
+                        ? iResources.Format.JPEG
+                        : iResources.Format.PNG;
                 contentStream = new ByteArrayInputStream(
                         resService.readImageAsBytes(resService.readImageFromBase64(base64Str)
                                 , format)

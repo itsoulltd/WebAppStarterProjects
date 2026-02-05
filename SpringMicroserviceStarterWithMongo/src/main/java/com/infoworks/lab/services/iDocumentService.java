@@ -1,7 +1,7 @@
 package com.infoworks.lab.services;
 
-import com.infoworks.lab.rest.models.SearchQuery;
-import com.it.soul.lab.data.base.DataSource;
+import com.infoworks.data.base.iDataSource;
+import com.infoworks.sql.query.pagination.SearchQuery;
 
 import java.util.Base64;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public interface iDocumentService<File> extends DataSource<String, File> {
+public interface iDocumentService<File> extends iDataSource<String, File> {
     File findByName(String name);
     /**
      * TO Search files (containing file-name), pass SearchQuery.add("filename").isEqualTo("abc");

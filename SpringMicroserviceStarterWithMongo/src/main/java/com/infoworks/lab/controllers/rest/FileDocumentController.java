@@ -1,10 +1,10 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.domain.entities.FileDocument;
-import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.rest.models.SearchQuery;
+import com.infoworks.lab.domain.models.ItemCount;
 import com.infoworks.lab.services.iDocumentService;
-import com.infoworks.lab.util.services.iResourceService;
+import com.infoworks.sql.query.pagination.SearchQuery;
+import com.infoworks.utils.services.iResources;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 public class FileDocumentController {
 
     private iDocumentService<FileDocument> docService;
-    private iResourceService resService;
+    private iResources resService;
 
-    public FileDocumentController(@Qualifier("fileDocumentService") iDocumentService docService, iResourceService resService) {
+    public FileDocumentController(@Qualifier("fileDocumentService") iDocumentService docService, iResources resService) {
         this.docService = docService;
         this.resService = resService;
     }
@@ -41,6 +41,7 @@ public class FileDocumentController {
     public ItemCount getRowCount(){
         ItemCount count = new ItemCount();
         count.setCount(Integer.valueOf(docService.size()).longValue());
+        count.setStatus(200);
         return count;
     }
 
@@ -101,9 +102,9 @@ public class FileDocumentController {
             document.setDescription(content.getResource().getDescription());
             //...
             BufferedImage bufferedImage = resService.readAsImage(content.getInputStream(), BufferedImage.TYPE_INT_RGB);
-            iResourceService.Format format = content.getContentType().equalsIgnoreCase("image/jpeg")
-                    ? iResourceService.Format.JPEG
-                    : iResourceService.Format.PNG;
+            iResources.Format format = content.getContentType().equalsIgnoreCase("image/jpeg")
+                    ? iResources.Format.JPEG
+                    : iResources.Format.PNG;
             String base64Image = resService.readImageAsBase64(bufferedImage, format);
             document.setContent(base64Image);
             //...
@@ -152,9 +153,9 @@ public class FileDocumentController {
             //Lets do it for image only document.getContentType() == "image/jpeg"
             String base64Str = document.getContent();
             BufferedImage decryptedImg = resService.readImageFromBase64(base64Str);
-            iResourceService.Format format = document.getContentType().equalsIgnoreCase("image/jpeg")
-                    ? iResourceService.Format.JPEG
-                    : iResourceService.Format.PNG;
+            iResources.Format format = document.getContentType().equalsIgnoreCase("image/jpeg")
+                    ? iResources.Format.JPEG
+                    : iResources.Format.PNG;
             InputStream ios = new ByteArrayInputStream(resService.readImageAsBytes(decryptedImg, format));
             int contentLength = ios.available();
             byte[] bytes = new byte[contentLength];

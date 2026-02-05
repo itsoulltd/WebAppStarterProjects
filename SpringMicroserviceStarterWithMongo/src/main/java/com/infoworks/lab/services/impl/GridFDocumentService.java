@@ -1,10 +1,10 @@
 package com.infoworks.lab.services.impl;
 
+import com.infoworks.data.impl.SimpleDataSource;
 import com.infoworks.lab.domain.entities.GridFileDocument;
 import com.infoworks.lab.domain.repositories.GridFileDocumentRepository;
-import com.infoworks.lab.rest.models.SearchQuery;
 import com.infoworks.lab.services.iDocumentService;
-import com.it.soul.lab.data.simple.SimpleDataSource;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -85,7 +85,7 @@ public class GridFDocumentService extends SimpleDataSource<String, GridFileDocum
                 ObjectId _id = template.store(existing.get().getContent(), existing.get().getName(), existing.get().getContentType());
                 //Update in meta-data:
                 fileDocument.setUuid(_id.toString());
-                existing.get().unmarshallingFromMap(fileDocument.marshallingToMap(true), true);
+                existing.get().unmarshalling(fileDocument.marshalling(true), true);
                 GridFileDocument replaced = repository.save(existing.get());
                 return replaced;
             } catch (Exception e) {

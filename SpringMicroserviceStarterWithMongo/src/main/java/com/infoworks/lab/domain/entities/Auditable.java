@@ -1,7 +1,7 @@
 package com.infoworks.lab.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.infoworks.lab.client.data.rest.Any;
+import com.infoworks.entity.Entity;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -12,7 +12,7 @@ import java.io.ObjectOutput;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-public class Auditable<ID, VERSION> extends Any<ID> implements Externalizable {
+public class Auditable<ID, VERSION> extends Entity implements Externalizable {
 
     @CreatedDate @Field("created_date")
     LocalDateTime createdDate;
@@ -31,18 +31,12 @@ public class Auditable<ID, VERSION> extends Any<ID> implements Externalizable {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(marshallingToMap(true));
+        out.writeObject(marshalling(true));
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         Map<String, Object> data = (Map<String, Object>) in.readObject();
-        unmarshallingFromMap(data, true);
-    }
-
-    @Override
-    @JsonIgnore
-    public Map<String, Object> get_links() {
-        return super.get_links();
+        unmarshalling(data, true);
     }
 }
