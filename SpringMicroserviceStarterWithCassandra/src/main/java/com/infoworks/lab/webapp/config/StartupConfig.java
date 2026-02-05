@@ -1,9 +1,9 @@
 package com.infoworks.lab.webapp.config;
 
+import com.infoworks.cql.CQLExecutor;
+import com.infoworks.cql.query.AlterAction;
 import com.infoworks.lab.domain.entities.User;
-import com.it.soul.lab.cql.CQLExecutor;
-import com.it.soul.lab.cql.query.AlterAction;
-import com.it.soul.lab.sql.query.models.Property;
+import com.infoworks.orm.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

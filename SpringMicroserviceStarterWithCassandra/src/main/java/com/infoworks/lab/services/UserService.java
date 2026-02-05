@@ -1,9 +1,9 @@
 package com.infoworks.lab.services;
 
+import com.infoworks.data.impl.SimpleDataSource;
 import com.infoworks.lab.domain.entities.User;
 import com.infoworks.lab.domain.repositories.UserRepository;
-import com.infoworks.lab.rest.models.SearchQuery;
-import com.it.soul.lab.data.simple.SimpleDataSource;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

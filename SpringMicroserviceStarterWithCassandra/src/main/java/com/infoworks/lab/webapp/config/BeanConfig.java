@@ -1,8 +1,8 @@
 package com.infoworks.lab.webapp.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.infoworks.lab.rest.models.Message;
-import com.infoworks.lab.util.services.iResourceService;
+import com.infoworks.objects.MessageParser;
+import com.infoworks.utils.services.iResources;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,12 +16,12 @@ public class BeanConfig {
 
     @Bean
     ObjectMapper getMapper(){
-        return Message.getJsonSerializer();
+        return MessageParser.getJsonSerializer();
     }
 
     @Bean
-    public iResourceService getResourceService(){
-        return iResourceService.create();
+    public iResources getResourceService(){
+        return iResources.create();
     }
 
 }

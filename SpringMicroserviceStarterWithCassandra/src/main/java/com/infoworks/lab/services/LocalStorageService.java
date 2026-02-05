@@ -1,7 +1,7 @@
 package com.infoworks.lab.services;
 
-import com.infoworks.lab.rest.models.SearchQuery;
-import com.it.soul.lab.data.simple.SimpleDataSource;
+import com.infoworks.data.impl.SimpleDataSource;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

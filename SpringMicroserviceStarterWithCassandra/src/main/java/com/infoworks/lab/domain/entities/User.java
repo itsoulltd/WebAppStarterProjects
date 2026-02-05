@@ -1,13 +1,11 @@
 package com.infoworks.lab.domain.entities;
 
+import com.infoworks.cql.entity.CQLEntity;
+import com.infoworks.cql.entity.EnableTimeToLive;
+import com.infoworks.entity.PrimaryKey;
+import com.infoworks.entity.TableName;
 import com.infoworks.lab.domain.validation.constraint.Gender.IsValidGender;
-import com.it.soul.lab.cql.entity.CQLEntity;
-import com.it.soul.lab.cql.entity.EnableTimeToLive;
-import com.it.soul.lab.sql.SQLExecutor;
-import com.it.soul.lab.sql.entity.Ignore;
-import com.it.soul.lab.sql.entity.PrimaryKey;
-import com.it.soul.lab.sql.entity.TableName;
-import com.it.soul.lab.sql.query.models.Property;
+import com.infoworks.objects.Ignore;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -125,11 +123,6 @@ public class User extends CQLEntity {
 	@Override
 	public int hashCode() {
 		return Objects.hash(uuid);
-	}
-
-	public Property getPropertyTest(String key, SQLExecutor exe, boolean skipPrimary) {
-		return getProperty(key, exe, skipPrimary);
-
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.infoworks.lab.controllers.rest;
 
-import com.infoworks.lab.rest.models.ItemCount;
+import com.infoworks.lab.domain.models.ItemCount;
 import com.infoworks.lab.services.iFileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -32,6 +32,7 @@ public class FileUploadController {
     public ItemCount getRowCount(){
         ItemCount count = new ItemCount();
         count.setCount(Integer.valueOf(storageService.size()).longValue());
+        count.setStatus(200);
         return count;
     }
 

@@ -1,10 +1,10 @@
 package com.infoworks.lab.controllers.rest;
 
 import com.infoworks.lab.domain.entities.User;
-import com.infoworks.lab.rest.models.ItemCount;
-import com.infoworks.lab.rest.models.SearchQuery;
-import com.infoworks.lab.rest.repository.RestRepository;
+import com.infoworks.lab.domain.models.ItemCount;
+import com.infoworks.lab.domain.repositories.RestRepository;
 import com.infoworks.lab.services.UserService;
+import com.infoworks.sql.query.pagination.SearchQuery;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

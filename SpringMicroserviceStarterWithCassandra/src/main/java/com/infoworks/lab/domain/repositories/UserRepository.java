@@ -1,8 +1,7 @@
 package com.infoworks.lab.domain.repositories;
 
+import com.infoworks.cql.CQLExecutor;
 import com.infoworks.lab.domain.entities.User;
-import com.infoworks.lab.rest.repository.CqlRepository;
-import com.it.soul.lab.cql.CQLExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -1,7 +1,7 @@
 package com.infoworks.lab.webapp.config;
 
-import com.it.soul.lab.cql.CQLExecutor;
-import com.it.soul.lab.cql.query.ReplicationStrategy;
+import com.infoworks.cql.CQLExecutor;
+import com.infoworks.cql.query.ReplicationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
