@@ -52,7 +52,7 @@ public class BeanConfig {
                 .setAddress(String.format("redis://%s:%s",redisHost, redisPort))
                 .setRetryAttempts(5)
                 .setRetryInterval(1500);
-        //RedissionClient instance are fully-thread safe.
+        //Redisson-Client instance are fully-thread safe.
         return Redisson.create(conf);
     }
 
