@@ -124,13 +124,12 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
 
     @Override
     public boolean save(String fileLocation, InputStream in) throws IOException {
-        try(FileOutputStream f = new FileOutputStream(fileLocation)){
-            int data;
-            while ((data = in.read()) != -1) {
-                f.write(data);
-            }
-        }
-        return true;
+        boolean isSaved = true;
+        try(FileOutputStream fos = new FileOutputStream(fileLocation)) {
+            /*int data; while ((data = in.read()) != -1) fos.write(data);*/
+            in.transferTo(fos);
+        } catch (Exception e) { isSaved = false; }
+        return isSaved;
     }
 
     private void retrySave(String fileName, Map fileSavedStatusMap) throws IOException {
