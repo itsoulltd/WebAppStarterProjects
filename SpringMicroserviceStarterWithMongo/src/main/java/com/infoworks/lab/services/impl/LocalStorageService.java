@@ -41,8 +41,8 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
             Set<String> excluded = Set.of(".ini", ".tmp", ".bak");
             File[] files = Optional.ofNullable(uploadDir.listFiles(File::isFile)).orElse(new File[0]);
             Arrays.stream(files)
-                    .map(file -> file.getName())
-                    .filter(name -> (name.indexOf(".") != -1) && !excluded.contains(name.substring(name.indexOf("."))))
+                    .map(File::getName)
+                    .filter(name -> name.contains(".") && !excluded.contains(name.substring(name.indexOf("."))))
                     .forEach(name -> getFileSavedStatusMap().put(name, true));
             LOG.info(String.format("FileSavedStatusMap get loaded from %s, count: %s", uploadPath, size()));
         }
