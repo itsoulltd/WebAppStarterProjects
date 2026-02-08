@@ -7,12 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -28,6 +26,25 @@ public class LocalStorageService extends SimpleDataSource<String, InputStream> i
 
     public LocalStorageService(@Value("${app.upload.dir}") String uploadPath) {
         this.uploadPath = uploadPath;
+    }
+
+    @PostConstruct
+    public void postInit() {
+        loadFileSavedStatusMap();
+    }
+
+    protected void loadFileSavedStatusMap() {
+        //Load from uploadPath:
+        File uploadDir = new File(uploadPath);
+        if (getFileSavedStatusMap().isEmpty() && uploadDir.isDirectory()) {
+            Set<String> excluded = Set.of(".ini", ".tmp", ".bak");
+            File[] files = Optional.ofNullable(uploadDir.listFiles(File::isFile)).orElse(new File[0]);
+            Arrays.stream(files)
+                    .map(file -> file.getName())
+                    .filter(name -> (name.indexOf(".") != -1) && !excluded.contains(name.substring(name.indexOf("."))))
+                    .forEach(name -> getFileSavedStatusMap().put(name, true));
+            LOG.info(String.format("FileSavedStatusMap get loaded from %s, count: %s", uploadPath, size()));
+        }
     }
 
     protected Map<String, Boolean> getFileSavedStatusMap() {
