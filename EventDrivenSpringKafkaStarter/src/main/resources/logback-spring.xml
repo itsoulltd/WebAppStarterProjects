@@ -2,20 +2,14 @@
 <configuration scan="true" scanPeriod="30 seconds">
     <springProperty scope="context" name="INSTANCE_NAME" source="spring.application.name"/>
     <!--<springProperty scope="context" name="HOME_LOGS_DIR" source="app.home.logs"/>-->
+
     <!-- -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] - [%-5level] - %logger{25} - CID[%X{correlationId}] - UID[%X{userId}] - %msg%n</pattern>-->
-        </encoder>
-    </appender>
+    <include resource="logback-appenders.xml"/>
+
     <!-- -->
     <!-- As you can see it contains the maxFileSize, maxHistory and totalSizeCap providing
     it control over the size of individual files as well as the collection of files.
-    Therefore the above example will keep 2 days worth of history split into files of 2MB
+    Therefore, the above example will keep 2 days worth of history split into files of 2MB
     and when the total size of all files reaches 10MB the oldest files will be removed.
     -->
     <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -34,13 +28,15 @@
             &lt;!&ndash;<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] - [%-5level] - %logger{25} - CID[%X{correlationId}] - UID[%X{userId}] - %msg%n</pattern>&ndash;&gt;
         </encoder>
     </appender>-->
+
     <!-- -->
     <!-- OFF ERROR WARN INFO DEBUG TRACE -->
     <logger name="com.infoworks" level="INFO"/>
+
     <!-- -->
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
+        <!--<appender-ref ref="CONSOLE"/>-->
         <!--<appender-ref ref="FILE"/>-->
+        <appender-ref ref="ASYNC-CONSOLE"/>
     </root>
-    <!-- -->
 </configuration>
