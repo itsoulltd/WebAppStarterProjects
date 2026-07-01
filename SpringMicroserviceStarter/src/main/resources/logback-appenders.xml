@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <!-- -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%thread] - [%-5level] - %logger{25} - CID[%X{correlationId}] - UID[%X{userId}] - %msg%n</pattern>-->
+        </encoder>
+    </appender>
+
+    <!-- -->
+    <appender name="ASYNC-CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>8192</queueSize>
+        <!-- don't discard INFO/WARN/ERROR -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- never block application thread -->
+        <neverBlock>true</neverBlock>
+        <includeCallerData>false</includeCallerData>
+        <appender-ref ref="CONSOLE"/>
+    </appender>
+
+    <!-- -->
+    <appender name="JSON-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <version/>
+                <logLevel/>
+                <loggerName/>
+                <threadName/>
+                <message/>
+                <mdc/>
+                <arguments/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- -->
+    <appender name="ASYNC-JSON-CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>8192</queueSize>
+        <!-- don't discard INFO/WARN/ERROR -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- never block application thread -->
+        <neverBlock>true</neverBlock>
+        <includeCallerData>false</includeCallerData>
+        <appender-ref ref="JSON-CONSOLE"/>
+    </appender>
+</included>

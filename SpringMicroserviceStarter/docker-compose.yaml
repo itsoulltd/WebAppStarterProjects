@@ -42,7 +42,7 @@ services:
          - 8080:8080
       depends_on:
          - mysql-db
-      restart: on-failure
+      restart: unless-stopped
       networks:
          - web-app-net
 
