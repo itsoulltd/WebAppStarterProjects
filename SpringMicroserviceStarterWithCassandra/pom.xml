@@ -20,6 +20,8 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jersey2.version>2.27</jersey2.version>
+        <jakarta.version>3.0.0</jakarta.version>
+        <cassandra.version>3.11.0</cassandra.version>
     </properties>
 
     <repositories>
@@ -140,6 +142,18 @@
             <groupId>com.github.itsoulltd</groupId>
             <artifactId>JSqlKit</artifactId>
             <version>[v1.0.1, )</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>${jakarta.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.datastax.cassandra/cassandra-driver-core -->
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-core</artifactId>
+            <version>${cassandra.version}</version>
         </dependency>
         <!-- -->
         <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
