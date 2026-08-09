@@ -32,11 +32,15 @@ import java.util.UUID;
 public class FileUploadController {
 
     private static Logger LOG = LoggerFactory.getLogger(FileUploadController.class);
+    private static SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     private iFileStorageService<InputStream> storageService;
+    private String uploadPath;
 
     @Autowired
-    public FileUploadController(iFileStorageService storageService) {
+    public FileUploadController(iFileStorageService storageService
+            , @Value("${app.upload.dir}") String uploadPath) {
         this.storageService = storageService;
+        this.uploadPath = uploadPath;
     }
 
     @GetMapping("/rowCount")
@@ -53,7 +57,7 @@ public class FileUploadController {
         return ResponseEntity.ok(names);
     }
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadContent(
             @RequestParam("content") MultipartFile content,
             RedirectAttributes redirectAttributes) throws IOException {
@@ -97,11 +101,6 @@ public class FileUploadController {
         InputStream stream = storageService.remove(name);
         return stream != null;
     }
-
-    private static SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-
-    @Value("${app.upload.dir}")
-    private String uploadPath;
 
     @GetMapping("/search/{query}")
     public ResponseEntity<Resource> searchContent(@PathVariable("query") String query) throws IOException {

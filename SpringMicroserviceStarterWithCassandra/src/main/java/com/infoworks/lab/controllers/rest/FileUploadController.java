@@ -43,7 +43,7 @@ public class FileUploadController {
         return ResponseEntity.ok(names);
     }
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadContent(
             @RequestParam("content") MultipartFile content,
             RedirectAttributes redirectAttributes) throws IOException {
