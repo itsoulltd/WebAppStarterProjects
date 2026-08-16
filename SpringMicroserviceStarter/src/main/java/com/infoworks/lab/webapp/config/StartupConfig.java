@@ -38,7 +38,7 @@ public class StartupConfig implements CommandLineRunner {
         System.out.println(String.format("http://%s:%s%s/swagger-ui/index.html", serverDomain, serverPort, servletContext));
         if (activeDriverClass.equalsIgnoreCase(JDBCDriverClass.H2_EMBEDDED.toString())
                 && Boolean.parseBoolean(isH2ConsoleEnabled)){
-            System.out.println(String.format("http://localhost:%s%s", serverPort, h2ConsolePath));
+            System.out.println(String.format("http://%s:%s%s%s", serverDomain, serverPort, servletContext, h2ConsolePath));
         }
         //
     }
