@@ -45,7 +45,7 @@ public class FileUploadController {
 
     @GetMapping("/rowCount")
     public ItemCount getRowCount(){
-        ItemCount count = new ItemCount();
+        ItemCount count = (ItemCount) new ItemCount().setStatus(200);
         count.setCount(Integer.valueOf(storageService.size()).longValue());
         return count;
     }

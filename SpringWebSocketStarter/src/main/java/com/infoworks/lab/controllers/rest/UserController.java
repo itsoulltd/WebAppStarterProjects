@@ -24,7 +24,7 @@ public class UserController implements RestRepository<User, String> {
 
     @GetMapping("/rowCount")
     public ItemCount rowCount(){
-        ItemCount count = new ItemCount();
+        ItemCount count = (ItemCount) new ItemCount().setStatus(200);
         count.setCount(Integer.valueOf(dataSource.size()).longValue());
         return count;
     }

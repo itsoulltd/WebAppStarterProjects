@@ -39,7 +39,7 @@ public class GridFDocumentController {
 
     @GetMapping("/count")
     public ItemCount getRowCount(){
-        ItemCount count = new ItemCount();
+        ItemCount count = (ItemCount) new ItemCount().setStatus(200);
         count.setCount(Integer.valueOf(docService.size()).longValue());
         return count;
     }

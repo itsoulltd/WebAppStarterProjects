@@ -91,7 +91,7 @@ public interface iGenericRepository<E extends Entity, ID> extends RestRepository
         try {
             SQLQuery query = getExecutor().createQueryBuilder(QueryType.COUNT).columns().on(getEntityType()).build();
             int count = getExecutor().getScalarValue(query);
-            ItemCount ic = new ItemCount();
+            ItemCount ic = (ItemCount) new ItemCount().setStatus(200);
             ic.setCount(Integer.valueOf(count).longValue());
             return ic;
         } catch (SQLException e) {

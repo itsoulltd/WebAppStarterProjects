@@ -81,7 +81,7 @@ public interface CqlRepository<E extends Entity, ID> extends iGenericRepository<
         try {
             SQLScalarQuery query = new CQLQuery.Builder(QueryType.COUNT).columns().on(getEntityType()).build();
             int count = getExecutor().getScalarValue(query);
-            ItemCount ic = new ItemCount();
+            ItemCount ic = (ItemCount) new ItemCount().setStatus(200);
             ic.setCount(Integer.valueOf(count).longValue());
             return ic;
         } catch (SQLException e) {
