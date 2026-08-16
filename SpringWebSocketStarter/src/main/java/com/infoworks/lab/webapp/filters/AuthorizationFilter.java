@@ -36,12 +36,12 @@ public class AuthorizationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         LOG.info("RequestURI: " + request.getRequestURI().toLowerCase());
+        /*String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if(header == null || !header.startsWith(TOKEN_PREFIX.trim())) {
             chain.doFilter(request,response);
             return;
-        }
+        }*/
         Authentication authenticationToken = getAuthentication(request);
         if (authenticationToken != null){
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
