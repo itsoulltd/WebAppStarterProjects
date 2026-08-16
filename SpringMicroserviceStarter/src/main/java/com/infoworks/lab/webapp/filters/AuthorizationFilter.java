@@ -1,6 +1,7 @@
 package com.infoworks.lab.webapp.filters;
 
 import com.infoworks.lab.webapp.config.JWTokenValidator;
+import com.infoworks.lab.webapp.config.SecurityConfig;
 import com.infoworks.utils.jwt.TokenProvider;
 import com.infoworks.utils.jwt.models.JWTPayload;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -21,6 +23,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class AuthorizationFilter extends GenericFilterBean {
@@ -31,22 +34,29 @@ public class AuthorizationFilter extends GenericFilterBean {
 
     public AuthorizationFilter() {}
 
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    protected boolean isWhitelisted(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return Arrays.stream(SecurityConfig.URL_WHITELIST)
+                .anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         LOG.info("RequestURI: " + request.getRequestURI().toLowerCase());
-        /*String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(header == null || !header.startsWith(TOKEN_PREFIX.trim())) {
+
+        if (isWhitelisted(request)) {
             chain.doFilter(request,response);
-            return;
-        }*/
-        Authentication authenticationToken = getAuthentication(request);
-        if (authenticationToken != null){
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            chain.doFilter(request,response);
-        }else{
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            Authentication authenticationToken = getAuthentication(request);
+            if (authenticationToken != null){
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                chain.doFilter(request,response);
+            }else{
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            }
         }
     }
 
