@@ -34,12 +34,7 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
-            <version>8.5.35</version>
-            <scope>provided</scope>
-        </dependency>
+
         <!-- Following driver version support until MongoDB-v7.0.25 -->
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -56,7 +51,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
