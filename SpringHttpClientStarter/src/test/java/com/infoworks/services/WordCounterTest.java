@@ -18,14 +18,17 @@ class WordCounterTest {
     @Test
     void xmlWordCountAll() {
         WordCounter counter = new WordCounter();
-        long countXml = counter.xmlWordCount("data/TestDoc.xml");
+        long countXml = counter.xmlWordCount("data/TestDoc.xml", new String[0]);
         LOG.info("XML All Word count: " + countXml);
     }
 
     @Test
     void xmlWordCountBody() {
         WordCounter counter = new WordCounter();
-        long countXml = counter.xmlWordCount("data/TestDoc.xml", "body");
+        long countXml = counter.xmlWordCount("data/TestDoc.xml", new String[]{"body"});
         LOG.info("XML Body Word count: " + countXml);
+        //
+        countXml = counter.xmlWordCount("data/TestDoc.xml", new String[]{"body"}, "title");
+        LOG.info("XML Body except(title) Word count: " + countXml);
     }
 }
