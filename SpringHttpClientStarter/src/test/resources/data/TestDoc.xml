@@ -8,32 +8,21 @@
 
     <body>
         <title>This is my article title</title>
-
-        <p>
-            This is the first paragraph.
-        </p>
-
-        <p>
-            This is the second paragraph with more words.
-        </p>
-
+        <p>This is the first paragraph.</p>
+        <p>This is the second paragraph with more words.</p>
         <section id="introduction">
             <title>Introduction section title</title>
-
             <p>
                 This paragraph also counts because it is inside the body.
             </p>
-
             <p>
                 Here is another paragraph with
                 <bold>important text</bold>
                 inside it.
             </p>
         </section>
-
         <section id="conclusion">
             <title>Conclusion</title>
-
             <p>
                 This is the final paragraph of the article.
             </p>
