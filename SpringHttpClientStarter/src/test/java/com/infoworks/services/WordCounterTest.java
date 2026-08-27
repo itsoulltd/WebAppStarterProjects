@@ -15,7 +15,7 @@ class WordCounterTest {
         LOG.info("PDF Word count: " + count);
     }
 
-    //@Test
+    @Test
     void xmlWordCount() {
         WordCounter counter = new WordCounter();
         long countXml = counter.xmlWordCount("data/TestDoc.xml");
