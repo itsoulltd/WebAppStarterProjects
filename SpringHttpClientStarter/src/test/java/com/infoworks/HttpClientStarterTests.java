@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootTest(classes = {HttpClientStarterTest.class, BeanConfig.class, TestJPAH2Config.class})
+@SpringBootTest(classes = {HttpClientStarterTests.class, BeanConfig.class, TestJPAH2Config.class})
 @ComponentScan(basePackages = {"com.infoworks.domain", "com.infoworks.services"})
-public class HttpClientStarterTest {
+public class HttpClientStarterTests {
 
     @Test
     void contextLoads() {
