@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document id="doc-001">
+    <metadata>
+        <title>Metadata title should NOT count</title>
+        <author>John Smith</author>
+        <created>2026-08-27</created>
+    </metadata>
+
+    <body>
+        <title>This is my article title</title>
+
+        <p>
+            This is the first paragraph.
+        </p>
+
+        <p>
+            This is the second paragraph with more words.
+        </p>
+
+        <section id="introduction">
+            <title>Introduction section title</title>
+
+            <p>
+                This paragraph also counts because it is inside the body.
+            </p>
+
+            <p>
+                Here is another paragraph with
+                <bold>important text</bold>
+                inside it.
+            </p>
+        </section>
+
+        <section id="conclusion">
+            <title>Conclusion</title>
+
+            <p>
+                This is the final paragraph of the article.
+            </p>
+        </section>
+    </body>
+
+    <footer>
+        <p>This should NOT count.</p>
+    </footer>
+</document>

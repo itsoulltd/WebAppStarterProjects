@@ -20,6 +20,7 @@
         <module>SpringWebSocketStarter</module>
         <module>SpringBatchProcessingStarter</module>
         <module>SpringMicroserviceStarterWithDataRest</module>
+        <module>SpringHttpClientStarter</module>
     </modules>
 
     <properties>
