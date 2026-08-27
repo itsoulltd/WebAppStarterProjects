@@ -16,9 +16,16 @@ class WordCounterTest {
     }
 
     @Test
-    void xmlWordCount() {
+    void xmlWordCountAll() {
         WordCounter counter = new WordCounter();
         long countXml = counter.xmlWordCount("data/TestDoc.xml");
-        LOG.info("XML Word count: " + countXml);
+        LOG.info("XML All Word count: " + countXml);
+    }
+
+    @Test
+    void xmlWordCountBody() {
+        WordCounter counter = new WordCounter();
+        long countXml = counter.xmlWordCount("data/TestDoc.xml", "body");
+        LOG.info("XML Body Word count: " + countXml);
     }
 }
