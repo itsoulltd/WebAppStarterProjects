@@ -49,6 +49,7 @@ public class UserService extends SimpleDataSource<String, User> {
         if (read(user.getName()) != null)
             throw new RuntimeException("User already exist by this name!");
         //Other-wise:
+        user.setId(null);
         User saved = repository.save(user);
         return saved.getName();
     }
