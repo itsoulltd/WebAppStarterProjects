@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -30,26 +31,45 @@ public class WordCounter {
     }
 
     public long pdfWordCount(String filename) throws RuntimeException {
-        //
         ClassPathResource resource = new ClassPathResource(filename);
         try (PDDocument document = Loader.loadPDF(resource.getContentAsByteArray())) {
-            PDFTextStripper stripper = new PDFTextStripper();
-            String text = stripper.getText(document);
-            long wordCount = WORD
-                    .matcher(text)
-                    .results()
-                    .count();
-            //LOG.info("Word count: " + wordCount);
-            return wordCount;
+            return pdfWordCount(document);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    public long pdfWordCount(InputStream inputStream) throws RuntimeException {
+        try (PDDocument document = Loader.loadPDF(inputStream.readAllBytes())) {
+            return pdfWordCount(document);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public long pdfWordCount(PDDocument document) throws IOException {
+        PDFTextStripper stripper = new PDFTextStripper();
+        String text = stripper.getText(document);
+        long wordCount = WORD
+                .matcher(text)
+                .results()
+                .count();
+        //LOG.info("Word count: " + wordCount);
+        return wordCount;
+    }
+
     public long xmlWordCount(String filename, String[] lookupElements, String...skipElements) throws RuntimeException {
         ClassPathResource resource = new ClassPathResource(filename);
-        long count = 0;
         try (InputStream inputStream = resource.getInputStream()) {
+            return xmlWordCount(inputStream, lookupElements, skipElements);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to process XML", e);
+        }
+    }
+
+    public long xmlWordCount(InputStream inputStream, String[] lookupElements, String...skipElements) throws RuntimeException {
+        long count = 0;
+        try {
             XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(inputStream);
             var skips = Arrays.asList(skipElements);
             var skipDepth = 0;
@@ -82,9 +102,7 @@ public class WordCounter {
             } finally {
                 reader.close();
             }
-            return count;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to process XML", e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
+        return count;
     }
 }
