@@ -5,6 +5,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -23,11 +25,17 @@ public class WordCounter {
     private static final Pattern WORD =
             Pattern.compile("\\b[\\p{L}\\p{N}]+(?:['’-][\\p{L}\\p{N}]+)*\\b");
     private final XMLInputFactory xmlInputFactory;
+    private final boolean enableOCR;
+
+    public WordCounter(@Value("${app.word.counter.enable.orc}") String enableOCR) {
+        this.xmlInputFactory = XMLInputFactory.newFactory();
+        this.xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        this.xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities",false);
+        this.enableOCR = Boolean.parseBoolean(Optional.ofNullable(enableOCR).orElse("false"));
+    }
 
     public WordCounter() {
-        this.xmlInputFactory = XMLInputFactory.newFactory();
-        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities",false);
+        this("false");
     }
 
     public long pdfWordCount(String filename) throws RuntimeException {
@@ -54,6 +62,10 @@ public class WordCounter {
                 .matcher(text)
                 .results()
                 .count();
+        //OCR:
+        if (enableOCR) {
+            LOG.info("OCR NOT IMPLEMENTED YET!");
+        }
         //LOG.info("Word count: " + wordCount);
         return wordCount;
     }
