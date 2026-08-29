@@ -8,6 +8,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,12 @@ public class WordCounter {
     private final XMLInputFactory xmlInputFactory;
     private final boolean enableOCR;
 
+    /**
+     * When a Spring @Component with more-than-one constructors, spring needs to know which one to use for dependency injection.
+     * Use @Autowired to mark as default injection candidate.
+     * @param enableOCR
+     */
+    @Autowired
     public WordCounter(@Value("${ocr.enable}") String enableOCR) {
         this.xmlInputFactory = XMLInputFactory.newFactory();
         this.xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
