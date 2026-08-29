@@ -2,6 +2,9 @@ package com.infoworks.services;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +17,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -27,7 +32,7 @@ public class WordCounter {
     private final XMLInputFactory xmlInputFactory;
     private final boolean enableOCR;
 
-    public WordCounter(@Value("${app.word.counter.enable.orc}") String enableOCR) {
+    public WordCounter(@Value("${ocr.enable}") String enableOCR) {
         this.xmlInputFactory = XMLInputFactory.newFactory();
         this.xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         this.xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities",false);
@@ -68,6 +73,27 @@ public class WordCounter {
         }
         //LOG.info("Word count: " + wordCount);
         return wordCount;
+    }
+
+    private List<PDXObject> findPDXObjects(PDDocument document) {
+        List<PDXObject> results = new ArrayList<>();
+        //Pileup xobjects:
+        document.getPages().forEach(page -> {
+            PDResources resources = page.getResources();
+            resources.getXObjectNames().forEach(name -> {
+                try {
+                    results.add(resources.getXObject(name));
+                } catch (IOException e) {}
+            });
+        });
+        return results;
+    }
+
+    private List<PDImageXObject> hasAnyPDImageXObjects(List<PDXObject> objects) {
+        List<PDImageXObject> results = new ArrayList<>();
+        objects.stream().filter(obj -> obj instanceof PDImageXObject)
+                .forEach(obj -> results.add((PDImageXObject) obj));
+        return results;
     }
 
     public long xmlWordCount(String filename, String[] lookupElements, String...skipElements) throws RuntimeException {
