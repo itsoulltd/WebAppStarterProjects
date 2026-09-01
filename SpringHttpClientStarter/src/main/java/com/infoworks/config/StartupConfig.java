@@ -1,6 +1,11 @@
 package com.infoworks.config;
 
 import com.infoworks.connect.JDBCDriverClass;
+import com.infoworks.domain.entities.EventLog;
+import com.infoworks.domain.repositories.EventLogRepository;
+import com.infoworks.objects.Message;
+import com.infoworks.tasks.queue.TaskQueue;
+import com.infoworks.utils.eventq.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +14,9 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+import java.util.concurrent.Executors;
 
 @Component
 public class StartupConfig implements CommandLineRunner {
@@ -20,17 +28,31 @@ public class StartupConfig implements CommandLineRunner {
     private final String activeDriverClass;
     private final String isH2ConsoleEnabled;
     private final String h2ConsolePath;
+    private final TaskQueue taskQueue;
+    private final EventLogRepository logRepository;
 
     public StartupConfig(@Value("${server.app.domain}") String serverDomain
             , @Value("${server.port}") String serverPort
             , @Value("${spring.datasource.driver-class-name}") String activeDriverClass
             , @Value("${spring.h2.console.enabled}") String isH2ConsoleEnabled
-            , @Value("${spring.h2.console.path}") String h2ConsolePath) {
+            , @Value("${spring.h2.console.path}") String h2ConsolePath
+            , @Value("${concurrent.thread-pool.startup-config}") String poolCount
+            , EventLogRepository logRepository) {
         this.serverDomain = serverDomain;
         this.serverPort = serverPort;
         this.activeDriverClass = activeDriverClass;
         this.isH2ConsoleEnabled = isH2ConsoleEnabled;
         this.h2ConsolePath = h2ConsolePath;
+        this.logRepository = logRepository;
+        int poolSize = Integer.parseInt(Optional.ofNullable(poolCount).orElse("1").toString());
+        this.taskQueue = new EventQueue(Executors.newFixedThreadPool(poolSize), true);
+        this.taskQueue.onTaskComplete((message, state) -> {
+            EventLog log = new EventLog();
+            log.setEvent("startup-config");
+            log.setStatus(state.name());
+            log.setDescription(Optional.ofNullable(message).orElse(new Message().setPayload("<message> was null.")).toString());
+            this.logRepository.saveAndFlush(log);
+        });
     }
 
     @Override

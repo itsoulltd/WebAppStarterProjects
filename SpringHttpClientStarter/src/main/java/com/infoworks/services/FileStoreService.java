@@ -45,4 +45,9 @@ public class FileStoreService extends FileStore {
     public String getUploadPath() {
         return uploadPath;
     }
+
+    @Override
+    public boolean containsKey(String filename) {
+        return getFileSavedStatusMap().get(filename);
+    }
 }
