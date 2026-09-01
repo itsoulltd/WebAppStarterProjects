@@ -37,9 +37,12 @@ public class BeanConfig {
     public WebClient webClient(WebClient.Builder builder
             , @Value("${web.client.base-url}") String baseUrl
             , @Value("${web.client.username}") String username
-            , @Value("${web.client.password}") String password) {
+            , @Value("${web.client.password}") String password
+            , @Value("${web.client.in-memory.buffer.size.in-mb}") String inMemorySize) {
         WebClient webClient = builder.baseUrl(baseUrl)
                 .defaultHeaders(headers -> headers.setBasicAuth(username, password))
+                .codecs(configurer ->
+                        configurer.defaultCodecs().maxInMemorySize(Integer.parseInt(inMemorySize) * 1024 * 1024)) //inMemorySize in MB
                 .build();
         return webClient;
     }
