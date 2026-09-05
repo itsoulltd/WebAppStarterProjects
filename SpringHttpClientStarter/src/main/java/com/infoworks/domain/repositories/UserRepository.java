@@ -12,6 +12,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer>, SearchableRepository<User, Integer> {
     List<User> findByName(String name);
 
-    @Query("SELECT u FROM Users u WHERE u.email = :query OR u.name = :query")
+    @Query("SELECT u FROM tbl_user u WHERE u.email = :query OR u.name = :query")
     List<User> findByNameOrEmail(@Param("query") String query);
 }

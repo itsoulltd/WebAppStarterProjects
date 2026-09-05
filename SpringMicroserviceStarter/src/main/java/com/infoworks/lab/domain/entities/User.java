@@ -11,9 +11,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-@TableName(value = "User")
-@Entity(name = "User")
-@Table(name="User", indexes = {@Index(name = "idx_email",columnList = "email")})
+@TableName(value = "tbl_user")
+@Entity(name = "tbl_user")
+@Table(name="tbl_user", indexes = {@Index(name = "idx_email",columnList = "email")})
 public class User extends Auditable<Integer, Long> {
 
 	@PrimaryKey(name="id", auto=true)

@@ -14,6 +14,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByName(String name);
 
-    @Query(value = "SELECT * FROM User p WHERE p.age >= :min and p.age <= :max", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_user p WHERE p.age >= :min and p.age <= :max", nativeQuery = true)
     List<User> findByAgeLimit(@Param("min") Integer min, @Param("max") Integer max);
 }
