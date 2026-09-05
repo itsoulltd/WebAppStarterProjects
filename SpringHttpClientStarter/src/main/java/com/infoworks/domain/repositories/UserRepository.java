@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Integer>, SearchableRepository<User, Integer> {
     List<User> findByName(String name);
 
-    @Query("SELECT u FROM User u WHERE u.email = :query OR u.name = :query")
+    @Query("SELECT u FROM Users u WHERE u.email = :query OR u.name = :query")
     List<User> findByNameOrEmail(@Param("query") String query);
 }
