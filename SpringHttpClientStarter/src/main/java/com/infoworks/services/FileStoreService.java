@@ -60,6 +60,16 @@ public class FileStoreService extends FileStore {
         return getFileSavedStatusMap().get(filename);
     }
 
+    /**
+     * Make sure returned file should be recycled by marking with File::deleteOnExit() method. So that OS can recycle/reclaim the storage.
+     * e.g.
+     * var file = createLocalCopyFromResources(my_filename);
+     * ...use the file...
+     * file.deleteOnExit();
+     * @param filename
+     * @return
+     * @throws IOException
+     */
     public File createLocalCopyFromResources(String filename) throws IOException {
         Path tempDir = Files.createTempDirectory("temp-");
         Path target = tempDir.resolve(Path.of(filename).getFileName().toString());
