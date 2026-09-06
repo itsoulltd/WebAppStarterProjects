@@ -4,6 +4,10 @@ import com.infoworks.domain.entities.EventLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface EventLogRepository extends JpaRepository<EventLog, Long> {
+    Optional<EventLog> findByEvent(String eventName);
+    Optional<EventLog> findByEventAndStatus(String eventName, String status);
 }
