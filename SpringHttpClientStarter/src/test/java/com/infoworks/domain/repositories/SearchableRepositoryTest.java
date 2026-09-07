@@ -31,7 +31,7 @@ class SearchableRepositoryTest {
         Assertions.assertEquals(results.size(), 0);
     }
 
-    public void search(SearchQuery query, SearchableRepository repository, int pageCount, Consumer<List<User>> consumer) {
+    public void search(SearchQuery query, SearchableRepository<User, Integer> repository, int pageCount, Consumer<List<User>> consumer) {
         int pageSize = (query.getSize() <= 0) ? 10 : query.getSize();
         query.setSize(pageSize); //update with validated pageSize.
         pageCount = (pageCount <= 0) ? 1 : pageCount;
@@ -48,7 +48,7 @@ class SearchableRepositoryTest {
         }
     }
 
-    public long maxPageCount(JpaRepository repository, int pageSize) {
+    public long maxPageCount(JpaRepository<User, Integer> repository, int pageSize) {
         long maxCount = repository.count();
         pageSize = (pageSize <= 0) ? 10 : pageSize;
         return (pageSize == maxCount) ? 1 : (maxCount / pageSize) + 1;
