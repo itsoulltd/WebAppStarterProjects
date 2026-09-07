@@ -34,19 +34,21 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
         /*String filename = data.get("filename").toString();
         String fileSavePath = Path.of(saveDir, filename).toString();
         try (AsyncWriter writer = new StreamWriter(100, fileSavePath)) {
-            //TODO:
+            //Write headers:
             String[] headers = {"AccountName","Currency","Amount","Balance","Type","Date","Ref"};
+
+            Map<Integer, List<String>> headerRow = new HashMap<>();
+            headerRow.put(0, Arrays.asList(headers));
+            writer.write("data", headerRow);
+
+            //Write in batch:
             String[] colKeys = {"account_ref","currency","amount","balance","transaction_type","transaction_date","transaction_ref"};
 
-            Map<Integer, List<String>> rows = new HashMap<>();
-            rows.put(0, Arrays.asList(headers));
             List<Map<String, Object>> transactions = dummyTransactions();
-            Map<Integer, List<String>> converted = AsyncWriter.convert(transactions, 1, colKeys);
-            rows.putAll(converted);
+            Map<Integer, List<String>> converted = AsyncWriter.convert(transactions, 1, colKeys); // startIndex need move page by page.
 
-            writer.write("data", rows, false);
+            writer.write("data", converted);
             writer.flush();
-
             data.put("status", "COMPLETE");
         } catch (Exception e) {
             data.put("status", "FAILED");
