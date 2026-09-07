@@ -29,7 +29,8 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
     public Response execute(Message message) throws RuntimeException {
         Map<String, Object> data = new HashMap<>();
         data.putAll(this.data);
-        //
+
+        //Writing to output-file:
         /*String filename = data.get("filename").toString();
         String fileSavePath = Path.of(saveDir, filename).toString();
         try (AsyncWriter writer = new StreamWriter(100, fileSavePath)) {
