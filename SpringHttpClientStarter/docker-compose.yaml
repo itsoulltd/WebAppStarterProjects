@@ -1,0 +1,26 @@
+version: "3.9"
+
+networks:
+  web-app-net:
+    name: my-web-app-net
+    driver: bridge
+
+services:
+  web-client-app:
+    image: web-client-app:1.0
+    build:
+      context: .
+      dockerfile: devops/Dockerfile
+    environment:
+      server.app.domain: localhost       #Or myapp.com
+      spring.profiles.active: h2db
+      management.endpoints.web.exposure.include: health,metrics,httptrace,prometheus
+      app.home.logs: /home/logs
+      app.upload.dir: /home/downloads
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - web-app-net
+
+#end of scripts
