@@ -43,9 +43,9 @@ public class ZipBrowserTest {
             Assertions.assertNotNull(ios);
             List<ZipFile> files = uploadFile.unzipContents(ios);
             //Assertions.assertEquals(2, files.size());
-            files.forEach(file -> System.out.println(file.filename()));
+            files.forEach(file -> LOG.info(file.filename()));
         }
-        //
+        LOG.info("====================================");
     }
 
     @Test
@@ -57,12 +57,12 @@ public class ZipBrowserTest {
             Assertions.assertNotNull(ios);
             List<ZipFile> files = uploadFile.unzipContents(ios, ".pdf", ".png");
             //Assertions.assertEquals(2, files.size());
-            files.forEach(file -> System.out.println(file.filename()));
+            files.forEach(file -> LOG.info(file.filename()));
         }
-        //
+        LOG.info("====================================");
     }
 
-    @Test
+    //@Test
     public void unZipAndSave() throws IOException {
         FileStoreService uploadFile = new FileStoreService("target/", iResources.create());
 
@@ -77,12 +77,13 @@ public class ZipBrowserTest {
                 try (InputStream contentSteam = new ByteArrayInputStream(file.content())) {
                     String filename = String.format("%s_%s", Instant.now().toEpochMilli(), file.filename());
                     uploadFile.put(filename, contentSteam);
+                    LOG.info(file.filename() + " Saved.");
                 } catch (IOException e) {
                     LOG.error(e.getMessage(), e);
                 }
             });
         }
-        //
+        LOG.info("====================================");
     }
 
 
