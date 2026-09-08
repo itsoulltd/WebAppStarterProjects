@@ -1,5 +1,6 @@
 package com.infoworks.services;
 
+import com.infoworks.domain.models.ZipFile;
 import com.infoworks.utils.services.iResources;
 import com.infoworks.utils.services.impl.FileStore;
 import jakarta.annotation.PostConstruct;
@@ -14,9 +15,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 @Service
 public class FileStoreService extends FileStore {
@@ -77,5 +78,33 @@ public class FileStoreService extends FileStore {
             Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
         }
         return target.toFile();
+    }
+
+    /**
+     *
+     * @param inputStream
+     * @param searchWithExtensions e.g. ".pdf", ".xml", ".png" ... etc
+     * @return
+     * @throws IOException
+     */
+    public List<ZipFile> unzipContents(InputStream inputStream, String...searchWithExtensions) throws IOException {
+        List<ZipFile> files = new ArrayList<>();
+        List<String> searchWith = Arrays.asList(searchWithExtensions);
+        try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+            //unZip and browse files:
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                // Directory -> skip
+                if (entry.isDirectory()) continue;
+                String name = entry.getName().toLowerCase();
+                // Only leaf searchWithExtensions files:
+                boolean matchFound = searchWith.isEmpty() || searchWith.stream().anyMatch(ext -> name.endsWith(ext));
+                if (matchFound) {
+                    byte[] content = zipInputStream.readAllBytes();
+                    files.add(new ZipFile(entry.getName(), Path.of(entry.getName()).getFileName().toString(), content));
+                }
+            }
+        }
+        return files;
     }
 }
