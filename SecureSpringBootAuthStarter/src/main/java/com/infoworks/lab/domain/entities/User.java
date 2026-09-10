@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 
 @Entity
 @Table(name="tbl_user"
-        , indexes = {@Index(name = "idx_username",columnList = "username")})
+        , indexes = {@Index(name = "idx_username", columnList = "username")})
 public class User extends Auditable<Long, Long> implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

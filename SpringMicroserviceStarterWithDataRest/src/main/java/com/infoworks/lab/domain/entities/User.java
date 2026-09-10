@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @TableName(value = "tbl_user")
 @Entity(name = "tbl_user")
-@Table(name="tbl_user", indexes = {@Index(name = "idx_email",columnList = "email")})
+@Table(name="tbl_user", indexes = {@Index(name = "idx_tbl_user_email", columnList = "email")})
 public class User extends Auditable<Long> {
 
 	@PrimaryKey(name="id", auto=true)
