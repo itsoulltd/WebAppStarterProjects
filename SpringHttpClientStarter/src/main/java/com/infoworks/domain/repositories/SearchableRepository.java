@@ -1,19 +1,32 @@
 package com.infoworks.domain.repositories;
 
-import com.infoworks.sql.query.pagination.*;
+import com.infoworks.sql.query.pagination.SearchQuery;
+import com.infoworks.sql.query.pagination.SortDescriptor;
+import com.infoworks.sql.query.pagination.SortOrder;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 @Transactional(readOnly=true)
 public interface SearchableRepository<T, ID> {
     List<T> search(SearchQuery query, Class<T> type);
-    static <T> List<Predicate> getPredicatesFrom(SearchQuery query, CriteriaBuilder cBuilder, Root<T> bean, String... skipKeys) {
-        List<Predicate> predicates = new ArrayList<>();
+
+    /**
+     * PageCount means number of times the callback is executed. If less than 0, then set to 1.
+     * If higher than the actual counts, the then executed as exhaustive + 1; The last execution will have empty result.
+     * So that end of execution can be handled.
+     * @param query
+     * @param type
+     * @param pageCount
+     * @param consumer
+     */
+    void search(SearchQuery query, Class<T> type, int pageCount, Consumer<List<T>> consumer);
+
+    static <T> Map<String, Predicate> getPredicatesFrom(SearchQuery query, CriteriaBuilder cBuilder, Root<T> bean, String... skipKeys) {
+        Map<String, Predicate> predicates = new HashMap();
         List<String> skipList = Arrays.asList(skipKeys);
         query.getProperties().stream()
                 .filter(prop -> !skipList.contains(prop.getKey()))
@@ -23,37 +36,37 @@ public interface SearchableRepository<T, ID> {
                     String propValue = prop.getValue();
                     switch (prop.getOperator()){
                         case GREATER_THAN:
-                            predicates.add(cBuilder.greaterThan(propKey, propValue));
+                            predicates.put(prop.getKey(), cBuilder.greaterThan(propKey, propValue));
                             break;
                         case GREATER_THAN_OR_EQUAL:
-                            predicates.add(cBuilder.greaterThanOrEqualTo(propKey, propValue));
+                            predicates.put(prop.getKey(), cBuilder.greaterThanOrEqualTo(propKey, propValue));
                             break;
                         case LESS_THAN:
-                            predicates.add(cBuilder.lessThan(propKey, propValue));
+                            predicates.put(prop.getKey(), cBuilder.lessThan(propKey, propValue));
                             break;
                         case LESS_THAN_OR_EQUAL:
-                            predicates.add(cBuilder.lessThanOrEqualTo(propKey, propValue));
+                            predicates.put(prop.getKey(), cBuilder.lessThanOrEqualTo(propKey, propValue));
                             break;
                         case IN:
                             Object[] inValues = prop.getValue()
                                     .replace("'", "")
                                     .split(",");
-                            predicates.add(cBuilder.in(propKey).in(inValues));
+                            predicates.put(prop.getKey(), cBuilder.in(propKey).in(inValues));
                             break;
                         case LIKE:
-                            predicates.add(cBuilder.like(propKey, propValue));
+                            predicates.put(prop.getKey(), cBuilder.like(propKey, propValue));
                             break;
                         case NOT_LIKE:
-                            predicates.add(cBuilder.notLike(propKey, propValue));
+                            predicates.put(prop.getKey(), cBuilder.notLike(propKey, propValue));
                             break;
                         case IS_NULL:
-                            predicates.add(cBuilder.isNull(propKey));
+                            predicates.put(prop.getKey(), cBuilder.isNull(propKey));
                             break;
                         case NOT_NULL:
-                            predicates.add(cBuilder.isNotNull(propKey));
+                            predicates.put(prop.getKey(), cBuilder.isNotNull(propKey));
                             break;
                         default:
-                            predicates.add(cBuilder.equal(propKey, propValue));
+                            predicates.put(prop.getKey(), cBuilder.equal(propKey, propValue));
                     }
                 });
         return predicates;
