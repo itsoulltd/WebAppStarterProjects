@@ -1,5 +1,6 @@
 package com.infoworks.services;
 
+import com.infoworks.config.TestBeanConfig;
 import com.infoworks.utils.rest.client.DownloadTask;
 import com.infoworks.utils.services.iResources;
 import org.apache.pdfbox.Loader;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -20,12 +23,13 @@ import java.nio.charset.Charset;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@SpringBootTest(classes = {TestBeanConfig.class})
 public class WebClientTest {
 
     private static Logger LOG = LoggerFactory.getLogger(WebClientTest.class);
 
-    //@Test
-    public void downloadTaskTest() {
+    @Test
+    public void downloadTaskTest_HttpClient() {
         //CAUTION: CHECK DOWNLOAD URL and CONTENT BEFORE RUN THE TEST
         //Test Url-1: https://farm7.staticflickr.com/6089/6115759179_86316c08ff_z_d.jpg
         //
@@ -49,12 +53,48 @@ public class WebClientTest {
     }
 
     //@Test
+    public void downloadTaskTest_Spring() {
+        //CAUTION: CHECK DOWNLOAD URL and CONTENT BEFORE RUN THE TEST
+        //Test Url-1: https://farm7.staticflickr.com/6089/6115759179_86316c08ff_z_d.jpg
+        //
+        com.infoworks.utils.rest.spring.DownloadTask task
+                = new com.infoworks.utils.rest.spring.DownloadTask("https://farm7.staticflickr.com/6089/6115759179_86316c08ff_z_d.jpg"
+                , null);
+        task.setToken("my-token");
+        com.infoworks.utils.rest.spring.DownloadTask.ResourceResponse response = task.execute(null);
+        LOG.info("Status: " + response.getStatus());
+        //
+        if (response.getResource() != null) {
+            try (InputStream iso = response.getResource().getInputStream()) {
+                iResources service = iResources.create();
+                BufferedImage img = service.readAsImage(iso, TYPE_INT_RGB);
+                Assertions.assertNotNull(img);
+                LOG.info("Image Downloaded: " + response.getResource().getFilename());
+                LOG.info("Image Size: " + response.getResource().contentLength());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Autowired
+    private WebClient.Builder wcBuilder;
+
+    @Test
+    public void wcBuilderInjectionTest() {
+        Assertions.assertNotNull(wcBuilder);
+        LOG.info("WebClient.Builder successfully injected!");
+    }
+
+    //@Test
     public void downloadPdfAndCountWordsTest() throws IOException {
         //CAUTION: CHECK DOWNLOAD URL and CONTENT BEFORE RUN THE TEST
         //Test Url-2: https://file-examples.com/storage/fe2b56191b6a91eed93e57a/2017/10/file-sample_150kB.pdf
 
+        WebClient.Builder clientBuilder = (wcBuilder != null) ? wcBuilder : WebClient.builder();
+
         WebClient webClient =
-                WebClient.builder().baseUrl("https://file-examples.com")
+                clientBuilder.baseUrl("https://file-examples.com")
                         .defaultHeaders(headers -> headers.setBasicAuth("username", "password"))
                         .build();
         //

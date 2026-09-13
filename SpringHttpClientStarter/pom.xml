@@ -113,7 +113,10 @@
         <dependency>
             <groupId>com.github.itsoulltd</groupId>
             <artifactId>JFoundationKit</artifactId>
-            <version>[v1.0.1, )</version>
+            <!-- JFoundationKit with JDK-11 baseline (also compatible with any Java-17+ projects) -->
+            <!--<version>[v1.0.1, )</version>-->
+            <!-- JFoundationKit with JDK-17 baseline and Spring v6+ -->
+            <version>v1.0.5.1-j17</version>
         </dependency>
         <dependency>
             <groupId>com.github.itsoulltd</groupId>
