@@ -35,6 +35,14 @@ public class FileStoreService extends FileStore {
 
     @PostConstruct
     public void postInit() {
+        if (!Files.exists(Path.of(getUploadPath()))) {
+            try {
+                Path path = Files.createDirectory(Path.of(getUploadPath()));
+                LOG.info("Directory created at path: " + path.toAbsolutePath());
+            } catch (IOException e) { LOG.error(e.getMessage(), e); }
+        } else {
+            LOG.info("Directory found at path: " + Path.of(getUploadPath()).toAbsolutePath());
+        }
         loadFileSavedStatusMap();
     }
 

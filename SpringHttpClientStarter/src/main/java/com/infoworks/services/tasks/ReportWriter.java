@@ -77,9 +77,8 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
             data.put("reason", e.getMessage());
         }
 
-        //For testing:
-        /*try { Thread.sleep(5000); } catch (Exception ignore) {}
-        data.put("status", "COMPLETE");*/
+        //CAUTION: Making some delay for testing, please remove in production.
+        try { Thread.sleep(5000); } catch (Exception ignore) {}
         //...
         return new Response().setStatus(200).setMessage(MessageParser.printJson(data, mapper));
     }
