@@ -11,6 +11,7 @@ import com.infoworks.tasks.queue.TaskQueue;
 import com.infoworks.utils.eventq.EventQueue;
 import com.infoworks.utils.services.iResources;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -83,6 +86,21 @@ public class ReportingController {
                 }
             }
         });
+    }
+
+    @PostConstruct
+    public void postInit() {
+        Path reportingDirPath = Path.of(uploadPath);
+        if (!Files.exists(reportingDirPath)) {
+            try {
+                Path path = Files.createDirectory(reportingDirPath);
+                LOG.info("Directory created at path: " + path.toAbsolutePath());
+            } catch (IOException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        } else {
+            LOG.info("Directory found at path: " + reportingDirPath.toAbsolutePath());
+        }
     }
 
     @GetMapping("/prepare")
