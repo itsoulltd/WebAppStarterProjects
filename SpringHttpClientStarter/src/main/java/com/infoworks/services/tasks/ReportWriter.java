@@ -104,10 +104,8 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
             , int pageCount
             , Consumer<List<Map<String, Object>>> consumer) {
         //Null Check:
-        if (consumer == null) {
-            consumer.accept(new ArrayList<>());
-            return;
-        }
+        if (consumer == null) return;
+
         //Validation:
         pageSize = (pageSize <= 0) ? 5 : pageSize;
         int maxCount = (pageSize == dataSource.size()) ? 1 : (dataSource.size() / pageSize) + 1;
