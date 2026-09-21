@@ -99,9 +99,7 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
         return data;
     }
 
-    private void pagination(SimpleDataSource<Integer, Map<String, Object>> dataSource
-            , int pageSize
-            , int pageCount
+    private void pagination(SimpleDataSource<Integer, Map<String, Object>> dataSource, int pageSize, int pageCount
             , Consumer<List<Map<String, Object>>> consumer) {
         //Null Check:
         if (consumer == null) return;
@@ -109,7 +107,7 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
         //Validation:
         pageSize = (pageSize <= 0) ? 5 : pageSize;
         int maxCount = (pageSize == dataSource.size()) ? 1 : (dataSource.size() / pageSize) + 1;
-        pageCount = (pageCount <= 0) ? maxCount : pageCount;
+        pageCount = (pageCount <= 0 || pageCount > maxCount) ? maxCount : pageCount;
         //Works:
         int offset = 0; //iDataSource::readAsync is 0-based;
         while (offset <= pageCount) {
