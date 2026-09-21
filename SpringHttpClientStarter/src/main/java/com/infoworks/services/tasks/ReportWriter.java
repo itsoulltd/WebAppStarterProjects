@@ -109,15 +109,17 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
         int maxCount = (pageSize == dataSource.size()) ? 1 : (dataSource.size() / pageSize) + 1;
         pageCount = (pageCount <= 0 || pageCount > maxCount) ? maxCount : pageCount;
         //Works:
+        int currentPage = 1;
         int offset = 0; //iDataSource::readAsync is 0-based;
-        while (offset <= pageCount) {
+        while (currentPage <= pageCount) {
             Object[] objs  = dataSource.readSync(offset, pageSize);
             List<Map<String, Object>> items = Stream.of(objs)
                     .map(ob -> (Map<String, Object>) ob)
                     .collect(Collectors.toList());
             consumer.accept(items);
-            //Next page:
-            offset++;
+            //Next page & offset:
+            currentPage++;
+            offset = (currentPage - 1) * pageSize;
         }
     }
 
