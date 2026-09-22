@@ -143,7 +143,6 @@ public class ReportingController {
             event = new EventLog();
             event.setEvent(marker);
             event.setDescription(MessageParser.printJson(data, mapper));
-            logRepository.save(event);
             //Start a task as an async flow:
             switch (TaskType.valueOf(taskType)) {
                 case ReportWriter -> {
@@ -156,6 +155,7 @@ public class ReportingController {
                 }
             }
             //
+            logRepository.save(event);
             result.put("status", event.getStatus());
             result.putAll(data);
         }
