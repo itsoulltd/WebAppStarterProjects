@@ -21,10 +21,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,10 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 
 @RestController
@@ -103,14 +97,34 @@ public class ReportingController {
         }
     }
 
-    @GetMapping("/prepare")
-    public ResponseEntity<Map> prepareReport(
-            @RequestParam(name = "reportMarker", required = false, defaultValue = "") String marker
+    private String getBaseUrl(HttpServletRequest request) {
+        return request.getRequestURL().substring(0, request.getRequestURL().indexOf(request.getRequestURI()));
+    }
+
+    public enum TaskType {
+        ReportWriter
+    }
+
+    @GetMapping("/prepare/{task_type}")
+    public ResponseEntity<Map> prepareReport(@PathVariable(name = "task_type") String taskType
+            , @RequestParam(name = "marker", required = false, defaultValue = "") String marker
             , @Parameter(hidden = true) HttpServletRequest request) {
 
         Map<String, Object> result = new HashMap<>();
+
+        //Validate taskType:
+        try {
+            var _type = TaskType.valueOf(taskType);
+        } catch (Exception e) {
+            result.put("status", "FAILED");
+            String[] alTasks = Arrays.stream(TaskType.values()).map(Enum::name).toArray(String[]::new);
+            result.put("reason", taskType + " is not appropriate. e.g. " + String.join(", ", alTasks));
+            return ResponseEntity.badRequest().body(result);
+        }
+
+        //Validate marker:
         boolean wasMarkerBlank = (marker == null || marker.isBlank());
-        if (wasMarkerBlank) marker = UUID.randomUUID().toString();
+        if (wasMarkerBlank) marker = taskType + "_" + UUID.randomUUID();
 
         //Check already started:
         EventLog event = logRepository.findByEvent(marker).orElse(null);
@@ -120,36 +134,32 @@ public class ReportingController {
             catch (Exception ignore) {}
             return ResponseEntity.ok(result);
         } else {
-            //
+            //Re-enforce properties:
             Map<String, Object> data = new HashMap<>();
+            data.put("task_type", taskType);
             data.put("marker", marker);
-            data.put("filename", createReportFilename(marker, "xlsx"));
-            data.put("download_url", String.format("%s%s/download?filename=%s"
-                    , getBaseUrl(request)
-                    , "/reports/v1"
-                    , data.get("filename")));
+            data.put("base_url", getBaseUrl(request) + "/reports/v1/download");
             //
             event = new EventLog();
             event.setEvent(marker);
-            event.setStatus("STARTED");
             event.setDescription(MessageParser.printJson(data, mapper));
             logRepository.save(event);
             //Start a task as an async flow:
-            taskQueue.add(new ReportWriter(data, uploadPath, mapper));
+            switch (TaskType.valueOf(taskType)) {
+                case ReportWriter -> {
+                    event.setStatus("STARTED");
+                    this.taskQueue.add(new ReportWriter(data, uploadPath, mapper));
+                }
+                default -> {
+                    event.setStatus("CANCELED");
+                    LOG.info("");
+                }
+            }
             //
             result.put("status", event.getStatus());
             result.putAll(data);
         }
         return ResponseEntity.ok(result);
-    }
-
-    private String createReportFilename(String marker, String format) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        return String.format("%s_%s.%s", marker, timestamp, format);
-    }
-
-    private String getBaseUrl(HttpServletRequest request) {
-        return request.getRequestURL().substring(0, request.getRequestURL().indexOf(request.getRequestURI()));
     }
 
     @GetMapping("/download")

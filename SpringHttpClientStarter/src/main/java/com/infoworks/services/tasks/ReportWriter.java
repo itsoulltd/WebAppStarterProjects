@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -36,6 +38,12 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
     public Response execute(Message message) throws RuntimeException {
         Map<String, Object> data = new HashMap<>();
         data.putAll(this.data);
+
+        //Validation:
+        String marker = Optional.ofNullable(data.get("marker")).orElse(UUID.randomUUID()).toString();
+        data.put("filename", createReportFilename(marker, "xlsx"));
+        String baseUrl = Optional.ofNullable(data.get("base_url")).orElse("<base_url_missing>").toString();
+        data.put("download_url", String.format("%s?filename=%s", baseUrl, data.get("filename").toString()));
 
         //Writing to output-file:
         String filename = data.get("filename").toString();
@@ -81,6 +89,11 @@ public class ReportWriter extends ExecutableTask<Message, Response> {
         try { Thread.sleep(5000); } catch (Exception ignore) {}
         //...
         return new Response().setStatus(200).setMessage(MessageParser.printJson(data, mapper));
+    }
+
+    private String createReportFilename(String marker, String format) {
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        return String.format("%s_%s.%s", marker, timestamp, format);
     }
 
     private List<Map<String, Object>> getDummySummary(String...headers) {
