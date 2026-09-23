@@ -1,5 +1,6 @@
 package com.infoworks.services;
 
+import com.infoworks.domain.models.XmlSelector;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -82,6 +83,37 @@ public class WordCounter {
         return wordCount;
     }
 
+    public String parsePdfContent(String filename) throws RuntimeException {
+        ClassPathResource resource = new ClassPathResource(filename);
+        try (PDDocument document = Loader.loadPDF(resource.getContentAsByteArray())) {
+            return parsePdfContent(document);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String parsePdfContent(InputStream inputStream) throws RuntimeException {
+        try (PDDocument document = Loader.loadPDF(inputStream.readAllBytes())) {
+            return parsePdfContent(document);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String parsePdfContent(PDDocument document) throws IOException {
+        StringBuilder txtBuilder = new StringBuilder();
+        //Read pdf native-text:
+        PDFTextStripper stripper = new PDFTextStripper();
+        String text = stripper.getText(document);
+        txtBuilder.append(text);
+        //OCR for text:
+        if (enableOCR) {
+            LOG.info("OCR NOT IMPLEMENTED YET!");
+        }
+        //LOG.info("Word count: " + wordCount);
+        return txtBuilder.toString();
+    }
+
     private List<PDXObject> findPDXObjects(PDDocument document) {
         List<PDXObject> results = new ArrayList<>();
         //Pileup xobjects:
@@ -149,5 +181,53 @@ public class WordCounter {
             }
         } catch (Exception e) { throw new RuntimeException(e); }
         return count;
+    }
+
+    public String parseXmlContent(String filename, String[] lookupElements, String...skipElements) throws RuntimeException {
+        ClassPathResource resource = new ClassPathResource(filename);
+        try (InputStream inputStream = resource.getInputStream()) {
+            return parseXmlContent(inputStream, lookupElements, skipElements);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to process XML", e);
+        }
+    }
+
+    public String parseXmlContent(InputStream inputStream, String[] lookupElements, String...skipElements) throws RuntimeException {
+        StringBuilder txtBuilder = new StringBuilder();
+        try {
+            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(inputStream);
+            var skips = Arrays.asList(skipElements);
+            var skipDepth = 0;
+            var lookups = Arrays.asList(lookupElements);
+            var lookupSelectors = lookups.stream().map(XmlSelector::parse).toList();
+            var isInLookupScop = lookups.isEmpty(); //if lookups is empty then all words get counted.
+            try {
+                while (reader.hasNext()) {
+                    int event = reader.next();
+                    //
+                    if (event == XMLStreamConstants.START_ELEMENT) {
+                        //if (lookups.contains(reader.getLocalName())) isInLookupScop = true;
+                        if (lookupSelectors.stream().anyMatch(s -> s.matchesStart(reader))) isInLookupScop = true;
+                        if (skips.contains(reader.getLocalName())) skipDepth++;
+                        continue;
+                    } else if (event == XMLStreamConstants.END_ELEMENT) {
+                        //if (lookups.contains(reader.getLocalName())) isInLookupScop = false;
+                        if (lookupSelectors.stream().anyMatch(s -> s.matchesEnd(reader))) isInLookupScop = false;
+                        if (skips.contains(reader.getLocalName())) skipDepth--;
+                        continue;
+                    }
+                    //
+                    if (isInLookupScop && skipDepth == 0) {
+                        if (event == XMLStreamConstants.CHARACTERS || event == XMLStreamConstants.CDATA) {
+                            String text = reader.getText();
+                            txtBuilder.append(" " + text);
+                        }
+                    }
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (Exception e) { throw new RuntimeException(e); }
+        return txtBuilder.toString();
     }
 }
