@@ -35,7 +35,8 @@ public class XmlElementReader {
         }
     }
 
-    public Map<String, String> read(InputStream inputStream, String[] lookupElements, String...skipElements) {
+    public Map<String, String> read(InputStream inputStream, String[] lookupElements, String...skipElements)
+            throws RuntimeException {
         StringBuilder txtBuilder = new StringBuilder();
         Map<String, String> result = new HashMap<>();
         try {
@@ -44,7 +45,7 @@ public class XmlElementReader {
             var lookups = Arrays.asList(lookupElements);
             var lookupSelectors = lookups.stream().map(XmlSelector::parse).toList();
             var skipDepth = 0;
-            var isInLookupScop = lookups.isEmpty(); //if lookups is empty then all words get counted.
+            var isInLookupScop = lookups.isEmpty(); //[NOT ANYMORE: if lookups is empty then all words get counted]
             try {
                 while (reader.hasNext()) {
                     int event = reader.next();

@@ -1,6 +1,5 @@
 package com.infoworks.services;
 
-import com.infoworks.domain.models.XmlSelector;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -14,14 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -31,8 +27,8 @@ public class WordCounter {
     private static Logger LOG = LoggerFactory.getLogger(WordCounter.class);
     private static final Pattern WORD =
             Pattern.compile("\\b[\\p{L}\\p{N}]+(?:['’-][\\p{L}\\p{N}]+)*\\b");
-    private final XMLInputFactory xmlInputFactory;
     private final boolean enableOCR;
+    private final XmlElementReader reader;
 
     /**
      * When a Spring @Component with more-than-one constructors, spring needs to know which one to use for dependency injection.
@@ -40,15 +36,14 @@ public class WordCounter {
      * @param enableOCR
      */
     @Autowired
-    public WordCounter(@Value("${ocr.enable}") String enableOCR) {
-        this.xmlInputFactory = XMLInputFactory.newFactory();
-        this.xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        this.xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities",false);
+    public WordCounter(@Value("${ocr.enable}") String enableOCR
+            , XmlElementReader reader) {
+        this.reader = reader;
         this.enableOCR = Boolean.parseBoolean(Optional.ofNullable(enableOCR).orElse("false"));
     }
 
     public WordCounter() {
-        this("false");
+        this("false", new XmlElementReader());
     }
 
     public long pdfWordCount(String filename) throws RuntimeException {
@@ -167,40 +162,11 @@ public class WordCounter {
 
     public String parseXmlContent(InputStream inputStream, String[] lookupElements, String...skipElements) throws RuntimeException {
         StringBuilder txtBuilder = new StringBuilder();
-        try {
-            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(inputStream);
-            var skips = Arrays.asList(skipElements);
-            var skipDepth = 0;
-            var lookups = Arrays.asList(lookupElements);
-            var lookupSelectors = lookups.stream().map(XmlSelector::parse).toList();
-            var isInLookupScop = lookups.isEmpty(); //if lookups is empty then all words get counted.
-            try {
-                while (reader.hasNext()) {
-                    int event = reader.next();
-                    //
-                    if (event == XMLStreamConstants.START_ELEMENT) {
-                        //if (lookups.contains(reader.getLocalName())) isInLookupScop = true;
-                        if (lookupSelectors.stream().anyMatch(s -> s.matchesStart(reader))) isInLookupScop = true;
-                        if (skips.contains(reader.getLocalName())) skipDepth++;
-                        continue;
-                    } else if (event == XMLStreamConstants.END_ELEMENT) {
-                        //if (lookups.contains(reader.getLocalName())) isInLookupScop = false;
-                        if (lookupSelectors.stream().anyMatch(s -> s.matchesEnd(reader))) isInLookupScop = false;
-                        if (skips.contains(reader.getLocalName())) skipDepth--;
-                        continue;
-                    }
-                    //
-                    if (isInLookupScop && skipDepth == 0) {
-                        if (event == XMLStreamConstants.CHARACTERS || event == XMLStreamConstants.CDATA) {
-                            String text = reader.getText();
-                            txtBuilder.append(" " + text);
-                        }
-                    }
-                }
-            } finally {
-                reader.close();
-            }
-        } catch (Exception e) { throw new RuntimeException(e); }
+        Map<String, String> data = reader.read(inputStream, lookupElements, skipElements);
+        data.forEach((element, text) -> {
+            if(txtBuilder.isEmpty()) txtBuilder.append(text);
+            else txtBuilder.append(" " + text);
+        });
         return txtBuilder.toString();
     }
 }

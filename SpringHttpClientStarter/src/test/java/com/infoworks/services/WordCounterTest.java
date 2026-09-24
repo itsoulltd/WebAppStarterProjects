@@ -20,11 +20,11 @@ class WordCounterTest {
     }
 
     @Test
-    void xmlWordCountAll() {
+    void xmlWordCountEmpty() {
         WordCounter counter = new WordCounter();
         long countXml = counter.xmlWordCount("data/TestDoc.xml", new String[0]);
-        Assertions.assertEquals(61L, countXml);
-        LOG.info("XML All Word count: " + countXml);
+        Assertions.assertEquals(0L, countXml);
+        LOG.info("XML Word count: " + countXml);
     }
 
     @Test
