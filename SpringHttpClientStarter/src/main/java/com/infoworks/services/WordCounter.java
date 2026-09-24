@@ -147,38 +147,11 @@ public class WordCounter {
     public long xmlWordCount(InputStream inputStream, String[] lookupElements, String...skipElements) throws RuntimeException {
         long count = 0;
         try {
-            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(inputStream);
-            var skips = Arrays.asList(skipElements);
-            var skipDepth = 0;
-            var lookups = Arrays.asList(lookupElements);
-            var isInLookupScop = lookups.isEmpty(); //if lookups is empty then all words get counted.
-            try {
-                while (reader.hasNext()) {
-                    int event = reader.next();
-                    //
-                    if (event == XMLStreamConstants.START_ELEMENT) {
-                        if (lookups.contains(reader.getLocalName())) isInLookupScop = true;
-                        if (skips.contains(reader.getLocalName())) skipDepth++;
-                        continue;
-                    } else if (event == XMLStreamConstants.END_ELEMENT) {
-                        if (lookups.contains(reader.getLocalName())) isInLookupScop = false;
-                        if (skips.contains(reader.getLocalName())) skipDepth--;
-                        continue;
-                    }
-                    //
-                    if (isInLookupScop && skipDepth == 0) {
-                        if (event == XMLStreamConstants.CHARACTERS || event == XMLStreamConstants.CDATA) {
-                            String text = reader.getText();
-                            count += WORD
-                                    .matcher(text)
-                                    .results()
-                                    .count();
-                        }
-                    }
-                }
-            } finally {
-                reader.close();
-            }
+            String text = parseXmlContent(inputStream, lookupElements, skipElements);
+            count += WORD
+                    .matcher(text)
+                    .results()
+                    .count();
         } catch (Exception e) { throw new RuntimeException(e); }
         return count;
     }

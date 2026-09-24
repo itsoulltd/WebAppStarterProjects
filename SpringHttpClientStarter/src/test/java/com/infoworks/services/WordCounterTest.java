@@ -1,5 +1,6 @@
 package com.infoworks.services;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ class WordCounterTest {
     void pdfWordCount() {
         WordCounter counter = new WordCounter();
         long count = counter.pdfWordCount("data/Application_Development_Guideline.pdf");
+        Assertions.assertEquals(381L, count);
         LOG.info("PDF Word count: " + count);
     }
 
@@ -21,6 +23,7 @@ class WordCounterTest {
     void xmlWordCountAll() {
         WordCounter counter = new WordCounter();
         long countXml = counter.xmlWordCount("data/TestDoc.xml", new String[0]);
+        Assertions.assertEquals(61L, countXml);
         LOG.info("XML All Word count: " + countXml);
     }
 
@@ -28,9 +31,11 @@ class WordCounterTest {
     void xmlWordCountBody() {
         WordCounter counter = new WordCounter();
         long countXml = counter.xmlWordCount("data/TestDoc.xml", new String[]{"body"});
+        Assertions.assertEquals(49L, countXml);
         LOG.info("XML Body Word count: " + countXml);
         //
         countXml = counter.xmlWordCount("data/TestDoc.xml", new String[]{"body"}, "title");
+        Assertions.assertEquals(40L, countXml);
         LOG.info("XML Body except(title) Word count: " + countXml);
     }
 
