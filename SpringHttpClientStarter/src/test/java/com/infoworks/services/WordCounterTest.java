@@ -15,6 +15,7 @@ class WordCounterTest {
     void pdfWordCount() {
         WordCounter counter = new WordCounter();
         long count = counter.pdfWordCount("data/Application_Development_Guideline.pdf");
+
         Assertions.assertEquals(381L, count);
         LOG.info("PDF Word count: " + count);
     }
@@ -23,6 +24,7 @@ class WordCounterTest {
     void xmlWordCountEmpty() {
         WordCounter counter = new WordCounter();
         long countXml = counter.xmlWordCount("data/TestDoc.xml", new String[0]);
+
         Assertions.assertEquals(0L, countXml);
         LOG.info("XML Word count: " + countXml);
     }
@@ -30,11 +32,16 @@ class WordCounterTest {
     @Test
     void xmlWordCountBody() {
         WordCounter counter = new WordCounter();
-        long countXml = counter.xmlWordCount("data/TestDoc.xml", new String[]{"body"});
+
+        //
+        long countXml = counter
+                .xmlWordCount("data/TestDoc.xml", new String[]{"body"});
         Assertions.assertEquals(49L, countXml);
         LOG.info("XML Body Word count: " + countXml);
+
         //
-        countXml = counter.xmlWordCount("data/TestDoc.xml", new String[]{"body"}, "title");
+        countXml = counter
+                .xmlWordCount("data/TestDoc.xml", new String[]{"body"}, "title");
         Assertions.assertEquals(40L, countXml);
         LOG.info("XML Body except(title) Word count: " + countXml);
     }
@@ -42,18 +49,32 @@ class WordCounterTest {
     @Test
     void xmlParseBodyContent() {
         WordCounter counter = new WordCounter();
-
-        String body = counter.parseXmlContent("data/TestDoc.xml"
-                , new String[]{"body"}, "title");
+        String body = counter
+                .parseXmlContent("data/TestDoc.xml", new String[]{"body"}, "title");
         LOG.info(body);
     }
 
     @Test
     void xmlElementRead() {
         XmlElementReader reader = new XmlElementReader();
+        Map<String, String> data = reader
+                .read("data/TestDoc.xml", new String[]{"section[@id='conclusion']"}, "title");
+        LOG.info(data.toString());
+    }
 
-        Map<String, String> data = reader.read("data/TestDoc.xml"
-                , new String[]{"section[@id='conclusion']"}, "title");
+    @Test
+    void xmlElementRead_v2() {
+        XmlElementReader reader = new XmlElementReader();
+        //TODO: Need to fix, known issue: When multiple tag with same attribute (but different attrib value),
+        // and searching for the attribute value, then the last tag's attribute value shall be returned.
+        Map<String, String> data = reader.read("data/TestDoc.xml", new String[]{"section[@id]"});
+        LOG.info(data.toString());
+    }
+
+    @Test
+    void xmlElementRead_v3() {
+        XmlElementReader reader = new XmlElementReader();
+        Map<String, String> data = reader.read("data/TestDoc.xml", new String[]{"title"});
         LOG.info(data.toString());
     }
 }
